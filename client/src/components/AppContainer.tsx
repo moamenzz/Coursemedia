@@ -12,7 +12,7 @@ const AppContainer = () => {
       <Loader />
     </div>
   ) : user ? (
-    <Outlet /> // OR maybe MainLayout.tsx should be here?
+    <Outlet />
   ) : (
     <Navigate
       to="/login"

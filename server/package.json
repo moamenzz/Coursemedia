@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-fileupload": "^1.5.1",
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
@@ -26,12 +27,14 @@
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
     "resend": "^4.3.0",
+    "stripe": "^18.1.1",
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/express-fileupload": "^1.5.1",
     "@types/express-session": "^1.18.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/passport": "^1.0.17",

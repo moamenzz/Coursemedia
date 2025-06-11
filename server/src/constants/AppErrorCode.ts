@@ -3,6 +3,7 @@ const enum AppErrorCode {
   EmailNotFound = "EmailNotFound",
   OAuthAccount = "OAuthAccount",
   NOTADMIN = "User Is not an Admin",
+  NOTINSTRUCTOR = "Not an instructor",
 }
 
 export default AppErrorCode;

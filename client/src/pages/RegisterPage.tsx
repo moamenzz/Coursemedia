@@ -9,6 +9,7 @@ import { FaUser, FaLock, FaRedo } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import Button from "../components/Button";
 import ErrorThrower from "../components/ErrorThrower";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -17,11 +18,16 @@ const RegisterPage = () => {
     username: "",
     password: "",
     confirmPassword: "",
+    instructor: false,
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData({ ...formData, instructor: checked });
   };
 
   const {
@@ -36,7 +42,7 @@ const RegisterPage = () => {
       toast.error(`Login Failed: ${errorMsg}`);
     },
     onSuccess: () => {
-      navigate("/");
+      navigate("/explore");
       toast.success("Registration Successful");
     },
   });
@@ -214,6 +220,20 @@ const RegisterPage = () => {
               placeholder="Confirm Password"
               required
             />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="instructor"
+              checked={formData.instructor}
+              onCheckedChange={handleCheckboxChange}
+            />
+            <label
+              htmlFor="instructor"
+              className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Register as an Instructor
+            </label>
           </div>
 
           {isError && <ErrorThrower isError={isError} error={error} />}

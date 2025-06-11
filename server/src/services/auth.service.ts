@@ -24,12 +24,14 @@ import {
   VERIFICATION_EMAIL_TEMPLATE,
 } from "../utils/emailTemplates";
 import AppErrorCode from "../constants/AppErrorCode";
+import InstructorModel from "../models/instructor.model";
 
 interface RegisterParams {
   email: string;
   username: string;
   password: string;
   confirmPassword: string;
+  instructor?: boolean;
   userAgent?: string;
 }
 
@@ -73,6 +75,14 @@ export const createAccount = async (data: RegisterParams) => {
     to: user.email,
     ...VERIFICATION_EMAIL_TEMPLATE(URL),
   });
+
+  const isInstructor = data.instructor;
+
+  if (isInstructor) {
+    const createdInstructor = await InstructorModel.create({
+      user: user._id,
+    });
+  }
 
   // Erstelle AccessToken und RefreshToken
   const accessToken = signToken(

@@ -18,6 +18,7 @@ export const registerSchema = z
       .string({ required_error: "Password is required" })
       .min(6, "Password must be at least 6 characters")
       .max(100, "Password cannot exceed 100 characters"),
+    instructor: z.boolean().optional(),
     userAgent: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {

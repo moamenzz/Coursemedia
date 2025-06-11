@@ -11,6 +11,13 @@ import userRouter from "./routes/user.route";
 import authenticate from "./middleware/authenticate";
 import session from "express-session";
 import passport from "./config/passport";
+import instructorRouter from "./routes/instructor.route";
+import courseRouter from "./routes/course.route";
+import lectureRouter from "./routes/lecture.route";
+import cartRouter from "./routes/cart.route";
+import purchaseRouter from "./routes/purchase.route";
+import wishlistRouter from "./routes/wishlist.route";
+import paymentRouter from "./routes/payment.route";
 
 const port: String | Number = PORT || 3000;
 
@@ -37,7 +44,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRouter);
+app.use("/course", courseRouter);
 app.use("/user", authenticate, userRouter);
+app.use("/instructor", authenticate, instructorRouter);
+app.use("/lecture", authenticate, lectureRouter);
+app.use("/wishlist", authenticate, wishlistRouter);
+app.use("/cart", authenticate, cartRouter);
+app.use("/purchase", authenticate, purchaseRouter);
+app.use("/payment", authenticate, paymentRouter);
 
 app.use(errorHandler);
 
