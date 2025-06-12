@@ -1,7 +1,12 @@
 import { Heart } from "lucide-react";
 import { FC, useState } from "react";
 import { Alert, AlertDescription } from "./ui/alert";
-import { addToCart, CourseResponse, getCart } from "@/lib/apiRoutes";
+import {
+  addToCart,
+  CourseResponse,
+  createCheckoutSession,
+  getCart,
+} from "@/lib/apiRoutes";
 import VideoPlayer from "./VideoPlayer";
 import { calculateDiscountPercentage, formatPrice } from "@/utils/formatPrice";
 import { toast } from "react-toastify";
@@ -39,6 +44,7 @@ const CoursePreview: FC<CoursePreviewProps> = ({ course }) => {
 
 const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   const [couponCode, setCouponCode] = useState("CP130525");
+  const [buyingNow, setIsBuyingNow] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -54,6 +60,28 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   const isAddedToCart = Boolean(
     cart?.[0]?.courses?.find((c) => c._id === course._id)
   );
+
+  const makePayment = async () => {
+    try {
+      setIsBuyingNow(true);
+
+      const courseId = course._id;
+      console.log(courseId);
+
+      if (courseId) {
+        const response = await createCheckoutSession([courseId]);
+        console.log(response);
+
+        window.location.href = response.url;
+        setIsBuyingNow(false);
+      }
+    } catch (error) {
+      toast.error("Fehler beim Checkout-Prozess");
+      console.error("Checkout-Fehler:", error);
+    } finally {
+      setIsBuyingNow(false);
+    }
+  };
 
   const {
     mutate: addToCartMutation,
@@ -127,7 +155,19 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
             "Add to cart"
           )}
         </button>
-        <button className="btn btn-outline">Buy now</button>
+        <button
+          className={`${buyingNow ? "opacity-70" : ""} btn btn-outline`}
+          disabled={buyingNow}
+          onClick={makePayment}
+        >
+          {buyingNow ? (
+            <div className="flex items-center justify-center">
+              <Loader />
+            </div>
+          ) : (
+            "Buy now"
+          )}
+        </button>
         <button className="btn btn-outline tooltip" data-tip="Add to wishlist">
           <Heart size={16} />
         </button>

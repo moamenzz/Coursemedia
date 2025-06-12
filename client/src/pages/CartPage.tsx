@@ -1,18 +1,17 @@
 import CartItem from "@/components/CartItem";
 import ErrorThrower from "@/components/ErrorThrower";
 import Loader from "@/components/Loader";
-import { getCart } from "@/lib/apiRoutes";
+import { createCheckoutSession, getCart } from "@/lib/apiRoutes";
 import { calculateDiscountPercentage, formatPrice } from "@/utils/formatPrice";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { TbBrandPaypalFilled } from "react-icons/tb";
 import { toast } from "react-toastify";
-import useStripe from "@/context/useStripe";
 
 const CartPage = () => {
   const [coupon, setCoupon] = useState("");
-  const { redirectToCheckout } = useStripe();
+  const [isCheckoutPending, setIsCheckoutPending] = useState(false);
 
   const {
     data: cart,
@@ -24,7 +23,8 @@ const CartPage = () => {
     queryFn: getCart,
   });
 
-  const cartItems = cart?.[0].courses || [];
+  const cartItems = cart?.[0]?.courses || [];
+  const isProccedToCheckoutDisabled = cartItems.length <= 0;
 
   console.log(cartItems);
 
@@ -41,40 +41,42 @@ const CartPage = () => {
 
   const makePayment = async () => {
     try {
-      if (cartItems.length < 0) {
-        toast.error("Please add courses to your cart before making a payment.");
-        return;
-      }
-
+      setIsCheckoutPending(true);
       const coursesIds = cartItems.map((course) => course._id) as string[];
 
       console.log("CourseIds being sent:", coursesIds);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_API}/payment/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            coursesIds,
-          }),
-        }
-      )
-        .then((res) => {
-          if (res.ok) return res.json();
-        })
-        .then(({ url }) => {
-          window.location.href = url;
-        });
+      const response = await createCheckoutSession(coursesIds);
+      console.log(response);
 
-      // const { url } = await response.json();
+      window.location.href = response.url;
 
-      // window.location.href = url;
+      setIsCheckoutPending(false);
+
+      // const response = await fetch(
+      //   `${import.meta.env.VITE_BACKEND_API}/payment/create-checkout-session`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       // Authorization: `Bearer ${}`,
+      //     },
+      //     body: JSON.stringify({
+      //       coursesIds,
+      //     }),
+      //   }
+      // )
+      //   .then((res) => {
+      //     if (res.ok) return res.json();
+      //   })
+      //   .then(({ url }) => {
+      //     window.location.href = url;
+      //   });
     } catch (error) {
       toast.error("Fehler beim Checkout-Prozess");
       console.error("Checkout-Fehler:", error);
+    } finally {
+      setIsCheckoutPending(false);
     }
   };
 
@@ -141,24 +143,37 @@ const CartPage = () => {
             </div>
 
             <button
-              className="w-full bg-purple-700 hover:bg-purple-800 text-white rounded py-3 font-medium flex items-center justify-center cursor-pointer"
+              className={`w-full ${
+                isProccedToCheckoutDisabled || isCheckoutPending
+                  ? "bg-purple-700 opacity-50 cursor-not-allowed"
+                  : "bg-purple-700 hover:bg-purple-800 cursor-pointer"
+              }  text-white rounded py-3 font-medium flex items-center justify-center `}
+              disabled={isProccedToCheckoutDisabled || isCheckoutPending}
               onClick={() => makePayment()}
             >
-              Proceed to Checkout
-              <svg
-                className="ml-2 w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              {isCheckoutPending ? (
+                <div className="flex items-center justify-center">
+                  <Loader />
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <h1>Proceed to Checkout</h1>
+                  <svg
+                    className="ml-2 w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              )}
             </button>
             <p className="text-xs text-gray-500 mt-2 text-center">
               You won't be charged yet

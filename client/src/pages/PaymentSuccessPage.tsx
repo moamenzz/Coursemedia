@@ -17,7 +17,7 @@ const PaymentSuccessPage = () => {
           <h1 className="text-2xl font-bold mt-4 mb-6">Payment Successful</h1>
           <p className=" text-lg">Thank you for your purchase!</p>
           <p className="text-gray-500 mb-2">
-            You'll found your course in your My-Courses section
+            You'll find your course in your My-Courses section
           </p>
           <p className="text-gray-500">Redirecting...</p>
         </div>

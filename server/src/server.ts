@@ -50,8 +50,8 @@ app.use("/instructor", authenticate, instructorRouter);
 app.use("/lecture", authenticate, lectureRouter);
 app.use("/wishlist", authenticate, wishlistRouter);
 app.use("/cart", authenticate, cartRouter);
-app.use("/purchase", authenticate, purchaseRouter);
 app.use("/payment", authenticate, paymentRouter);
+app.use("/purchase", authenticate, purchaseRouter);
 
 app.use(errorHandler);
 
