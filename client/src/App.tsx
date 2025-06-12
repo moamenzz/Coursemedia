@@ -29,6 +29,7 @@ function App() {
   return (
     <>
       <Routes>
+        {/* Private Routes - Secured by AppContainer */}
         <Route element={<AppContainer />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route
@@ -41,9 +42,6 @@ function App() {
           />
           <Route path="/successful-payment" element={<PaymentSuccessPage />} />
           <Route element={<MainLayout />}>
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/explore/courses" element={<CoursesPage />} />
-            <Route path="/explore/courses/:courseId" element={<CoursePage />} />
             <Route path="/my-learning" element={<MyLearningPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/profile" element={<ProfilePage />} />
@@ -53,7 +51,15 @@ function App() {
             <Route path="/player" element={<PlayerPage />} />
           </Route>
         </Route>
-        <Route index element={<HomePage />} />
+
+        {/* Public Routes */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<ExplorePage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:courseId" element={<CoursePage />} />
+        </Route>
+
+        {/* Authentication Routes */}
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/verify-email" element={<EmailVerificationPage />} />

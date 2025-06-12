@@ -89,10 +89,7 @@ const DashboardPage = () => {
   ) : isError ? (
     <div className="flex flex-col justify-center items-center">
       <ErrorThrower isError={isError} error={error} />
-      <Link
-        to="/explore"
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-      >
+      <Link to="/" className="bg-blue-500 text-white py-2 px-4 rounded-lg">
         Home
       </Link>
     </div>

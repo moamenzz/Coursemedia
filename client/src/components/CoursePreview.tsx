@@ -15,6 +15,7 @@ import Loader from "./Loader";
 import ErrorThrower from "./ErrorThrower";
 import { useNavigate } from "react-router-dom";
 import queryClient from "@/config/queryClient";
+import useAuth from "@/hooks/useAuth";
 
 interface CoursePreviewProps {
   course: CourseResponse;
@@ -47,6 +48,11 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   const [buyingNow, setIsBuyingNow] = useState(false);
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
+  const notSignedIn = user === null;
+  console.log(notSignedIn);
+
   const {
     data: cart,
     isLoading: isCartLoading,
@@ -55,6 +61,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   } = useQuery({
     queryKey: ["cart-items"],
     queryFn: getCart,
+    enabled: user !== null,
   });
 
   const isAddedToCart = Boolean(
@@ -135,7 +142,11 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
 
       <div className="flex flex-col gap-2 mb-4">
         <button
-          className={`btn btn-primary ${isAddedToCart ? "opacity-70" : ""}`}
+          className={`btn btn-primary ${
+            isAddedToCart || notSignedIn
+              ? "opacity-70 cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
           onClick={() => {
             if (isAddedToCart) {
               navigate("/cart");
@@ -143,7 +154,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
               addToCartMutation(course._id as string);
             }
           }}
-          disabled={addToCartPending}
+          disabled={addToCartPending || notSignedIn}
         >
           {addToCartPending ? (
             <div className="flex items-center justify-center">
@@ -155,9 +166,14 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
             "Add to cart"
           )}
         </button>
+
         <button
-          className={`${buyingNow ? "opacity-70" : ""} btn btn-outline`}
-          disabled={buyingNow}
+          className={`${
+            buyingNow || notSignedIn
+              ? "opacity-70 cursor-not-allowed"
+              : "cursor-pointer"
+          } btn btn-outline`}
+          disabled={buyingNow || notSignedIn}
           onClick={makePayment}
         >
           {buyingNow ? (
@@ -168,7 +184,14 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
             "Buy now"
           )}
         </button>
-        <button className="btn btn-outline tooltip" data-tip="Add to wishlist">
+
+        <button
+          className={`${
+            notSignedIn ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
+          } btn btn-outline tooltip`}
+          data-tip="Add to wishlist"
+          disabled={notSignedIn}
+        >
           <Heart size={16} />
         </button>
       </div>

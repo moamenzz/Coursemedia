@@ -8,6 +8,7 @@ import useMyLearningStore from "@/stores/useMyLearningStore";
 import { Separator } from "./ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/lib/apiRoutes";
+import useAuth from "@/hooks/useAuth";
 
 interface NavbarProps {
   username?: string;
@@ -20,18 +21,21 @@ const Navbar: React.FC<NavbarProps> = () => {
   const navigate = useNavigate();
   const { setActiveTab } = useMyLearningStore();
 
+  const { user } = useAuth();
+
   const handleSearch = () => {
     if (!searchParams) {
       toast.error("Please enter something to search");
       return;
     }
-    navigate("/explore/courses?search=" + searchParams);
+    navigate("/courses?search=" + searchParams);
   };
 
   const { mutate: logoutMutation, error } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      navigate("/");
+      toast.success("Logged out successfully");
+      window.location.href = "/";
     },
     onError: () => {
       toast.error(error?.message || "Failed to log out");
@@ -62,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = () => {
             {/* Logo and left section */}
             <div className="flex items-center space-x-4">
               <div className="hidden md:block">
-                <Link to="/explore" className="text-xl font-bold text-gray-800">
+                <Link to="" className="text-xl font-bold text-gray-800">
                   COURSEMEDIA
                 </Link>
               </div>
@@ -109,96 +113,114 @@ const Navbar: React.FC<NavbarProps> = () => {
                   Instructor Dashboard
                 </Link>
               </div>
-              <div className="hidden md:block">
-                <Link to="/my-learning" className="text-sm hover:text-blue-600">
-                  My Learning
-                </Link>
-              </div>
+              {user && (
+                <div className="hidden md:block">
+                  <Link
+                    to="/my-learning"
+                    className="text-sm hover:text-blue-600"
+                  >
+                    My Learning
+                  </Link>
+                </div>
+              )}
 
-              <Link
-                to="/my-learning"
-                onClick={() => {
-                  setActiveTab("wishlist");
-                }}
-                className="hidden md:block text-gray-700 cursor-pointer hover:text-red-500 transition-colors duration-200"
-              >
-                <Heart size={24} />
-              </Link>
-              <Link
-                to="/cart"
-                className="hidden md:block text-gray-700 cursor-pointer hover:text-purple-500 transition-colors duration-200"
-              >
-                <ShoppingCart size={24} />
-              </Link>
-              <Link
-                to="/notifications"
-                className="hidden md:block text-gray-700 cursor-pointer hover:text-yellow-500 transition-colors duration-200"
-              >
-                <Bell size={24} />
-              </Link>
-              <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-circle avatar"
-                >
-                  <div className="w-10 rounded-full">
-                    <img
-                      alt="Tailwind CSS Navbar component"
-                      src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    />
+              {user ? (
+                <div className="flex items-center space-x-3 ml-2">
+                  <Link
+                    to="/my-learning"
+                    onClick={() => {
+                      setActiveTab("wishlist");
+                    }}
+                    className="hidden md:block text-gray-700 cursor-pointer hover:text-red-500 transition-colors duration-200"
+                  >
+                    <Heart size={24} />
+                  </Link>
+                  <Link
+                    to="/cart"
+                    className="hidden md:block text-gray-700 cursor-pointer hover:text-purple-500 transition-colors duration-200"
+                  >
+                    <ShoppingCart size={24} />
+                  </Link>
+                  <Link
+                    to="/notifications"
+                    className="hidden md:block text-gray-700 cursor-pointer hover:text-yellow-500 transition-colors duration-200"
+                  >
+                    <Bell size={24} />
+                  </Link>
+                  <div className="dropdown dropdown-end">
+                    <div
+                      tabIndex={0}
+                      role="button"
+                      className="btn btn-ghost btn-circle avatar"
+                    >
+                      <div className="w-10 rounded-full">
+                        <img
+                          alt="Tailwind CSS Navbar component"
+                          src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        />
+                      </div>
+                    </div>
+                    <ul
+                      tabIndex={0}
+                      className="menu menu-md dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                    >
+                      <li>
+                        <Link to="my-learning" className="justify-between">
+                          My learning
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/cart">My cart</Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/my-learning"
+                          onClick={() => {
+                            setActiveTab("wishlist");
+                          }}
+                        >
+                          Wishlist
+                        </Link>
+                      </li>
+                      <Separator />
+                      <li>
+                        <Link to="/notifications">Notifications</Link>
+                      </li>
+                      <li>
+                        <Link to="/messages">Messages</Link>
+                      </li>
+                      <Separator />
+                      <li>
+                        <Link to="/profile">Profile</Link>
+                      </li>
+                      <Separator />
+                      <li>
+                        <a
+                          className="text-red-500"
+                          onClick={() => logoutMutation()}
+                        >
+                          Logout
+                        </a>
+                      </li>
+                      <Separator />
+                      <li>
+                        <a onClick={() => toast.info("Coming soon!")}>
+                          Coursemedia Business
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
-                <ul
-                  tabIndex={0}
-                  className="menu menu-md dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-                >
-                  <li>
-                    <Link to="my-learning" className="justify-between">
-                      My learning
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/cart">My cart</Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/my-learning"
-                      onClick={() => {
-                        setActiveTab("wishlist");
-                      }}
-                    >
-                      Wishlist
-                    </Link>
-                  </li>
-                  <Separator />
-                  <li>
-                    <Link to="/notifications">Notifications</Link>
-                  </li>
-                  <li>
-                    <Link to="/messages">Messages</Link>
-                  </li>
-                  <Separator />
-                  <li>
-                    <Link to="/profile">Profile</Link>
-                  </li>
-                  <Separator />
-                  <li>
-                    <a
-                      className="text-red-500"
-                      onClick={() => logoutMutation()}
-                    >
-                      Logout
-                    </a>
-                  </li>
-                  <Separator />
-                  <li>
-                    <a onClick={() => toast.info("Coming soon!")}>
-                      Coursemedia Business
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <Link to="/login" className="btn btn-soft">
+                    Login
+                  </Link>
+                  <Link to="/register" className="btn btn-outline">
+                    Sign up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -210,7 +232,7 @@ const Navbar: React.FC<NavbarProps> = () => {
           <div className="flex overflow-x-auto justify-center space-x-6 py-3 px-4">
             {categories.map((category, index) => (
               <Link
-                to={`/explore/courses/?category=${category.value}`}
+                to={`/courses/?category=${category.value}`}
                 key={index}
                 className="text-sm whitespace-nowrap hover:text-blue-600"
               >
@@ -270,7 +292,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                 <div className="space-y-2">
                   {categories.map((category, index) => (
                     <Link
-                      to={`/explore/courses/?category=${category.value}`}
+                      to={`/courses/?category=${category.value}`}
                       key={index}
                       className="block cursor-pointer py-1 hover:text-blue-600"
                     >

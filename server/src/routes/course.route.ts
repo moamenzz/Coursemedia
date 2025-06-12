@@ -15,7 +15,7 @@ courseRouter.get("/", getCourses);
 courseRouter.get("/explore-page", getExplorePageCourses);
 courseRouter.post("/create-course", authenticate, handleCreateCourse);
 
-courseRouter.get("/:courseId", authenticate, getCourse);
+courseRouter.get("/:courseId", getCourse);
 courseRouter.put("/:courseId", authenticate, handleEditCourse);
 courseRouter.delete("/:courseId", authenticate, handleDeleteCourse);
 

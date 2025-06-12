@@ -26,7 +26,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <Link
-      to={`/explore/courses/${course?._id}`}
+      to={`/courses/${course?._id}`}
       className="flex flex-col w-full bg-white hover:shadow-lg transition-shadow cursor-pointer"
     >
       {/* Thumbnail */}

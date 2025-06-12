@@ -27,7 +27,7 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
   );
   return (
     <Card
-      onClick={() => navigate(`/explore/courses/${course._id}`)}
+      onClick={() => navigate(`/courses/${course._id}`)}
       className="cursor-pointer"
       key={course._id}
     >
