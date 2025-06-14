@@ -46,10 +46,10 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
       </div>
 
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-medium text-base mb-1">{course?.title}</h3>
-        <div className="text-sm text-gray-500 flex-grow">
+        <h2 className="font-medium text-base mb-1">{course?.title}</h2>
+        <h3 className="text-sm text-gray-500 flex-grow">
           {course?.instructor?.user?.username}
-        </div>
+        </h3>
         <div className="mt-4 pt-2 border-t border-gray-200">
           <Button
             variant="default"

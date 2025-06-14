@@ -6,7 +6,7 @@ import CourseModel from "../models/course.model";
 import PurchaseModel from "../models/purchase.model";
 
 export const purchaseCourse = async (
-  userId: mongoose.Types.ObjectId,
+  userId: string | mongoose.Types.ObjectId,
   courseId: string
 ) => {
   const user = await UserModel.findById(userId);

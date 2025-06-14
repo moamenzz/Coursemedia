@@ -23,6 +23,8 @@ const port: String | Number = PORT || 3000;
 
 const app = express();
 
+app.use("/payment/webhook", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -50,7 +52,7 @@ app.use("/instructor", authenticate, instructorRouter);
 app.use("/lecture", authenticate, lectureRouter);
 app.use("/wishlist", authenticate, wishlistRouter);
 app.use("/cart", authenticate, cartRouter);
-app.use("/payment", authenticate, paymentRouter);
+app.use("/payment", paymentRouter);
 app.use("/purchase", authenticate, purchaseRouter);
 
 app.use(errorHandler);

@@ -96,8 +96,11 @@ const MyLearningPage = () => {
 
   // Find unique instructors for filter
   const instructors = [
-    ...new Set(courses?.map((item) => item.course.instructor.user.username)),
+    ...new Set(courses?.map((item) => item.course?.instructor?.user?.username)),
   ];
+
+  console.log(myCourses);
+  console.log(filteredCourses);
 
   return isLoading ? (
     <div className="min-h-screen flex items-center justify-center">
@@ -182,7 +185,7 @@ const MyLearningPage = () => {
                           <SelectItem value="all">All Instructors</SelectItem>
                           {instructors.map((instructor) => (
                             <SelectItem key={instructor} value={instructor}>
-                              {instructor.length > 20
+                              {instructor?.length > 20
                                 ? `${instructor.substring(0, 20)}...`
                                 : instructor}
                             </SelectItem>

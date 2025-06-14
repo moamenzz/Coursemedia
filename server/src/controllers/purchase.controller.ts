@@ -11,7 +11,18 @@ export const getPurchasedCourses = catchErrors(async (req, res) => {
   const user = await UserModel.findById(userId);
   appAssert(user, NOT_FOUND, "User not found");
 
-  const courses = await PurchaseModel.find({ user: userId });
+  const courses = await PurchaseModel.find({ user: userId }).populate({
+    path: "course",
+    select: "instructor title cover ",
+    populate: {
+      path: "instructor",
+      select: "user",
+      populate: {
+        path: "user",
+        select: "username", // Exclude password field
+      },
+    },
+  });
 
   res.status(200).json(courses);
 });
