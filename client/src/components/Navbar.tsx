@@ -168,7 +168,13 @@ const Navbar: React.FC<NavbarProps> = () => {
                       className="menu menu-md dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                     >
                       <li>
-                        <Link to="my-learning" className="justify-between">
+                        <Link
+                          to="my-learning"
+                          onClick={() => {
+                            setActiveTab("my-courses");
+                          }}
+                          className="justify-between"
+                        >
                           My learning
                         </Link>
                       </li>
@@ -182,7 +188,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                             setActiveTab("wishlist");
                           }}
                         >
-                          Wishlist
+                          Wishlists
                         </Link>
                       </li>
                       <Separator />

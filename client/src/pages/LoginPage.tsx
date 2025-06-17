@@ -29,7 +29,7 @@ const LoginPage = () => {
     mutationFn: login,
     onSuccess: () => {
       toast.success("Login Sucessful");
-      navigate("/explore");
+      navigate("/");
     },
   });
 

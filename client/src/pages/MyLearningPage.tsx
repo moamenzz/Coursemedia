@@ -53,8 +53,6 @@ const MyLearningPage = () => {
     enabled: activeTab === "wishlist",
   });
 
-  console.log(wishlists);
-
   const courses = activeTab === "my-courses" ? myCourses : wishlists;
   const isLoading =
     activeTab === "my-courses" ? isMyCoursesLoading : isWishlistLoading;
@@ -127,7 +125,7 @@ const MyLearningPage = () => {
               value="wishlist"
               className="text-gray-300 cursor-pointer data-[state=active]:text-gray-700 data-[state=active]:border-b-2 data-[state=active]:border-white rounded-none bg-transparent h-auto pb-2 px-0"
             >
-              Wishlist
+              Wishlists
             </TabsTrigger>
           </TabsList>
         </div>
