@@ -52,26 +52,6 @@ const CartPage = () => {
       window.location.href = response.url;
 
       setIsCheckoutPending(false);
-
-      // const response = await fetch(
-      //   `${import.meta.env.VITE_BACKEND_API}/payment/create-checkout-session`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       // Authorization: `Bearer ${}`,
-      //     },
-      //     body: JSON.stringify({
-      //       coursesIds,
-      //     }),
-      //   }
-      // )
-      //   .then((res) => {
-      //     if (res.ok) return res.json();
-      //   })
-      //   .then(({ url }) => {
-      //     window.location.href = url;
-      //   });
     } catch (error) {
       toast.error("Fehler beim Checkout-Prozess");
       console.error("Checkout-Fehler:", error);

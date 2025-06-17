@@ -5,6 +5,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import { useMutation } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface CartItemProps {
@@ -28,13 +29,13 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
   return (
     <div>
       <div key={item._id} className="flex border-b border-gray-200 py-6">
-        <div className="w-24 h-16 flex-shrink-0">
+        <Link to={`/courses/${item._id}`} className="w-24 h-16 flex-shrink-0">
           <img
             src={item.cover}
             alt={item.title}
             className="w-full h-full object-cover"
           />
-        </div>
+        </Link>
 
         <div className="ml-4 flex-1">
           <h3 className="text-lg font-medium text-gray-800">{item.title}</h3>

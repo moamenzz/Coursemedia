@@ -1,4 +1,9 @@
-import { addToCart, cartItems, removeFromCart } from "../services/cart.service";
+import {
+  addToCart,
+  cartItems,
+  emptyCart,
+  removeFromCart,
+} from "../services/cart.service";
 import catchErrors from "../utils/catchError";
 
 export const getCartItems = catchErrors(async (req, res) => {
@@ -23,6 +28,14 @@ export const handleRemoveFromCart = catchErrors(async (req, res) => {
   const courseId = req.params.courseId;
 
   const { message } = await removeFromCart(userId, courseId);
+
+  res.status(200).json({ message });
+});
+
+export const handleEmptyCart = catchErrors(async (req, res) => {
+  const userId = req.userId;
+
+  const { message } = await emptyCart(userId);
 
   res.status(200).json({ message });
 });

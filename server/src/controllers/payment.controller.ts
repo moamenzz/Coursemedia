@@ -5,6 +5,7 @@ import { createCheckoutSession } from "../services/payment.service";
 import { purchaseCourse } from "../services/purchase.service";
 import catchErrors from "../utils/catchError";
 import appAssert from "../utils/AppAssert";
+import { emptyCart } from "../services/cart.service";
 
 export const handleCreateCheckoutSession = catchErrors(async (req, res) => {
   const userId = req.userId;
@@ -58,6 +59,15 @@ export const handleStripeWebhook = catchErrors(async (req, res) => {
       console.log("Kauf erfolgreich:", purchaseArray.join(", "));
     } catch (error: any) {
       console.error(`Fehler beim Erstellen des Kaufs: ${error.message}`);
+    }
+
+    try {
+      // Empty user's cart after successful purchase
+      await emptyCart(userId);
+
+      console.log("Cart geleert");
+    } catch (error: any) {
+      console.error(`Failed to remove items from cart: ${error.message}`);
     }
   }
 

@@ -70,3 +70,17 @@ export const removeFromCart = async (
 
   return { message: "Course removed from cart successfully" };
 };
+
+export const emptyCart = async (userId: string | mongoose.Types.ObjectId) => {
+  const user = await UserModel.findById(userId);
+  appAssert(user, NOT_FOUND, "User not found");
+
+  const updatedCart = await CartModel.findOneAndUpdate(
+    { user: userId },
+    { $set: { courses: [] } },
+    { new: true }
+  );
+  appAssert(updatedCart, NOT_FOUND, "Cart not found");
+
+  return { message: "Cart cleared successfully" };
+};

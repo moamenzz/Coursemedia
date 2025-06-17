@@ -6,6 +6,7 @@ import {
   CourseResponse,
   createCheckoutSession,
   getCart,
+  getMyCourses,
 } from "@/lib/apiRoutes";
 import VideoPlayer from "./VideoPlayer";
 import { calculateDiscountPercentage, formatPrice } from "@/utils/formatPrice";
@@ -64,8 +65,27 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
     enabled: user !== null,
   });
 
+  const {
+    data: purchasedCourses,
+    isLoading: isPurchasedCoursesLoading,
+    isError: isPurchasedCoursesError,
+    error: purchasedCoursesError,
+  } = useQuery({
+    queryKey: ["purchased-courses"],
+    queryFn: getMyCourses,
+    enabled: user !== null,
+  });
+
+  const isLoading = isCartLoading || isPurchasedCoursesLoading;
+  const isError = isCartError || isPurchasedCoursesError;
+  const error = cartError || purchasedCoursesError;
+
   const isAddedToCart = Boolean(
     cart?.[0]?.courses?.find((c) => c._id === course._id)
+  );
+
+  const isCoursePurchased = Boolean(
+    purchasedCourses?.find((c) => c._id === course._id)
   );
 
   const makePayment = async () => {
@@ -107,13 +127,13 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
     },
   });
 
-  return isCartLoading ? (
+  return isLoading ? (
     <div className="flex items-center justify-center min-h-full">
       <Loader />
     </div>
-  ) : isCartError ? (
+  ) : isError ? (
     <div className="w-full">
-      <ErrorThrower isError={isCartError} error={cartError} />
+      <ErrorThrower isError={isError} error={error as { message: string }} />
     </div>
   ) : (
     <div className="p-4">
@@ -162,6 +182,8 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
             </div>
           ) : isAddedToCart ? (
             "Go to cart"
+          ) : isCoursePurchased ? (
+            "Course Purchased"
           ) : (
             "Add to cart"
           )}
