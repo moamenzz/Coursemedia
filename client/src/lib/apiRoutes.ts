@@ -184,18 +184,12 @@ export const getCourses = async (url: string): Promise<CourseResponse[]> => {
 export const getMyCourses = async (): Promise<WishlistOrPurchaseResponse[]> =>
   axiosPublic.get("/purchase");
 
-export const getWishlist = async (): Promise<WishlistOrPurchaseResponse[]> =>
+export const getWishlists = async (): Promise<WishlistOrPurchaseResponse[]> =>
   axiosPublic.get("/wishlist");
 
 export const wishlistCourse = async (
   courseId: string
-): Promise<CourseResponse> =>
-  axiosPublic.put(`/wishlist/wishlist-course/${courseId}`);
-
-export const unwishlistCourse = async (
-  courseId: string
-): Promise<CourseResponse> =>
-  axiosPublic.put(`/wishlist/unwishlist-course/${courseId}`);
+): Promise<CourseResponse> => axiosPublic.put(`/wishlist/${courseId}`);
 
 export const addToCart = async (courseId: string): Promise<CourseResponse> =>
   axiosPublic.put(`/cart/add-to-cart/${courseId}`);

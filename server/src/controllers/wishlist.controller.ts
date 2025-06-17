@@ -1,7 +1,7 @@
 import { NOT_FOUND } from "../constants/HttpStatusCode";
 import UserModel from "../models/user.model";
 import WishlistModel from "../models/wishlist.model";
-import { unwishlistCourse, wishlistCourse } from "../services/wishlist.service";
+import { wishlistCourse } from "../services/wishlist.service";
 import appAssert from "../utils/AppAssert";
 import catchErrors from "../utils/catchError";
 
@@ -31,16 +31,7 @@ export const handleWishlistCourse = catchErrors(async (req, res) => {
   const userId = req.userId;
   const courseId = req.params.courseId;
 
-  const { wishlishedCourse } = await wishlistCourse(userId, courseId);
+  const { message } = await wishlistCourse(userId, courseId);
 
-  res.status(200).json(wishlishedCourse);
-});
-
-export const handleUnwishlistCourse = catchErrors(async (req, res) => {
-  const userId = req.userId;
-  const courseId = req.params.courseId;
-
-  const { wishlishedCourse } = await unwishlistCourse(userId, courseId);
-
-  res.status(200).json(wishlishedCourse);
+  res.status(200).json(message);
 });

@@ -117,6 +117,9 @@ const Navbar: React.FC<NavbarProps> = () => {
                 <div className="hidden md:block">
                   <Link
                     to="/my-learning"
+                    onClick={() => {
+                      setActiveTab("my-courses");
+                    }}
                     className="text-sm hover:text-blue-600"
                   >
                     My Learning

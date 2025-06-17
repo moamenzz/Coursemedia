@@ -47,7 +47,6 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/player" element={<PlayerPage />} />
           </Route>
         </Route>

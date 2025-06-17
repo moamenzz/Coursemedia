@@ -13,7 +13,7 @@ import { Search } from "lucide-react";
 import MyLearningCard from "@/components/MyLearningCard";
 import useMyLearningStore from "@/stores/useMyLearningStore";
 import { useQuery } from "@tanstack/react-query";
-import { getMyCourses, getWishlist } from "@/lib/apiRoutes";
+import { getMyCourses, getWishlists } from "@/lib/apiRoutes";
 import Loader from "@/components/Loader";
 import ErrorThrower from "@/components/ErrorThrower";
 
@@ -49,9 +49,11 @@ const MyLearningPage = () => {
     error: wishlistError,
   } = useQuery({
     queryKey: ["wishlist"],
-    queryFn: getWishlist,
+    queryFn: getWishlists,
     enabled: activeTab === "wishlist",
   });
+
+  console.log(wishlists);
 
   const courses = activeTab === "my-courses" ? myCourses : wishlists;
   const isLoading =
@@ -98,9 +100,6 @@ const MyLearningPage = () => {
   const instructors = [
     ...new Set(courses?.map((item) => item.course?.instructor?.user?.username)),
   ];
-
-  console.log(myCourses);
-  console.log(filteredCourses);
 
   return isLoading ? (
     <div className="min-h-screen flex items-center justify-center">

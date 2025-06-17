@@ -7,6 +7,8 @@ import {
   createCheckoutSession,
   getCart,
   getMyCourses,
+  getWishlists,
+  wishlistCourse,
 } from "@/lib/apiRoutes";
 import VideoPlayer from "./VideoPlayer";
 import { calculateDiscountPercentage, formatPrice } from "@/utils/formatPrice";
@@ -52,7 +54,6 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   const { user } = useAuth();
 
   const notSignedIn = user === null;
-  console.log(notSignedIn);
 
   const {
     data: cart,
@@ -76,9 +77,28 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
     enabled: user !== null,
   });
 
-  const isLoading = isCartLoading || isPurchasedCoursesLoading;
-  const isError = isCartError || isPurchasedCoursesError;
-  const error = cartError || purchasedCoursesError;
+  const {
+    data: wishlists,
+    isLoading: isWishlistsLoading,
+    isError: isWishlistsError,
+    error: wishlistsError,
+  } = useQuery({
+    queryKey: ["wishlists"],
+    queryFn: getWishlists,
+  });
+
+  const { mutate: wishlistCourseMutation, isPending: wishlistPending } =
+    useMutation({
+      mutationFn: wishlistCourse,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["wishlists"] });
+      },
+    });
+
+  const isLoading =
+    isCartLoading || isPurchasedCoursesLoading || isWishlistsLoading;
+  const isError = isCartError || isPurchasedCoursesError || isWishlistsError;
+  const error = cartError || purchasedCoursesError || wishlistsError;
 
   const isAddedToCart = Boolean(
     cart?.[0]?.courses?.find((c) => c._id === course._id)
@@ -86,6 +106,10 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
 
   const isCoursePurchased = Boolean(
     purchasedCourses?.find((c) => c.course._id === course._id)
+  );
+
+  const isCourseWishlishted = Boolean(
+    wishlists?.find((c) => c.course._id === course._id)
   );
 
   const makePayment = async () => {
@@ -212,11 +236,26 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
             notSignedIn || isCoursePurchased
               ? "opacity-70 cursor-not-allowed"
               : "cursor-pointer"
+          } ${
+            isCourseWishlishted ? "bg-gray-200" : ""
           } btn btn-outline tooltip`}
+          onClick={() => wishlistCourseMutation(course._id as string)}
           data-tip="Add to wishlist"
           disabled={notSignedIn || isCoursePurchased}
         >
-          <Heart size={16} />
+          {wishlistPending ? (
+            <div className="flex items-center justify-center">
+              <Loader />
+            </div>
+          ) : (
+            <div>
+              {isCourseWishlishted ? (
+                <Heart fill="red" size={20} />
+              ) : (
+                <Heart size={20} />
+              )}
+            </div>
+          )}
         </button>
       </div>
 
