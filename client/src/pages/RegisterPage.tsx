@@ -42,7 +42,7 @@ const RegisterPage = () => {
       toast.error(`Login Failed: ${errorMsg}`);
     },
     onSuccess: () => {
-      navigate("/explore");
+      navigate("/");
       toast.success("Registration Successful");
     },
   });
