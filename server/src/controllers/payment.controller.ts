@@ -60,15 +60,6 @@ export const handleStripeWebhook = catchErrors(async (req, res) => {
     } catch (error: any) {
       console.error(`Fehler beim Erstellen des Kaufs: ${error.message}`);
     }
-
-    try {
-      // Empty user's cart after successful purchase
-      await emptyCart(userId);
-
-      console.log("Cart geleert");
-    } catch (error: any) {
-      console.error(`Failed to remove items from cart: ${error.message}`);
-    }
   }
 
   res.json({ received: true });

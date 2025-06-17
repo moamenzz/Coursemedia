@@ -85,7 +85,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   );
 
   const isCoursePurchased = Boolean(
-    purchasedCourses?.find((c) => c._id === course._id)
+    purchasedCourses?.filter((c) => c._id === course._id)
   );
 
   const makePayment = async () => {
@@ -163,7 +163,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
       <div className="flex flex-col gap-2 mb-4">
         <button
           className={`btn btn-primary ${
-            isAddedToCart || notSignedIn
+            isAddedToCart || notSignedIn || isCoursePurchased
               ? "opacity-70 cursor-not-allowed"
               : "cursor-pointer"
           }`}
@@ -174,7 +174,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
               addToCartMutation(course._id as string);
             }
           }}
-          disabled={addToCartPending || notSignedIn}
+          disabled={addToCartPending || isCoursePurchased || notSignedIn}
         >
           {addToCartPending ? (
             <div className="flex items-center justify-center">
@@ -191,11 +191,11 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
 
         <button
           className={`${
-            buyingNow || notSignedIn
+            buyingNow || isCoursePurchased || notSignedIn
               ? "opacity-70 cursor-not-allowed"
               : "cursor-pointer"
           } btn btn-outline`}
-          disabled={buyingNow || notSignedIn}
+          disabled={buyingNow || isCoursePurchased || notSignedIn}
           onClick={makePayment}
         >
           {buyingNow ? (
@@ -209,10 +209,12 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
 
         <button
           className={`${
-            notSignedIn ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
+            notSignedIn || isCoursePurchased
+              ? "opacity-70 cursor-not-allowed"
+              : "cursor-pointer"
           } btn btn-outline tooltip`}
           data-tip="Add to wishlist"
-          disabled={notSignedIn}
+          disabled={notSignedIn || isCoursePurchased}
         >
           <Heart size={16} />
         </button>
