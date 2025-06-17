@@ -1,7 +1,10 @@
 import stripe from "../config/stripe";
 import { STRIPE_WEBHOOK_SECRET } from "../constants/getENV";
 import { BAD_REQUEST } from "../constants/HttpStatusCode";
-import { createCheckoutSession } from "../services/payment.service";
+import {
+  createCheckoutSession,
+  verfiyCheckoutSession,
+} from "../services/payment.service";
 import { purchaseCourse } from "../services/purchase.service";
 import catchErrors from "../utils/catchError";
 import appAssert from "../utils/AppAssert";
@@ -66,4 +69,12 @@ export const handleStripeWebhook = catchErrors(async (req, res) => {
   }
 
   res.json({ received: true });
+});
+
+export const handleVerifyCheckoutSession = catchErrors(async (req, res) => {
+  const { sessionId } = req.query;
+
+  const { message, success } = await verfiyCheckoutSession(sessionId as string);
+
+  res.status(200).json({ message: message, success: success });
 });

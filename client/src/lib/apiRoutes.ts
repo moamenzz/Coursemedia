@@ -210,3 +210,8 @@ export const createCheckoutSession = async (coursesIds: string[]) =>
   axiosPublic.post<{ url: string }>("/payment/create-checkout-session", {
     coursesIds,
   });
+
+export const verifyCheckoutSession = async (sessionId: string) =>
+  axiosPublic.get<{ message: string; success: boolean }>(
+    `/payment/verify-checkout-session?sessionId=${sessionId}`
+  );
