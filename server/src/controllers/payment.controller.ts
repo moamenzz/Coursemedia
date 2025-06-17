@@ -56,6 +56,9 @@ export const handleStripeWebhook = catchErrors(async (req, res) => {
         purchaseArray.push(purchase?._id as string);
       }
 
+      const { message } = await emptyCart(userId);
+
+      console.log("Cart status: ", message);
       console.log("Kauf erfolgreich:", purchaseArray.join(", "));
     } catch (error: any) {
       console.error(`Fehler beim Erstellen des Kaufs: ${error.message}`);

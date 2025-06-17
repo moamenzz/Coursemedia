@@ -85,8 +85,12 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   );
 
   const isCoursePurchased = Boolean(
-    purchasedCourses?.filter((c) => c._id === course._id)
+    purchasedCourses?.find((c) => c.course._id === course._id)
   );
+  console.log("Course Purchase Status: ", isCoursePurchased, {
+    purchasedCourses,
+    courseId: course._id,
+  });
 
   const makePayment = async () => {
     try {
