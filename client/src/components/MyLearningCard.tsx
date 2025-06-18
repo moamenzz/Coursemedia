@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
 import { CourseResponse } from "@/lib/apiRoutes";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
   course: CourseResponse;
@@ -12,9 +13,8 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
     console.log("More options for Id toggled: ", id);
   };
 
-  const onStartCourse = (id: string) => {
-    console.log("Started course with Id: ", id);
-  };
+  const navigate = useNavigate();
+
   return (
     <div className="overflow-hidden flex flex-col h-full group">
       <div className="relative group-hover:">
@@ -54,7 +54,7 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
           <Button
             variant="default"
             className="w-full text-xs h-9 cursor-pointer"
-            onClick={() => onStartCourse(course?._id as string)}
+            onClick={() => navigate(`/player/${course._id}`)}
           >
             START COURSE
           </Button>

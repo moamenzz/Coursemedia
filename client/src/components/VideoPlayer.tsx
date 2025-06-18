@@ -23,6 +23,7 @@ import {
 interface VideoPlayerProps {
   width?: string;
   height?: string;
+  isRounded?: boolean;
   url: string;
   onProgressUpdate?: (data: ProgressData) => void;
   progressData?: ProgressData;
@@ -47,6 +48,7 @@ type VideoQuality = "auto" | "1080p" | "720p" | "480p" | "360p";
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   width = "100%",
   height = "100%",
+  isRounded = false,
   url,
   onProgressUpdate,
   progressData,
@@ -122,8 +124,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const handleFullScreen = useCallback(() => {
     if (!isFullScreen) {
-      if (playerContainerRef?.current.requestFullscreen) {
-        playerContainerRef?.current?.requestFullscreen();
+      if (
+        playerContainerRef.current &&
+        playerContainerRef.current.requestFullscreen
+      ) {
+        playerContainerRef.current.requestFullscreen();
       }
     } else {
       if (document.exitFullscreen) {
@@ -135,7 +140,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   function handleMouseMove() {
     setShowControls(true);
     if (!isSettingsOpen) {
-      clearTimeout(controlsTimeoutRef.current);
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
       controlsTimeoutRef.current = setTimeout(
         () => setShowControls(false),
         3000
@@ -187,7 +194,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   return (
     <div
       ref={playerContainerRef}
-      className={`relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition-all duration-300 ease-in-out 
+      className={`relative bg-gray-900 overflow-hidden ${
+        isRounded && "rounded-lg"
+      } shadow-2xl transition-all duration-300 ease-in-out 
       ${isFullScreen ? "w-screen h-screen" : ""}
       `}
       style={{ width, height }}

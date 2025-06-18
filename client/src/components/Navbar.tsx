@@ -127,6 +127,8 @@ const Navbar: React.FC<NavbarProps> = () => {
                 </div>
               )}
 
+              {/* TODO: use UserDropdown component and make the onClick functions work for it */}
+
               {user ? (
                 <div className="flex items-center space-x-3 ml-2">
                   <Link

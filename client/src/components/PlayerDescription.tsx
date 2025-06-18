@@ -1,0 +1,217 @@
+import React, { useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import {
+  Star,
+  Globe,
+  Clock,
+  Users,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+
+interface PlayerDescriptionProps {
+  title?: string;
+  rating?: number;
+  totalRatings?: number;
+  totalStudents?: number;
+  totalHours?: number;
+  lastUpdated?: string;
+  language?: string;
+  skillLevel?: string;
+  lectures?: number;
+  videoHours?: number;
+  languages?: string;
+  captions?: boolean;
+  certificateAvailable?: boolean;
+  availableOn?: string[];
+  description?: string;
+}
+
+const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
+  title = "JavaScript for Beginners: Learn JavaScript and Supercharge Your Web Design!",
+  rating = 4.1,
+  totalRatings = 359,
+  totalStudents = 30083,
+  totalHours = 3,
+  lastUpdated = "May 2025",
+  language = "English",
+  skillLevel = "Beginner Level",
+  lectures = 23,
+  videoHours = 3,
+  languages = "English",
+  captions = true,
+  certificateAvailable = true,
+  availableOn = ["iOS", "Android"],
+  description = 'Are you eager to step into the dynamic and exciting world of web development? "JavaScript Fundamentals Course for Beginners" is your entry point into the realm of web programming. Whether you\'re an absolute newcomer to coding or someone looking to start your web development journey, this course is designed to provide a strong foundation in JavaScript, one of the most essential languages for creating interactive and dynamic web applications.\n\nJavaScript is the heart and soul of modern web development, enabling you to bring websites to life, create interactive user interfaces, and build web applications that are both powerful and engaging. This course is tailored to newcomers to programming and offers a gentle introduction to JavaScript, making it accessible and enjoyable for beginners.',
+}) => {
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+      );
+    }
+
+    if (hasHalf) {
+      stars.push(
+        <Star
+          key="half"
+          className="w-4 h-4 fill-yellow-400 text-yellow-400 opacity-50"
+        />
+      );
+    }
+
+    const remainingStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < remainingStars; i++) {
+      stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-gray-300" />);
+    }
+
+    return stars;
+  };
+
+  const formatNumber = (num: number) => {
+    return num.toLocaleString();
+  };
+
+  const truncateDescription = (text: string, maxLength: number = 300) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  return (
+    <div className="flex flex-col mx-auto p-6 bg-white">
+      {/* Title */}
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+        {title}
+      </h1>
+
+      <div>
+        {/* Rating and Stats */}
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <span className="text-yellow-600 font-semibold text-lg">
+              {rating}
+            </span>
+            <div className="flex items-center gap-1">{renderStars(rating)}</div>
+            <span className="text-gray-600 text-sm">
+              {formatNumber(totalRatings)} ratings
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 text-gray-600 text-sm">
+            <Users className="w-4 h-4" />
+            <span>{formatNumber(totalStudents)} Students</span>
+          </div>
+
+          <div className="flex items-center gap-1 text-gray-600 text-sm">
+            <Clock className="w-4 h-4" />
+            <span>{totalHours} hours Total</span>
+          </div>
+        </div>
+
+        {/* Last Updated and Language */}
+        <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
+          <div className="flex items-center gap-1">
+            <Clock className="w-4 h-4" />
+            <span>Last updated {lastUpdated}</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Globe className="w-4 h-4" />
+            <span>{language}</span>
+            <span className="ml-1 px-2 py-1 bg-gray-100 rounded text-xs">
+              {language} [Auto]
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <Separator />
+      </div>
+
+      {/* Course Details Grid */}
+      <div className="grid md:grid-cols-2 gap-8 mb-8">
+        {/* By the numbers */}
+        <div>
+          <h1 className="font-semibold text-xl text-gray-900 mb-4">
+            By the numbers
+          </h1>
+          <div className="space-y-2 text-sm">
+            <div>
+              Skill level: <span className="font-medium">{skillLevel}</span>
+            </div>
+            <div>
+              Students:{" "}
+              <span className="font-medium">{formatNumber(totalStudents)}</span>
+            </div>
+            <div>
+              Languages: <span className="font-medium">{languages}</span>
+            </div>
+            <div>
+              Captions:{" "}
+              <span className="font-medium">{captions ? "Yes" : "No"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Course Info */}
+        <div>
+          <div className="space-y-2 text-sm mb-6">
+            <div>
+              Lectures: <span className="font-medium">{lectures}</span>
+            </div>
+            <div>
+              Video:{" "}
+              <span className="font-medium">{videoHours} total hours</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <Separator />
+      </div>
+
+      {/* Description */}
+      <div>
+        <h1 className="font-semibold text-xl text-gray-900 mb-4">
+          Description
+        </h1>
+        <div className="prose prose-gray max-w-none">
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+            {isDescriptionExpanded
+              ? description
+              : truncateDescription(description)}
+          </p>
+
+          {description.length > 300 && (
+            <button
+              onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+              className="inline-flex items-center gap-1 mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm"
+            >
+              {isDescriptionExpanded ? (
+                <>
+                  Show less <ChevronUp className="w-4 h-4" />
+                </>
+              ) : (
+                <>
+                  Show more <ChevronDown className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* TODO: Add Course Objectives & Requirements as bullet points */}
+      </div>
+    </div>
+  );
+};
+
+export default PlayerDescription;

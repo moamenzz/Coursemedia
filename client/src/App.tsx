@@ -22,6 +22,7 @@ import PlayerPage from "./pages/PlayerPage";
 import MessagesPage from "./pages/MessagesPage";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PlayerLayout from "./layouts/PlayerLayout";
 
 function App() {
   const navgiate = useNavigate();
@@ -47,8 +48,12 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/player" element={<PlayerPage />} />
           </Route>
+        </Route>
+
+        {/* Player Route */}
+        <Route element={<PlayerLayout />} path="/player/:courseId">
+          <Route path="/player/:courseId" element={<PlayerPage />} />
         </Route>
 
         {/* Public Routes */}
