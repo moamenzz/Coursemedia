@@ -209,3 +209,7 @@ export const verifyCheckoutSession = async (sessionId: string) =>
   axiosPublic.get<{ message: string; success: boolean }>(
     `/payment/verify-checkout-session?sessionId=${sessionId}`
   );
+
+export const getPlayerCourse = async (
+  courseId: string
+): Promise<CourseResponse> => axiosPublic.get(`/player/${courseId}`);

@@ -18,6 +18,7 @@ import cartRouter from "./routes/cart.route";
 import purchaseRouter from "./routes/purchase.route";
 import wishlistRouter from "./routes/wishlist.route";
 import paymentRouter from "./routes/payment.route";
+import playerRouter from "./routes/player.route";
 
 const port: String | Number = PORT || 3000;
 
@@ -54,6 +55,7 @@ app.use("/wishlist", authenticate, wishlistRouter);
 app.use("/cart", authenticate, cartRouter);
 app.use("/payment", paymentRouter);
 app.use("/purchase", authenticate, purchaseRouter);
+app.use("/player", authenticate, playerRouter);
 
 app.use(errorHandler);
 
