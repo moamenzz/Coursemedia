@@ -6,6 +6,8 @@ import {
 } from "../constants/courseCategoryTypes";
 import { LectureDocument } from "./lecture.model";
 
+// TODO: Make rating functionality
+
 interface CourseDocument extends mongoose.Document {
   instructor: mongoose.Types.ObjectId;
   enrollees: mongoose.Types.ObjectId[];

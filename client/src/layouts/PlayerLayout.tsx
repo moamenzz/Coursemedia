@@ -1,7 +1,7 @@
 import ErrorThrower from "@/components/ErrorThrower";
 import Loader from "@/components/Loader";
 import PlayerNavbar from "@/components/PlayerNavbar";
-import { CourseResponse, getPlayerCourse } from "@/lib/apiRoutes";
+import { getPlayerCourse } from "@/lib/apiRoutes";
 import PlayerPage from "@/pages/PlayerPage";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -12,9 +12,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import useCourseStore from "@/stores/useCourseStore";
+import { useEffect } from "react";
 
 const PlayerLayout = () => {
   const { courseId } = useParams();
+  const { setCourse } = useCourseStore();
+
+  const {
+    data: fetchedCourse,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["player-course", courseId],
+    queryFn: () => getPlayerCourse(courseId),
+    enabled: !!courseId, // Or Boolean (courseId)
+  });
+
+  useEffect(() => {
+    if (fetchedCourse) {
+      setCourse(fetchedCourse);
+      console.log("Course Set Successfully", fetchedCourse);
+    }
+  }, [fetchedCourse, setCourse]);
 
   if (!courseId) {
     return (
@@ -25,26 +46,16 @@ const PlayerLayout = () => {
     );
   }
 
-  const {
-    data: course,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["player-course", courseId],
-    queryFn: () => getPlayerCourse(courseId),
-    enabled: !!courseId, // Or Boolean (courseId)
-  });
-
-  // TODO: instead of component drilling, use zustand
-
   return isLoading ? (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <Loader />
     </div>
   ) : isError ? (
     <div>
-      {error?.status === 403 &&
+      {typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      (error as any).status === 403 &&
       error.message ===
         "You've not purchased this course. If you think this is a mistake, please contact support." ? (
         <div>
@@ -68,7 +79,7 @@ const PlayerLayout = () => {
     <div className="flex flex-col min-h-screen">
       {/* Player Navbar */}
       <div className="w-full">
-        <PlayerNavbar course={course as CourseResponse} />
+        <PlayerNavbar />
       </div>
 
       {/* Main Content */}

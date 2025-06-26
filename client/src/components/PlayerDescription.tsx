@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import useCourseStore from "@/stores/useCourseStore";
 
 interface PlayerDescriptionProps {
   title?: string;
@@ -45,6 +46,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
   description = 'Are you eager to step into the dynamic and exciting world of web development? "JavaScript Fundamentals Course for Beginners" is your entry point into the realm of web programming. Whether you\'re an absolute newcomer to coding or someone looking to start your web development journey, this course is designed to provide a strong foundation in JavaScript, one of the most essential languages for creating interactive and dynamic web applications.\n\nJavaScript is the heart and soul of modern web development, enabling you to bring websites to life, create interactive user interfaces, and build web applications that are both powerful and engaging. This course is tailored to newcomers to programming and offers a gentle introduction to JavaScript, making it accessible and enjoyable for beginners.',
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const { course } = useCourseStore();
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -87,7 +89,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
     <div className="flex flex-col mx-auto p-6 bg-white">
       {/* Title */}
       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-        {title}
+        {course?.title}
       </h1>
 
       <div>
@@ -95,7 +97,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
             <span className="text-yellow-600 font-semibold text-lg">
-              {rating}
+              {course?.rating}
             </span>
             <div className="flex items-center gap-1">{renderStars(rating)}</div>
             <span className="text-gray-600 text-sm">
@@ -105,7 +107,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
 
           <div className="flex items-center gap-1 text-gray-600 text-sm">
             <Users className="w-4 h-4" />
-            <span>{formatNumber(totalStudents)} Students</span>
+            <span>{course?.enrollees?.length} Students</span>
           </div>
 
           <div className="flex items-center gap-1 text-gray-600 text-sm">
@@ -118,14 +120,26 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
         <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
-            <span>Last updated {lastUpdated}</span>
+            <span>
+              {course?.updatedAt
+                ? new Date(course.updatedAt).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                  })
+                : lastUpdated}
+            </span>
           </div>
 
           <div className="flex items-center gap-1">
             <Globe className="w-4 h-4" />
-            <span>{language}</span>
+            <span>
+              {course?.courseLanguage.charAt(0).toUpperCase() +
+                (course?.courseLanguage?.slice(1) || "")}
+            </span>
             <span className="ml-1 px-2 py-1 bg-gray-100 rounded text-xs">
-              {language} [Auto]
+              {course?.courseLanguage.charAt(0).toUpperCase() +
+                (course?.courseLanguage?.slice(1) || "")}
+              [Auto]
             </span>
           </div>
         </div>
@@ -144,14 +158,23 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
           </h1>
           <div className="space-y-2 text-sm">
             <div>
-              Skill level: <span className="font-medium">{skillLevel}</span>
+              Skill level:{" "}
+              <span className="font-medium">
+                {course?.level.charAt(0).toUpperCase() +
+                  (course?.level?.slice(1) || "")}
+              </span>
             </div>
             <div>
               Students:{" "}
-              <span className="font-medium">{formatNumber(totalStudents)}</span>
+              <span className="font-medium">{course?.enrollees?.length}</span>
             </div>
             <div>
-              Languages: <span className="font-medium">{languages}</span>
+              Languages:{" "}
+              <span className="font-medium">
+                {" "}
+                {course?.courseLanguage.charAt(0).toUpperCase() +
+                  (course?.courseLanguage?.slice(1) || "")}
+              </span>
             </div>
             <div>
               Captions:{" "}
@@ -164,7 +187,8 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
         <div>
           <div className="space-y-2 text-sm mb-6">
             <div>
-              Lectures: <span className="font-medium">{lectures}</span>
+              Lectures:{" "}
+              <span className="font-medium">{course?.curriculum.length}</span>
             </div>
             <div>
               Video:{" "}
@@ -186,11 +210,11 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
         <div className="prose prose-gray max-w-none">
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {isDescriptionExpanded
-              ? description
-              : truncateDescription(description)}
+              ? course?.description
+              : truncateDescription(course?.description as string)}
           </p>
 
-          {description.length > 300 && (
+          {course?.description && course?.description?.length > 300 && (
             <button
               onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
               className="inline-flex items-center gap-1 mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm"

@@ -6,7 +6,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 const PlayerPage = () => {
   return (
     <div className="grid grid-cols-12">
-      <div className="flex flex-col col-span-9 min-h-screen">
+      <div className="flex flex-col col-span-10 min-h-screen">
         {/* Video Player & Controls */}
         <div className="w-full h-[37rem]">
           <VideoPlayer />
@@ -24,7 +24,7 @@ const PlayerPage = () => {
       </div>
 
       {/* Curriculum Navigator */}
-      <div className="col-span-3">
+      <div className="col-span-2">
         <CurriculumNavigator />
       </div>
     </div>

@@ -22,17 +22,13 @@ import {
 import { Separator } from "./ui/separator";
 import { useNavigate } from "react-router-dom";
 import UserDropdown from "./UserDropdown";
-import { FC } from "react";
-import { CourseResponse } from "@/lib/apiRoutes";
+import useCourseStore from "@/stores/useCourseStore";
 
-interface PlayerNavbarProps {
-  course: CourseResponse;
-}
-
-const PlayerNavbar: FC<PlayerNavbarProps> = ({ course }) => {
+const PlayerNavbar = () => {
+  const { course } = useCourseStore();
   const navigate = useNavigate();
   const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.rating
+    course?.rating as number
   );
 
   return (
@@ -59,7 +55,7 @@ const PlayerNavbar: FC<PlayerNavbarProps> = ({ course }) => {
             {/* Course Title */}
             <div className="hidden lg:block">
               <h1 className="text-sm font-medium text-gray-200 max-w-md truncate">
-                JavaScript Fundamentals Course for Beginners
+                {course?.title}
               </h1>
             </div>
           </div>
@@ -71,15 +67,15 @@ const PlayerNavbar: FC<PlayerNavbarProps> = ({ course }) => {
               <div className="hidden sm:flex items-center space-x-1 text-sm">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
                 <span className="text-yellow-400 font-medium">
-                  {course.rating || 0.0}
+                  {course?.rating || 0.0}
                 </span>
-                <span className="text-gray-400">({formattedReviews} || 0)</span>
+                <span className="text-gray-400">({formattedReviews || 0})</span>
               </div>
 
               {/* Students Count */}
               <div className="hidden lg:flex items-center space-x-1 text-sm text-gray-400">
                 <Users className="w-4 h-4" />
-                <span>{course.enrollees?.length || 0} students</span>
+                <span>{course?.enrollees?.length || 0} students</span>
               </div>
             </div>
 
