@@ -147,6 +147,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         () => setShowControls(false),
         3000
       );
+    } else {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
     }
   }
 
@@ -197,11 +201,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       className={`relative bg-gray-900 overflow-hidden ${
         isRounded && "rounded-lg"
       } shadow-2xl transition-all duration-300 ease-in-out 
-      ${isFullScreen ? "w-screen h-screen" : ""}
       `}
+      onMouseLeave={() => {
+        if (!isSettingsOpen) setShowControls(false);
+      }}
       style={{ width, height }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => setShowControls(false)}
     >
       <ReactPlayer
         ref={playerRef}

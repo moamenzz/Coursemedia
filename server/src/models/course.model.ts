@@ -7,6 +7,7 @@ import {
 import { LectureDocument } from "./lecture.model";
 
 // TODO: Make rating functionality
+// TODO: Make course time functionality by adding a time to each lecture
 
 interface CourseDocument extends mongoose.Document {
   instructor: mongoose.Types.ObjectId;

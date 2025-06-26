@@ -7,6 +7,7 @@ export interface LectureDocument extends mongoose.Document {
   freePreview: boolean;
 }
 
+// TODO: Create a relation between lecture and course here.
 const LectureSchema = new mongoose.Schema<LectureDocument>(
   {
     title: { type: String, required: true },

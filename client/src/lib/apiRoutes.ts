@@ -65,6 +65,8 @@ export interface LectureResponse {
   _id?: string;
   title: string;
   url: string;
+  type?: "video" | "assignment" | "quiz";
+  duration?: number;
   publicId?: string;
   freePreview: boolean;
   createdAt?: Date;

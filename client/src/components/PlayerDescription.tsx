@@ -9,6 +9,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import useCourseStore from "@/stores/useCourseStore";
+import { formatDuration } from "@/utils/formatDuration";
 
 interface PlayerDescriptionProps {
   title?: string;
@@ -29,21 +30,12 @@ interface PlayerDescriptionProps {
 }
 
 const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
-  title = "JavaScript for Beginners: Learn JavaScript and Supercharge Your Web Design!",
   rating = 4.1,
   totalRatings = 359,
-  totalStudents = 30083,
   totalHours = 3,
   lastUpdated = "May 2025",
-  language = "English",
-  skillLevel = "Beginner Level",
-  lectures = 23,
   videoHours = 3,
-  languages = "English",
   captions = true,
-  certificateAvailable = true,
-  availableOn = ["iOS", "Android"],
-  description = 'Are you eager to step into the dynamic and exciting world of web development? "JavaScript Fundamentals Course for Beginners" is your entry point into the realm of web programming. Whether you\'re an absolute newcomer to coding or someone looking to start your web development journey, this course is designed to provide a strong foundation in JavaScript, one of the most essential languages for creating interactive and dynamic web applications.\n\nJavaScript is the heart and soul of modern web development, enabling you to bring websites to life, create interactive user interfaces, and build web applications that are both powerful and engaging. This course is tailored to newcomers to programming and offers a gentle introduction to JavaScript, making it accessible and enjoyable for beginners.',
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const { course } = useCourseStore();
@@ -81,8 +73,8 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
   };
 
   const truncateDescription = (text: string, maxLength: number = 300) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
+    if (text?.length <= maxLength) return text;
+    return text?.substring(0, maxLength) + "...";
   };
 
   return (
@@ -112,7 +104,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
 
           <div className="flex items-center gap-1 text-gray-600 text-sm">
             <Clock className="w-4 h-4" />
-            <span>{totalHours} hours Total</span>
+            <span>{formatDuration(course?.curriculum || [])}</span>
           </div>
         </div>
 
@@ -192,7 +184,9 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
             </div>
             <div>
               Video:{" "}
-              <span className="font-medium">{videoHours} total hours</span>
+              <span className="font-medium">
+                {formatDuration(course?.curriculum || [])}
+              </span>
             </div>
           </div>
         </div>
@@ -231,6 +225,35 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
             </button>
           )}
         </div>
+
+        {/* Course Objectives */}
+        {course?.courseObjectives && course?.courseObjectives?.length > 0 && (
+          <div className="mt-8">
+            <h1 className="font-semibold text-xl text-gray-900 mb-4">
+              What you'll learn
+            </h1>
+            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+              {course.courseObjectives.map((obj: string, idx: number) => (
+                <li key={idx}>{obj}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Course Requirements */}
+        {course?.courseRequirements &&
+          course?.courseRequirements?.length > 0 && (
+            <div className="mt-8">
+              <h1 className="font-semibold text-xl text-gray-900 mb-4">
+                Requirements
+              </h1>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                {course.courseRequirements.map((req: string, idx: number) => (
+                  <li key={idx}>{req}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
         {/* TODO: Add Course Objectives & Requirements as bullet points */}
       </div>
