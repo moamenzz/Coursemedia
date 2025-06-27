@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Play, CheckSquare, Square, Clock, X, FileText } from "lucide-react";
 import useCourseStore from "@/stores/useCourseStore";
 import { LectureResponse } from "@/lib/apiRoutes";
@@ -8,7 +8,8 @@ const CurriculumNavigate = () => {
     new Set()
   );
 
-  const { course, setActiveLecture, activeLecture } = useCourseStore();
+  const { course, activeLecture, setActiveLecture, setPlayed } =
+    useCourseStore();
   const lectures = course?.curriculum;
 
   const toggleLessonCompletion = (
@@ -23,11 +24,18 @@ const CurriculumNavigate = () => {
       newCompleted.add(lessonId);
     }
     setCompletedLessons(newCompleted);
+    localStorage.setItem(
+      `completed_lessons_${course?._id}`,
+      JSON.stringify([...newCompleted])
+    );
   };
 
   const handleLessonClick = (lecture: LectureResponse) => {
     setActiveLecture(lecture);
-    console.log("Lecture clicked:", lecture._id);
+    localStorage.setItem(
+      `last_lecture_${course?._id}`,
+      JSON.stringify(lecture._id)
+    );
   };
 
   const getIcon = (type: string) => {
@@ -40,6 +48,66 @@ const CurriculumNavigate = () => {
         return <Play className="w-4 h-4 text-gray-600" />;
     }
   };
+
+  const getCompletedLessonsKey = (courseId: string) =>
+    `completed_lessons_${courseId}`;
+  const getLastLectureKey = (courseId: string) => `last_lecture_${courseId}`;
+  const getVideoPositionKey = (lectureUrl: string) =>
+    `video_position_${lectureUrl}`;
+
+  useEffect(() => {
+    if (!course?._id) return;
+
+    try {
+      const savedCompleted = localStorage.getItem(
+        getCompletedLessonsKey(course._id)
+      );
+
+      if (savedCompleted) {
+        setCompletedLessons(new Set(JSON.parse(savedCompleted)));
+      }
+    } catch (error) {
+      console.error("Error loading completed lessons:", error);
+    }
+  }, [course?._id]);
+
+  useEffect(() => {
+    if (!course?._id || !lectures?.length) return;
+
+    try {
+      const savedLastLecture = localStorage.getItem(
+        getLastLectureKey(course._id)
+      );
+
+      if (savedLastLecture && !activeLecture) {
+        const lastLectureId = JSON.parse(savedLastLecture);
+        const lastLecture = lectures?.find((l) => l._id === lastLectureId);
+
+        if (lastLecture) {
+          setActiveLecture(lastLecture);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading last lecture:", error);
+    }
+  }, [course?._id, lectures, activeLecture, setActiveLecture]);
+
+  useEffect(() => {
+    if (!activeLecture || !activeLecture.url) return;
+
+    try {
+      const savedPosition = localStorage.getItem(
+        getVideoPositionKey(activeLecture.url)
+      );
+      console.log(savedPosition);
+
+      if (savedPosition) {
+        setPlayed(JSON.parse(savedPosition));
+      }
+    } catch (error) {
+      console.error("Error loading lecture position:", error);
+    }
+  }, [activeLecture, activeLecture?.url]);
 
   return (
     <div className="w-full bg-white border-l border-gray-200 h-full flex flex-col shadow-lg">

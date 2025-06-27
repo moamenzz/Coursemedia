@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useCourseStore from "@/stores/useCourseStore";
 
 interface VideoPlayerProps {
   width?: string;
@@ -56,7 +57,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [muted, setMuted] = useState(false);
-  const [played, setPlayed] = useState(0);
+  // const [played, setPlayed] = useState(0);
+  const { played, setPlayed } = useCourseStore();
   const [seeking, setSeeking] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -70,6 +72,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   function handlePlayAndPause() {
     setPlaying(!playing);
+    localStorage.setItem(`video_position_${url}`, JSON.stringify(played));
+    console.log(played);
   }
 
   function handleProgress(state: ProgressState) {
