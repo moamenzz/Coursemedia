@@ -7,7 +7,7 @@ import ReviewModel from "../models/review.model";
 
 interface ReviewDataProps {
   rating: number;
-  comment: string;
+  comment?: string;
 }
 
 export const leaveReview = async (

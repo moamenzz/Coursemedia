@@ -216,3 +216,6 @@ export const verifyCheckoutSession = async (sessionId: string) =>
 export const getPlayerCourse = async (
   courseId: string
 ): Promise<CourseResponse> => axiosPublic.get(`/player/${courseId}`);
+
+export const enrollUser = async (courseId: string) =>
+  axiosPublic.put(`/course/enroll/${courseId}`);

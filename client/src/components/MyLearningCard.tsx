@@ -1,20 +1,43 @@
 import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import { CourseResponse } from "@/lib/apiRoutes";
+import { CourseResponse, enrollUser } from "@/lib/apiRoutes";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import { Separator } from "./ui/separator";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 interface CourseCardProps {
   course: CourseResponse;
 }
 
 const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
-  const onMoreOptions = (id: string) => {
-    console.log("More options for Id toggled: ", id);
-  };
-
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
+  const { mutate: enrollUserMutation, isPending } = useMutation({
+    mutationFn: () => enrollUser(course?._id as string),
+    onError: () => {
+      toast.error(
+        "Failed to enroll in course, you will be redirected nonetheless. If this persists, contact support. "
+      );
+    },
+    onSuccess: () => {
+      toast.success("Successfully enrolled in course");
+    },
+  });
+
+  const isUserEnrolled = Boolean(
+    course.enrollees?.find((e) => e.toString() === user?._id)
+  );
+
+  const handleStartCourse = () => {
+    navigate(`/player/${course._id}`);
+    if (!isUserEnrolled) enrollUserMutation();
+  };
   return (
     <div className="overflow-hidden flex flex-col h-full group">
       <div className="relative group-hover:">
@@ -35,10 +58,15 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
             tabIndex={0}
             className="dropdown-content menu bg-gray-700 text-white rounded-box z-1 w-52 p-2 shadow-sm"
           >
-            <li>
-              <a>Leave a Review</a>
-            </li>
-            <li>
+            {isUserEnrolled && (
+              <div>
+                <li>
+                  <a>Leave a Review</a>
+                </li>
+                <Separator className="bg-gray-600" />
+              </div>
+            )}
+            <li className="text-red-500">
               <a>Report</a>
             </li>
           </ul>
@@ -53,10 +81,19 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
         <div className="mt-4 pt-2 border-t border-gray-200">
           <Button
             variant="default"
-            className="w-full text-xs h-9 cursor-pointer"
-            onClick={() => navigate(`/player/${course._id}`)}
+            className={`w-full text-xs h-9 cursor-pointer ${
+              isPending ? "pointer-events-none opacity-70" : ""
+            }`}
+            onClick={handleStartCourse}
+            disabled={isPending}
           >
-            START COURSE
+            {isPending ? (
+              <div className="flex justify-center items-center">
+                <Loader />
+              </div>
+            ) : (
+              "START COURSE"
+            )}
           </Button>
         </div>
       </div>

@@ -13,7 +13,7 @@ export const getPurchasedCourses = catchErrors(async (req, res) => {
 
   const courses = await PurchaseModel.find({ user: userId }).populate({
     path: "course",
-    select: "instructor title cover ",
+    select: "instructor title cover enrollees",
     populate: {
       path: "instructor",
       select: "user",

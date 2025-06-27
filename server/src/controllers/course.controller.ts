@@ -7,6 +7,7 @@ import {
   createNewCourse,
   deleteCourse,
   editCourse,
+  enrollUser,
 } from "../services/course.service";
 import appAssert from "../utils/AppAssert";
 import catchErrors from "../utils/catchError";
@@ -168,6 +169,15 @@ export const handleDeleteCourse = catchErrors(async (req, res) => {
   const courseId = req.params.courseId;
 
   const { message } = await deleteCourse(instructorId, courseId);
+
+  res.status(200).json({ message });
+});
+
+export const handleEnrollUser = catchErrors(async (req, res) => {
+  const userId = req.userId;
+  const courseId = req.params.courseId;
+
+  const { message } = await enrollUser(userId, courseId);
 
   res.status(200).json({ message });
 });

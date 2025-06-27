@@ -9,6 +9,7 @@ import {
   cloudinaryCoverOptions,
   cloudinaryVideoOptions,
 } from "../utils/cloudinaryOptions";
+import UserModel from "../models/user.model";
 
 interface CourseProps {
   _id?: string;
@@ -142,4 +143,23 @@ export const deleteCourse = async (
   {
     return { message: "You are not authorized to delete this course" };
   }
+};
+
+export const enrollUser = async (
+  userId: mongoose.Types.ObjectId,
+  courseId: string
+) => {
+  const course = await CourseModel.findById(courseId);
+  appAssert(course, NOT_FOUND, "Course not found");
+
+  const user = await UserModel.findById(userId);
+  appAssert(user, NOT_FOUND, "User not found");
+
+  const updatedCourse = await CourseModel.findOneAndUpdate(
+    { _id: courseId },
+    { $addToSet: { enrollees: userId } },
+    { new: true }
+  );
+
+  return { message: "User Enrolled Successfully" };
 };
