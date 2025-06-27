@@ -28,7 +28,7 @@ const UserDropdown: FC<DropdownProps> = ({ textColor }) => {
         } rounded-box z-1 mt-3 w-52 p-2 shadow`}
       >
         <li>
-          <Link to="my-learning" className="justify-between">
+          <Link to="/my-learning" className="justify-between">
             My learning
           </Link>
         </li>

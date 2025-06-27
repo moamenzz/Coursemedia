@@ -69,6 +69,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const playerRef = useRef<ReactPlayer | null>(null);
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const volumeKey = "volume";
 
   function handlePlayAndPause() {
     setPlaying(!playing);
@@ -106,6 +107,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   function handleVolumeChange(newValue: number[]) {
     setVolume(newValue[0]);
+    localStorage.setItem(volumeKey, JSON.stringify(newValue[0]));
   }
 
   // Fix pad type
@@ -198,6 +200,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     "480p",
     "360p",
   ];
+
+  useEffect(() => {
+    const storedVolume = localStorage.getItem(volumeKey);
+    if (storedVolume) {
+      setVolume(parseFloat(storedVolume));
+    }
+  }, [volume]);
 
   return (
     <div

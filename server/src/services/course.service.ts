@@ -11,6 +11,7 @@ import {
 } from "../utils/cloudinaryOptions";
 
 interface CourseProps {
+  _id?: string;
   title: string;
   description: string;
   cover: string;
@@ -51,6 +52,7 @@ export const createNewCourse = async (
   const curriculumIDs = await Promise.all(
     data.curriculum.map(async (lecture) => {
       const createdLecture = await LectureModel.create({
+        course: data._id,
         title: lecture.title,
         url: lecture.url,
         publicId: lecture.publicId,

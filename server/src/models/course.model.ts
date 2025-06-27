@@ -8,7 +8,6 @@ import { LectureDocument } from "./lecture.model";
 
 // TODO: Make rating functionality
 // TODO: Make course time functionality by adding a time to each lecture
-//TODO: Add "Who is this course for" section
 
 interface CourseDocument extends mongoose.Document {
   instructor: mongoose.Types.ObjectId;
@@ -24,6 +23,7 @@ interface CourseDocument extends mongoose.Document {
   courseLanguage: courseLanguage;
   courseObjectives: string[];
   courseRequirements: string[];
+  courseWhoIsThisFor: string[];
   courseWelcomeMessage: string;
   isFeatured: boolean;
   isBestSeller: boolean;
@@ -50,6 +50,7 @@ const CourseSchema = new mongoose.Schema<CourseDocument>(
     courseLanguage: { type: String, required: true },
     courseObjectives: [{ type: String, required: true }],
     courseRequirements: [{ type: String, required: true }],
+    courseWhoIsThisFor: [{ type: String, required: true }],
     courseWelcomeMessage: { type: String, required: true },
     isFeatured: { type: Boolean, required: true, default: false },
     isBestSeller: { type: Boolean, required: true, default: false },

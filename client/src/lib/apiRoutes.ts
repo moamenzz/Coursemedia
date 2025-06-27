@@ -52,6 +52,7 @@ export interface CourseResponse {
   courseLanguage: string;
   courseObjectives: string[];
   courseRequirements: string[];
+  courseWhoIsThisFor: string[];
   courseWelcomeMessage: string;
   isFeatured: boolean;
   isBestSeller: boolean;

@@ -255,7 +255,20 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
             </div>
           )}
 
-        {/* TODO: Add Course Objectives & Requirements as bullet points */}
+        {/* Course Who Is This For */}
+        {course?.courseWhoIsThisFor &&
+          course?.courseWhoIsThisFor?.length > 0 && (
+            <div className="mt-8">
+              <h1 className="font-semibold text-xl text-gray-900 mb-4">
+                Who is this course for?
+              </h1>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                {course.courseWhoIsThisFor.map((req: string, idx: number) => (
+                  <li key={idx}>{req}</li>
+                ))}
+              </ul>
+            </div>
+          )}
       </div>
     </div>
   );
