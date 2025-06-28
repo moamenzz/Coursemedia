@@ -2,7 +2,7 @@ import { NOT_FOUND } from "../constants/HttpStatusCode";
 import CourseModel from "../models/course.model";
 import ReviewModel from "../models/review.model";
 import { reviewSchema } from "../schemas/review.schema";
-import { leaveReview } from "../services/review.service";
+import { didUserLeaveReview, leaveReview } from "../services/review.service";
 import appAssert from "../utils/AppAssert";
 import catchErrors from "../utils/catchError";
 
@@ -18,12 +18,21 @@ export const getCourseReviews = catchErrors(async (req, res) => {
   res.status(200).json(reviews);
 });
 
+export const checkDidUserLeaveReview = catchErrors(async (req, res) => {
+  const userId = req.userId;
+  const courseId = req.params.courseId;
+
+  const { reviewFound } = await didUserLeaveReview(courseId, userId);
+
+  res.status(200).json(reviewFound);
+});
+
 export const handleLeaveReview = catchErrors(async (req, res) => {
   const userId = req.userId;
   const courseId = req.params.courseId;
   const data = reviewSchema.parse(req.body);
 
-  const { review } = await leaveReview(userId, courseId, data);
+  await leaveReview(userId, courseId, data);
 
-  res.status(200).json(review);
+  res.status(200).json({ message: "Request Successful" });
 });

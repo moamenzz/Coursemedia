@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Star, Send, X } from "lucide-react";
 import {
   Dialog,
@@ -7,9 +7,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "react-toastify";
-import { CourseResponse, submitReview } from "@/lib/apiRoutes";
+import { CourseResponse, getUserReview, submitReview } from "@/lib/apiRoutes";
 import Loader from "./Loader";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface StarRatingProps {
   rating: number;
@@ -64,7 +64,21 @@ const ReviewModal: FC<ReviewModalProps> = ({ isOpen, setIsOpen, course }) => {
   const [review, setReview] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // TODO: Check if the user has already reviewed the course, if he has, then let him edit his review
+  // TODO: Check if the user has already reviewed the course, if he has, then make him edit his review, if not, then make him leave a review
+  const { data: userReview, isLoading: isReviewLoading } = useQuery({
+    queryKey: ["userReview", course._id],
+    queryFn: () => getUserReview(course._id as string),
+    enabled: isOpen,
+  });
+
+  console.log(userReview);
+
+  useEffect(() => {
+    if (userReview) {
+      setRating(userReview.rating);
+      setReview(userReview.comment);
+    }
+  }, [userReview]);
 
   const handleRatingChange = (newRating: number) => {
     setRating(newRating);
@@ -106,7 +120,11 @@ const ReviewModal: FC<ReviewModalProps> = ({ isOpen, setIsOpen, course }) => {
     return texts[rating] || "";
   };
 
-  return (
+  return isReviewLoading ? (
+    <div className="flex justify-center items-center">
+      <Loader />
+    </div>
+  ) : (
     <div className="p-8">
       {/* Review Modal */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -131,13 +149,23 @@ const ReviewModal: FC<ReviewModalProps> = ({ isOpen, setIsOpen, course }) => {
               </h3>
               <p className="text-gray-600 mb-4">Click on the starts to rate</p>
 
-              <div className="flex justify-center mb-2">
-                <StarRating
-                  rating={rating}
-                  onRatingChange={handleRatingChange}
-                  size="w-10 h-10"
-                />
-              </div>
+              {userReview ? (
+                <div className="flex justify-center mb-2">
+                  <StarRating
+                    rating={userReview.rating}
+                    onRatingChange={handleRatingChange}
+                    size="w-10 h-10"
+                  />
+                </div>
+              ) : (
+                <div className="flex justify-center mb-2">
+                  <StarRating
+                    rating={rating}
+                    onRatingChange={handleRatingChange}
+                    size="w-10 h-10"
+                  />
+                </div>
+              )}
 
               {rating > 0 && (
                 <p className="text-sm font-medium text-gray-700">
@@ -166,7 +194,7 @@ const ReviewModal: FC<ReviewModalProps> = ({ isOpen, setIsOpen, course }) => {
                     maxLength={500}
                   />
                   <div className="text-right text-xs text-gray-500 mt-1">
-                    {review.length}/500 Letters
+                    {review?.length}/500 Letters
                   </div>
                 </div>
 

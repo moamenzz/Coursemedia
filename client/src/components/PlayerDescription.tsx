@@ -33,7 +33,6 @@ interface PlayerDescriptionProps {
 }
 
 const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
-  rating = 4.1,
   captions = true,
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);

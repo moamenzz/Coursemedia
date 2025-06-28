@@ -235,3 +235,7 @@ export const submitReview = async (
   rating: number,
   comment: string
 ) => axiosPublic.put(`/review/${courseId}`, { rating, comment });
+
+export const getUserReview = async (
+  courseId: string
+): Promise<ReviewResponse> => axiosPublic.get(`/review/user/${courseId}`);
