@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import useCourseStore from "@/stores/useCourseStore";
 import { formatDuration } from "@/utils/formatDuration";
+import truncateDescription from "@/utils/truncuateDescription";
+import { formatCourseRating } from "@/utils/formatCourseRating";
+import { ReviewResponse } from "@/lib/apiRoutes";
 
 interface PlayerDescriptionProps {
   title?: string;
@@ -31,8 +34,6 @@ interface PlayerDescriptionProps {
 
 const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
   rating = 4.1,
-  totalRatings = 359,
-  lastUpdated = "May 2025",
   captions = true,
 }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -66,15 +67,6 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
     return stars;
   };
 
-  const formatNumber = (num: number) => {
-    return num.toLocaleString();
-  };
-
-  const truncateDescription = (text: string, maxLength: number = 300) => {
-    if (text?.length <= maxLength) return text;
-    return text?.substring(0, maxLength) + "...";
-  };
-
   return (
     <div className="flex flex-col mx-auto p-6 bg-white">
       {/* Title */}
@@ -87,11 +79,15 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
             <span className="text-yellow-600 font-semibold text-lg">
-              {course?.rating}
+              {/* Calculate course reviews ratings and average out all of them */}
             </span>
-            <div className="flex items-center gap-1">{renderStars(rating)}</div>
+            <div className="flex items-center gap-1">
+              {renderStars(
+                formatCourseRating(course?.reviews as ReviewResponse[])
+              )}
+            </div>
             <span className="text-gray-600 text-sm">
-              {formatNumber(totalRatings)} ratings
+              {course?.reviews?.length} reviews
             </span>
           </div>
 
@@ -116,7 +112,7 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
                     year: "numeric",
                     month: "long",
                   })
-                : lastUpdated}
+                : "NaN"}
             </span>
           </div>
 
@@ -212,13 +208,13 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
               className="inline-flex items-center gap-1 mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm"
             >
               {isDescriptionExpanded ? (
-                <>
+                <button className="inline-flex items-center gap-1 cursor-pointer">
                   Show less <ChevronUp className="w-4 h-4" />
-                </>
+                </button>
               ) : (
-                <>
+                <button className="inline-flex items-center gap-1 cursor-pointer">
                   Show more <ChevronDown className="w-4 h-4" />
-                </>
+                </button>
               )}
             </button>
           )}
@@ -267,6 +263,8 @@ const PlayerDescription: React.FC<PlayerDescriptionProps> = ({
               </ul>
             </div>
           )}
+
+        {/* TODO: Add more sections like Instructor & Reviews */}
       </div>
     </div>
   );

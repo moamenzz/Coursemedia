@@ -37,6 +37,16 @@ export interface StudentResponse {
   updatedAt: Date;
 }
 
+export interface ReviewResponse {
+  _id: string;
+  user: string;
+  course: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CourseResponse {
   _id?: string;
   title: string;
@@ -48,7 +58,6 @@ export interface CourseResponse {
   enrollees?: string[];
   category: string;
   level: string;
-  rating: number;
   courseLanguage: string;
   courseObjectives: string[];
   courseRequirements: string[];
@@ -57,6 +66,7 @@ export interface CourseResponse {
   isFeatured: boolean;
   isBestSeller: boolean;
   price: number;
+  reviews: ReviewResponse[];
   previousPrice: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -219,3 +229,9 @@ export const getPlayerCourse = async (
 
 export const enrollUser = async (courseId: string) =>
   axiosPublic.put(`/course/enroll/${courseId}`);
+
+export const submitReview = async (
+  courseId: string,
+  rating: number,
+  comment: string
+) => axiosPublic.put(`/review/${courseId}`, { rating, comment });

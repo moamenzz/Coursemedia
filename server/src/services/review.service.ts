@@ -34,5 +34,11 @@ export const leaveReview = async (
     course: courseId,
   });
 
+  const updatedCourse = await CourseModel.findOneAndUpdate(
+    { _id: courseId },
+    { $addToSet: { reviews: review._id } },
+    { new: true }
+  );
+
   return { review };
 };

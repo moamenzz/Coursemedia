@@ -6,11 +6,13 @@ import { getCourse } from "@/lib/apiRoutes";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IoIosCheckmark } from "react-icons/io";
-import { Lock, PlayCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, Lock, PlayCircle } from "lucide-react";
+import truncateDescription from "@/utils/truncuateDescription";
+import { useState } from "react";
 
 const CoursePage = () => {
   const { courseId } = useParams();
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const {
     data: course,
@@ -44,30 +46,19 @@ const CoursePage = () => {
             </div>
 
             <div className="container mx-auto py-16 md:py-10 max-w-[60rem] md:pr-[250px] space-y-6">
-              {/* Description */}
+              {/* What you'll learn */}
               <div>
-                <h1 className="text-2xl font-bold pb-3">Description</h1>
+                <h1 className="text-2xl font-bold pb-3">What you'll learn</h1>
 
-                <div>{course.description}</div>
+                <div>
+                  {course.courseObjectives.map((objective, index) => (
+                    <li key={index}>{objective}</li>
+                  ))}
+                </div>
               </div>
 
-              {/* What you'll learn */}
-              <Card className="mb-8 p-4">
-                <CardHeader>
-                  <CardTitle>What you'll learn</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {course?.courseObjectives?.map((objective, index) => (
-                      <li key={index} className="flex items-center">
-                        <IoIosCheckmark size={30} />
-                        <span>{objective}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
+              {/* TODO: Make this course includes section */}
+              {/* TODO: Make Curriculum open video player if the lecture is available for free preview */}
               {/* Course Content */}
               <Card className="mb-8">
                 <CardHeader>
@@ -111,14 +102,55 @@ const CoursePage = () => {
                 </div>
               </div>
 
-              {/* Featured Review */}
+              {/* Description */}
+              <div>
+                <h1 className="text-2xl font-bold pb-3">Description</h1>
+
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                    {isDescriptionExpanded
+                      ? course?.description
+                      : truncateDescription(course?.description as string)}
+                  </p>
+
+                  {course?.description && course?.description?.length > 300 && (
+                    <button
+                      onClick={() =>
+                        setIsDescriptionExpanded(!isDescriptionExpanded)
+                      }
+                      className="inline-flex items-center gap-1 mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm"
+                    >
+                      {isDescriptionExpanded ? (
+                        <button className="inline-flex items-center gap-1 cursor-pointer">
+                          Show less <ChevronUp className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button className="inline-flex items-center gap-1 cursor-pointer">
+                          Show more <ChevronDown className="w-4 h-4" />
+                        </button>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Who is this course for section */}
               <div></div>
 
-              {/* Instructor Details */}
+              {/* TODO: Let instructors view reviews from their dashboard and be able to feature one of the reviews */}
+
+              {/* Featured Review */}
               <div></div>
 
               {/* All Reviews */}
               <div></div>
+
+              {/* Instructor Details */}
+              <div>
+                <h1 className="text-2xl font-bold pb-3">Instructor</h1>
+
+                {course.instructor && <div></div>}
+              </div>
             </div>
           </div>
         )}

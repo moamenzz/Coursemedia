@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
-interface ReviewDocument extends mongoose.Document {
+export interface ReviewDocument extends mongoose.Document {
   user: mongoose.Types.ObjectId;
   course: mongoose.Types.ObjectId;
   rating: number;
   comment?: string;
+  featured?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,7 @@ const ReviewSchema = new mongoose.Schema<ReviewDocument>(
     },
     rating: { type: Number, required: true },
     comment: { type: String },
+    featured: { type: Boolean, default: false },
   },
   {
     timestamps: true,

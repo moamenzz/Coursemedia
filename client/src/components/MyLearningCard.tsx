@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, Star } from "lucide-react";
 import { CourseResponse, enrollUser } from "@/lib/apiRoutes";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
@@ -8,12 +8,14 @@ import { Separator } from "./ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import ReviewModal from "./ReviewModal";
 
 interface CourseCardProps {
   course: CourseResponse;
 }
 
 const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const navigate = useNavigate();
 
   const { user } = useAuth();
@@ -61,7 +63,13 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
             {isUserEnrolled && (
               <div>
                 <li>
-                  <a>Leave a Review</a>
+                  <button
+                    onClick={() => setIsReviewOpen(true)}
+                    className="flex items-center gap-2 w-full"
+                  >
+                    <Star className="w-4" />
+                    Leave a Review
+                  </button>
                 </li>
                 <Separator className="bg-gray-600" />
               </div>
@@ -97,6 +105,12 @@ const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
           </Button>
         </div>
       </div>
+
+      <ReviewModal
+        isOpen={isReviewOpen}
+        setIsOpen={setIsReviewOpen}
+        course={course}
+      />
     </div>
   );
 };

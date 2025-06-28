@@ -2,6 +2,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { CourseResponse } from "@/lib/apiRoutes";
 import { Link } from "react-router-dom";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 
 export interface CourseCardProps {
   course: CourseResponse;
@@ -19,10 +20,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     currency: "USD",
   }).format(course?.previousPrice);
 
+  console.log(course?.reviews?.length);
+
   // Format the rating count with commas
   const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.rating
+    course?.reviews?.length
   );
+
+  console.log(course.reviews);
 
   return (
     <Link
@@ -51,7 +56,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         {/* Rating */}
         <div className="flex items-center mb-1">
           <span className="text-amber-500 font-bold text-sm mr-1">
-            {course?.rating?.toFixed(1)}
+            {formatCourseRating(course?.reviews || [])}
           </span>
           <div className="flex">
             {[1, 2, 3, 4, 5].map((_, index) => (
@@ -59,7 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 key={index}
                 size={12}
                 className={`${
-                  index < Math.floor(course?.rating)
+                  index < Math.floor(formatCourseRating(course?.reviews || []))
                     ? "fill-amber-500 text-amber-500"
                     : "text-gray-300"
                 }`}

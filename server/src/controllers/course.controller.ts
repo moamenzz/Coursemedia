@@ -23,7 +23,8 @@ export const getCourse = catchErrors(async (req, res) => {
         path: "user",
         select: "username", // Exclude password field
       },
-    });
+    })
+    .populate("reviews");
   appAssert(course, NOT_FOUND, "Course not found");
 
   res.status(200).json(course);
@@ -132,6 +133,10 @@ export const getExplorePageCourses = catchErrors(async (req, res) => {
             path: "user",
             select: "-password", // Exclude password field
           },
+        })
+        .populate({
+          path: "reviews",
+          select: "rating",
         })
         .sort({ rating: -1 }) // Nach Rating absteigend sortieren
         .limit(5);

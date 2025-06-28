@@ -5,6 +5,7 @@ import {
   courseLevel,
 } from "../constants/courseCategoryTypes";
 import { LectureDocument } from "./lecture.model";
+import { ReviewDocument } from "./review.model";
 
 // TODO: Make rating functionality
 // TODO: Make course time functionality by adding a time to each lecture
@@ -19,7 +20,7 @@ interface CourseDocument extends mongoose.Document {
   curriculum: LectureDocument[];
   category: courseCategories;
   level: courseLevel;
-  rating: number;
+  reviews: ReviewDocument[];
   courseLanguage: courseLanguage;
   courseObjectives: string[];
   courseRequirements: string[];
@@ -46,7 +47,7 @@ const CourseSchema = new mongoose.Schema<CourseDocument>(
     enrollees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     category: { type: String, required: true },
     level: { type: String, required: true },
-    rating: { type: Number, required: true, default: 0 },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     courseLanguage: { type: String, required: true },
     courseObjectives: [{ type: String, required: true }],
     courseRequirements: [{ type: String, required: true }],

@@ -23,13 +23,12 @@ import { Separator } from "./ui/separator";
 import { useNavigate } from "react-router-dom";
 import UserDropdown from "./UserDropdown";
 import useCourseStore from "@/stores/useCourseStore";
+import { formatCourseRating } from "@/utils/formatCourseRating";
+import { ReviewResponse } from "@/lib/apiRoutes";
 
 const PlayerNavbar = () => {
   const { course } = useCourseStore();
   const navigate = useNavigate();
-  const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.rating as number
-  );
 
   return (
     <nav className="bg-gray-900 text-white border-b border-gray-700">
@@ -67,15 +66,18 @@ const PlayerNavbar = () => {
               <div className="hidden sm:flex items-center space-x-1 text-sm">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
                 <span className="text-yellow-400 font-medium">
-                  {course?.rating || 0.0}
+                  {formatCourseRating(course?.reviews as ReviewResponse[]) ||
+                    0.0}
                 </span>
-                <span className="text-gray-400">({formattedReviews || 0})</span>
+                <span className="text-gray-400">
+                  ({course?.reviews?.length})
+                </span>
               </div>
 
               {/* Students Count */}
               <div className="hidden lg:flex items-center space-x-1 text-sm text-gray-400">
                 <Users className="w-4 h-4" />
-                <span>{course?.enrollees?.length || 0} students</span>
+                <span>{course?.enrollees?.length || 0} Students</span>
               </div>
             </div>
 
