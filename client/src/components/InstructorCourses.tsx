@@ -9,12 +9,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Delete, Edit, Star } from "lucide-react";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { InstructorDashboardProps } from "./InstructorDashboard";
 import { useNavigate } from "react-router-dom";
+import ConfirmationModal from "./ConfirmationModal";
+import { CourseResponse } from "@/lib/apiRoutes";
 
 const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseResponse>();
+
   return (
     <Card>
       <CardHeader className="flex justify-between flex-row items-center">
@@ -77,6 +82,10 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
                           variant="ghost"
                           size="sm"
                           className="cursor-pointer"
+                          onClick={() => {
+                            setSelectedCourse(course);
+                            setIsOpen(true);
+                          }}
                         >
                           <Delete className="h-6 w-6 " />
                         </Button>
@@ -88,6 +97,16 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
           </Table>
         </div>
       </CardContent>
+      {selectedCourse && (
+        <ConfirmationModal
+          isOpen={isOpen}
+          setIsOpen={(open) => {
+            setIsOpen(open);
+            if (!open) setSelectedCourse(undefined);
+          }}
+          course={selectedCourse}
+        />
+      )}
     </Card>
   );
 };

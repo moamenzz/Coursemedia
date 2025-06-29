@@ -158,6 +158,10 @@ export const editCourse = async ({
   data: CourseResponse;
   courseId: string;
 }): Promise<CourseResponse> => axiosPublic.put(`/course/${courseId}`, data);
+
+export const deleteCourse = async (courseId: string) =>
+  axiosPublic.delete(`/course/${courseId}`);
+
 export const uploadToCloudinary = async (
   file: File,
   signature: CloudinarySignature

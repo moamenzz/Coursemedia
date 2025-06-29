@@ -183,7 +183,7 @@ export const deleteCourse = async (
   instructorId: mongoose.Types.ObjectId,
   courseId: string
 ) => {
-  const instructor = await InstructorModel.findById(instructorId);
+  const instructor = await InstructorModel.findOne({ user: instructorId });
   appAssert(
     instructor,
     FORBIDDEN,
@@ -193,7 +193,7 @@ export const deleteCourse = async (
   const course = await CourseModel.findById(courseId);
   appAssert(course, NOT_FOUND, "Course not found");
 
-  if (course.instructor.equals(instructor._id as mongoose.Types.ObjectId)) {
+  if (course.instructor.equals(instructorId as mongoose.Types.ObjectId)) {
     await CourseModel.findByIdAndDelete(courseId);
     return { message: "Course deleted successfully" };
   }
