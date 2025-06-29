@@ -17,15 +17,18 @@ const useDashboardStore = create<DashboardStore>()(
       curriculumFormData: [],
       courseLandingFormData: {
         title: "",
+        subtitle: "",
         description: "",
         cover: "",
         category: "",
         level: "",
         courseLanguage: "",
-        courseObjectives: "",
-        courseRequirements: "",
+        courseObjectives: [""],
+        courseRequirements: [""],
+        courseWhoIsThisFor: [""],
         courseWelcomeMessage: "",
         price: 0,
+        previousPrice: 0,
       },
       activeTab: "dashboard",
       setCurriculumFormData: (curriculumFormData) =>
@@ -36,6 +39,11 @@ const useDashboardStore = create<DashboardStore>()(
     }),
     {
       name: "dashboard-storage",
+      partialize: (state) => ({
+        curriculumFormData: state.curriculumFormData,
+        courseLandingFormData: state.courseLandingFormData,
+        activeTab: state.activeTab,
+      }),
     }
   )
 );

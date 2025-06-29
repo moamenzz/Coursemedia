@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronUp, Lock, PlayCircle } from "lucide-react";
 import truncateDescription from "@/utils/truncuateDescription";
 import { useState } from "react";
+import ReviewsDisplay from "@/components/ReviewsDesplay";
+import FeaturedReview from "@/components/FeaturedReview";
+import InstructorCard from "@/components/InstructorCard";
 
 const CoursePage = () => {
   const { courseId } = useParams();
@@ -59,6 +62,7 @@ const CoursePage = () => {
 
               {/* TODO: Make this course includes section */}
               {/* TODO: Make Curriculum open video player if the lecture is available for free preview */}
+
               {/* Course Content */}
               <Card className="mb-8">
                 <CardHeader>
@@ -102,6 +106,19 @@ const CoursePage = () => {
                 </div>
               </div>
 
+              {/* Who is this course for section */}
+              <div>
+                <h1 className="text-2xl font-bold pb-3">
+                  Who is this course for
+                </h1>
+
+                <div>
+                  {course.courseWhoIsThisFor.map((objective, index) => (
+                    <li key={index}>{objective}</li>
+                  ))}
+                </div>
+              </div>
+
               {/* Description */}
               <div>
                 <h1 className="text-2xl font-bold pb-3">Description</h1>
@@ -134,22 +151,27 @@ const CoursePage = () => {
                 </div>
               </div>
 
-              {/* Who is this course for section */}
-              <div></div>
-
               {/* TODO: Let instructors view reviews from their dashboard and be able to feature one of the reviews */}
 
               {/* Featured Review */}
-              <div></div>
+              <div>
+                <h1 className="text-2xl font-bold pb-3">Featured Review</h1>
+
+                <FeaturedReview />
+              </div>
 
               {/* All Reviews */}
-              <div></div>
+              <div>
+                <h1 className="text-2xl font-bold pb-3">All Reviews</h1>
+
+                <ReviewsDisplay />
+              </div>
 
               {/* Instructor Details */}
               <div>
                 <h1 className="text-2xl font-bold pb-3">Instructor</h1>
 
-                {course.instructor && <div></div>}
+                <InstructorCard />
               </div>
             </div>
           </div>

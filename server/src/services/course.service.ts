@@ -14,6 +14,7 @@ import UserModel from "../models/user.model";
 interface CourseProps {
   _id?: string;
   title: string;
+  subtitle: string;
   description: string;
   cover: string;
   curriculum: {
@@ -25,10 +26,12 @@ interface CourseProps {
   category: string;
   level: string;
   language: string;
-  objectives: string;
-  requirements: string;
+  objectives: string[];
+  requirements: string[];
+  whoIsThisFor: string[];
   welcomeMessage: string;
   price: number;
+  previousPrice?: number;
 }
 export const createNewCourse = async (
   instructorId: mongoose.Types.ObjectId,
@@ -50,19 +53,6 @@ export const createNewCourse = async (
     coverURL = result.secure_url;
   }
 
-  const curriculumIDs = await Promise.all(
-    data.curriculum.map(async (lecture) => {
-      const createdLecture = await LectureModel.create({
-        course: data._id,
-        title: lecture.title,
-        url: lecture.url,
-        publicId: lecture.publicId,
-        preview: lecture.freePreview,
-      });
-      return createdLecture._id;
-    })
-  );
-
   const {
     curriculum: _,
     cover: __,
@@ -70,22 +60,43 @@ export const createNewCourse = async (
     requirements,
     objectives,
     language,
+    whoIsThisFor,
     ...restData
   } = data;
+
   const newCourse = await CourseModel.create({
     instructor: instructorId,
     enrollees: [],
-    curriculum: curriculumIDs,
+    curriculum: [],
     cover: coverURL,
     ...restData,
     courseRequirements: requirements,
     courseWelcomeMessage: welcomeMessage,
     courseObjectives: objectives,
     courseLanguage: language,
+    courseWhoIsThisFor: whoIsThisFor,
     isFeatured: false,
   });
 
-  const addToInstructorCourses = await InstructorModel.updateOne(
+  const curriculumIDs = await Promise.all(
+    data.curriculum.map(async (lecture) => {
+      const createdLecture = await LectureModel.create({
+        course: newCourse._id,
+        title: lecture.title,
+        url: lecture.url,
+        publicId: lecture.publicId,
+        freePreview: lecture.freePreview,
+      });
+      return createdLecture._id;
+    })
+  );
+
+  if (newCourse) {
+    newCourse.curriculum = curriculumIDs as any; // Cast if curriculum expects LectureDocument[], otherwise adjust schema
+    await newCourse.save();
+  }
+
+  await InstructorModel.updateOne(
     {
       user: instructorId,
     },
@@ -104,7 +115,7 @@ export const editCourse = async (
   courseId: string,
   data: CourseProps
 ) => {
-  const instructor = await InstructorModel.findById(instructorId);
+  const instructor = await InstructorModel.findOne({ user: instructorId });
   appAssert(
     instructor,
     FORBIDDEN,
@@ -114,8 +125,54 @@ export const editCourse = async (
   const course = await CourseModel.findById(courseId).populate("curriculum");
   appAssert(course, NOT_FOUND, "Course was not found");
 
-  if (course.instructor === instructor._id) {
-    await CourseModel.updateOne({ _id: courseId }, data);
+  if (course.instructor.equals(instructorId as mongoose.Types.ObjectId)) {
+    // Handle cover image update if provided
+    let coverURL = course.cover;
+    if (data.cover && data.cover !== course.cover) {
+      const result = await cloudinary.uploader.upload(
+        data.cover,
+        cloudinaryCoverOptions
+      );
+      coverURL = result.secure_url;
+    }
+
+    // Update lectures (curriculum)
+    if (Array.isArray(data.curriculum)) {
+      // Remove old lectures
+      await LectureModel.deleteMany({ course: courseId });
+      // Create new lectures
+      const curriculumIDs = await Promise.all(
+        data.curriculum.map(async (lecture) => {
+          const createdLecture = await LectureModel.create({
+            course: courseId,
+            title: lecture.title,
+            url: lecture.url,
+            publicId: lecture.publicId,
+            freePreview: lecture.freePreview,
+          });
+          return createdLecture._id;
+        })
+      );
+      course.curriculum = curriculumIDs as any;
+    }
+
+    // Update course fields
+    course.title = data.title;
+    course.subtitle = data.subtitle;
+    course.description = data.description;
+    course.cover = coverURL;
+    course.category = data.category as unknown as typeof course.category;
+    course.level = data.level as unknown as typeof course.level;
+    course.price = data.price;
+    course.previousPrice = data.previousPrice;
+    course.courseRequirements = data.requirements;
+    course.courseWelcomeMessage = data.welcomeMessage;
+    course.courseObjectives = data.objectives;
+    course.courseLanguage =
+      data.language as unknown as typeof course.courseLanguage;
+    course.courseWhoIsThisFor = data.whoIsThisFor;
+
+    await course.save();
     return { message: "Course updated successfully" };
   } else {
     return { message: "You are not authorized to edit this course" };

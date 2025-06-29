@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Delete, Edit } from "lucide-react";
+import { Delete, Edit, Star } from "lucide-react";
 import { FC } from "react";
 import { InstructorDashboardProps } from "./InstructorDashboard";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +34,7 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
                 <TableHead>Course</TableHead>
                 <TableHead>Enrollees</TableHead>
                 <TableHead>Revenue</TableHead>
+                <TableHead>Reviews</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -46,8 +47,11 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
                       </TableCell>
                       <TableCell>{course?.enrollees?.length || 0}</TableCell>
                       <TableCell>
-                        ${course?.enrollees?.length * course?.price || 0}
+                        $
+                        {(course?.enrollees?.length as number) *
+                          course?.price || 0}
                       </TableCell>
+                      <TableCell>{course?.reviews?.length || 0}</TableCell>
                       <TableCell className="text-right">
                         <Button
                           onClick={() => {
@@ -58,6 +62,16 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
                           size="sm"
                         >
                           <Edit className="h-6 w-6" />
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            navigate(`/dashboard/reviews/${course?._id}`);
+                          }}
+                          className="cursor-pointer"
+                          variant="ghost"
+                          size="sm"
+                        >
+                          <Star className="h-6 w-6" />
                         </Button>
                         <Button
                           variant="ghost"

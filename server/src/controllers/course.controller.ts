@@ -113,7 +113,8 @@ export const getCourses = catchErrors(async (req, res) => {
       },
     })
     .select("-curriculum") // Exclude curriculum to reduce response size
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .populate("reviews");
 
   res.status(200).json(courses);
 });
@@ -164,7 +165,11 @@ export const handleEditCourse = catchErrors(async (req, res) => {
   const courseId = req.params.courseId;
   const data = courseSchema.parse(req.body);
 
+  console.log(instructorId);
+
   const { message } = await editCourse(instructorId, courseId, data);
+
+  console.log(message);
 
   res.status(200).json({ message });
 });

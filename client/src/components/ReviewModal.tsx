@@ -64,14 +64,11 @@ const ReviewModal: FC<ReviewModalProps> = ({ isOpen, setIsOpen, course }) => {
   const [review, setReview] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // TODO: Check if the user has already reviewed the course, if he has, then make him edit his review, if not, then make him leave a review
   const { data: userReview, isLoading: isReviewLoading } = useQuery({
     queryKey: ["userReview", course._id],
     queryFn: () => getUserReview(course._id as string),
     enabled: isOpen,
   });
-
-  console.log(userReview);
 
   useEffect(() => {
     if (userReview) {

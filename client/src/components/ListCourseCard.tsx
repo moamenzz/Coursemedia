@@ -1,6 +1,7 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { CourseResponse } from "@/lib/apiRoutes";
 import formatCategory from "@/utils/formatCategory";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 import { Star } from "lucide-react";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +22,10 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
     currency: "USD",
   }).format(course?.previousPrice);
 
-  // Format the rating count with commas
   const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.rating
+    course?.reviews?.length
   );
+
   return (
     <Card
       onClick={() => navigate(`/courses/${course._id}`)}
@@ -41,10 +42,15 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
             {course?.title}
           </CardTitle>
 
-          <p className="text-sm text-gray-600 mb-1">{course.description}</p>
+          <p
+            className="text-sm text-gray-600 mb-1 line-clamp-2"
+            title={course.description}
+          >
+            {course.description}
+          </p>
 
           <p className="text-sm text-gray-600 mb-1">
-            {formatCategory(course.category)}
+            Category: {formatCategory(course.category)}
           </p>
 
           <p className="text-sm text-gray-600 mb-1">
@@ -54,7 +60,7 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
           {/* Rating */}
           <div className="flex items-center mb-1">
             <span className="text-amber-500 font-bold text-sm mr-1">
-              {course?.rating.toFixed(1)}
+              {formatCourseRating(course?.reviews || [])}
             </span>
             <div className="flex">
               {[1, 2, 3, 4, 5].map((_, index) => (
@@ -62,7 +68,8 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
                   key={index}
                   size={12}
                   className={`${
-                    index < Math.floor(course?.rating)
+                    index <
+                    Math.floor(formatCourseRating(course?.reviews || []))
                       ? "fill-amber-500 text-amber-500"
                       : "text-gray-300"
                   }`}

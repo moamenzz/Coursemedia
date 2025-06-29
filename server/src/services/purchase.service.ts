@@ -4,6 +4,7 @@ import { BAD_REQUEST, NOT_FOUND } from "../constants/HttpStatusCode";
 import appAssert from "../utils/AppAssert";
 import CourseModel from "../models/course.model";
 import PurchaseModel from "../models/purchase.model";
+import InstructorModel from "../models/instructor.model";
 
 export const purchaseCourse = async (
   userId: string | mongoose.Types.ObjectId,
@@ -25,6 +26,13 @@ export const purchaseCourse = async (
     user: userId,
     course: courseId,
   });
+
+  if (purchase) {
+    const updatedInstructor = await InstructorModel.findByIdAndUpdate(
+      course.instructor,
+      { $inc: { revenue: course.price } }
+    );
+  }
 
   return { purchase };
 };

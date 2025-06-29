@@ -21,6 +21,7 @@ import MessagesPage from "./pages/MessagesPage";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PlayerLayout from "./layouts/PlayerLayout";
+import ReviewsPage from "./pages/ReviewsPage";
 
 function App() {
   const navgiate = useNavigate();
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         {/* Private Routes - Secured by AppContainer */}
         <Route element={<AppContainer />}>
+          {/* Dashboard Routes */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route
             path="/dashboard/create-course"
@@ -39,7 +41,13 @@ function App() {
             path="/dashboard/create-course/:courseId"
             element={<CreateCoursePage />}
           />
+          <Route
+            path="/dashboard/reviews/:courseId"
+            element={<ReviewsPage />}
+          />
           <Route path="/successful-payment" element={<PaymentSuccessPage />} />
+
+          {/* Layout Routes */}
           <Route element={<MainLayout />}>
             <Route path="/my-learning" element={<MyLearningPage />} />
             <Route path="/cart" element={<CartPage />} />

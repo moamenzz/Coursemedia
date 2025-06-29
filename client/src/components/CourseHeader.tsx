@@ -7,15 +7,13 @@ import { CiGlobe } from "react-icons/ci";
 import { LuCaptions } from "react-icons/lu";
 import formatLanguage from "@/utils/formatLanguage";
 import { Link } from "react-router-dom";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 
 interface CourseHeaderProps {
   course: CourseResponse;
 }
 
 const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
-  const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.rating
-  );
   return (
     <div className="bg-gray-900 text-white p-15">
       <div className="container mx-auto max-w-[60rem]">
@@ -30,14 +28,16 @@ const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
               </span>
 
               <div className="flex items-center">
-                <span className="text-yellow-400 mr-1">{course?.rating}</span>
+                <span className="text-yellow-400 mr-1">
+                  {formatCourseRating(course.reviews)}
+                </span>
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((_, index) => (
                     <Star
                       key={index}
                       size={12}
                       className={`${
-                        index < Math.floor(course?.rating)
+                        index < Math.floor(formatCourseRating(course.reviews))
                           ? "fill-amber-500 text-amber-500"
                           : "text-gray-300"
                       }`}
@@ -45,7 +45,7 @@ const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
                   ))}
                 </div>
                 <span className="text-xs text-gray-500 ml-1">
-                  ({formattedReviews}) ratings
+                  ({course.reviews.length}) reviews
                 </span>
               </div>
               <span>{course.enrollees?.length} students</span>

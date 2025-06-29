@@ -7,11 +7,12 @@ import {
 
 const courseSchema = z.object({
   title: z.string({ required_error: "Title is required" }).min(1).max(45),
+  subtitle: z.string({ required_error: "Subtitle is required" }).min(1).max(45),
   description: z
     .string({ required_error: "Description is required" })
     .min(1)
     .max(500),
-  cover: z.string({ required_error: "Cover is required" }).min(1).max(255),
+  cover: z.string({ required_error: "Cover is required" }).min(1),
   curriculum: z.array(
     z.object({
       title: z.string({ required_error: "Title is required" }).min(1).max(45),
@@ -42,19 +43,21 @@ const courseSchema = z.object({
     courseLanguage.russian,
     courseLanguage.spanish,
   ]),
-  objectives: z
-    .string({ required_error: "Objectives are required" })
-    .min(1)
-    .max(500),
-  requirements: z
-    .string({ required_error: "Requirements are required" })
-    .min(1)
-    .max(255),
   welcomeMessage: z
     .string({ required_error: "Welcome message is required" })
     .min(1)
     .max(500),
+  objectives: z.array(
+    z.string({ required_error: "Objective is required" }).min(1).max(255)
+  ),
+  requirements: z.array(
+    z.string({ required_error: "Requirement is required" }).min(1).max(255)
+  ),
+  whoIsThisFor: z.array(
+    z.string({ required_error: "Requirement is required" }).min(1).max(255)
+  ),
   price: z.number().min(0),
+  previousPrice: z.number().optional(),
 });
 
 export default courseSchema;

@@ -54,20 +54,20 @@ export interface CourseResponse {
   description: string;
   cover: string;
   curriculum: LectureResponse[];
-  instructor: InstructorResponse;
+  instructor?: InstructorResponse;
   enrollees?: string[];
   category: string;
   level: string;
   courseLanguage: string;
+  courseWelcomeMessage: string;
   courseObjectives: string[];
   courseRequirements: string[];
   courseWhoIsThisFor: string[];
-  courseWelcomeMessage: string;
-  isFeatured: boolean;
-  isBestSeller: boolean;
+  isFeatured?: boolean;
+  isBestSeller?: boolean;
   price: number;
-  reviews: ReviewResponse[];
-  previousPrice: number;
+  previousPrice?: number;
+  reviews?: ReviewResponse[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -149,8 +149,15 @@ export const getCourse = async (courseId: string): Promise<CourseResponse> =>
 
 export const createCourse = async (
   data: CourseResponse
-): Promise<CourseResponse> => axiosPublic.post("/create/create-course", data);
+): Promise<CourseResponse> => axiosPublic.post("/course/create-course", data);
 
+export const editCourse = async ({
+  data,
+  courseId,
+}: {
+  data: CourseResponse;
+  courseId: string;
+}): Promise<CourseResponse> => axiosPublic.put(`/course/${courseId}`, data);
 export const uploadToCloudinary = async (
   file: File,
   signature: CloudinarySignature

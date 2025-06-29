@@ -5,6 +5,7 @@ export interface ReviewDocument extends mongoose.Document {
   course: mongoose.Types.ObjectId;
   rating: number;
   comment?: string;
+  instructorReply: string;
   featured?: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +25,7 @@ const ReviewSchema = new mongoose.Schema<ReviewDocument>(
     },
     rating: { type: Number, required: true },
     comment: { type: String },
+    instructorReply: { type: String },
     featured: { type: Boolean, default: false },
   },
   {

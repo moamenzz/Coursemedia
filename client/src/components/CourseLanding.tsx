@@ -20,49 +20,33 @@ interface CourseLandingProps {
 
 export interface FormDataProps {
   title: string;
+  subtitle: string;
   description: string;
   cover: string;
   category: string;
   level: string;
   courseLanguage: string;
-  courseObjectives: string;
-  courseRequirements: string;
   courseWelcomeMessage: string;
+  courseObjectives: string[];
+  courseRequirements: string[];
+  courseWhoIsThisFor: string[];
   price: number;
+  previousPrice?: number;
 }
 
 const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
-  const [formData, setFormData] = useState<FormDataProps>({
-    title: editingCourse?.title || "",
-    description: editingCourse?.description || "",
-    cover: editingCourse?.cover || "",
-    category: editingCourse?.category || "",
-    level: editingCourse?.level || "",
-    courseLanguage: editingCourse?.courseLanguage || "",
-    courseObjectives: editingCourse?.courseObjectives || "",
-    courseRequirements: editingCourse?.courseRequirements || "",
-    courseWelcomeMessage: editingCourse?.courseWelcomeMessage || "",
-    price: editingCourse?.price || 0,
-  });
+  const { setCourseLandingFormData, courseLandingFormData } =
+    useDashboardStore();
+
+  const [formData, setFormData] = useState<FormDataProps>(
+    editingCourse || courseLandingFormData
+  );
 
   useEffect(() => {
     if (editingCourse) {
-      setFormData({
-        title: editingCourse.title,
-        description: editingCourse.description,
-        cover: editingCourse.cover,
-        category: editingCourse.category,
-        level: editingCourse.level,
-        courseLanguage: editingCourse.courseLanguage,
-        courseObjectives: editingCourse.courseObjectives,
-        courseRequirements: editingCourse.courseRequirements,
-        courseWelcomeMessage: editingCourse.courseWelcomeMessage,
-        price: editingCourse.price,
-      });
+      setFormData(editingCourse);
     }
   }, [editingCourse]);
-
-  const { setCourseLandingFormData } = useDashboardStore();
 
   const categoryOptions = [
     { value: "webDevelopment", label: "Web Development" },
@@ -163,18 +147,34 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
               )}
             </label>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-5">
+            {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 name="title"
-                placeholder="Title"
+                placeholder="Course title"
                 type="text"
                 value={formData.title}
                 onChange={handleInputChange}
               />
             </div>
+            {/* Subtitle */}
+
+            <div className="space-y-2">
+              <Label htmlFor="subtitle">Subtitle</Label>
+              <Input
+                id="subtitle"
+                name="subtitle"
+                placeholder="Course subtitle"
+                type="text"
+                value={formData.subtitle}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Category */}
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
               <Select
@@ -198,16 +198,20 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 name="description"
-                placeholder="Description"
+                placeholder="Course description"
                 value={formData.description}
                 onChange={handleInputChange}
               />
             </div>
+
+            {/* Level */}
             <div className="space-y-2">
               <Label htmlFor="level">Level</Label>
               <Select
@@ -231,6 +235,8 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Language */}
             <div className="space-y-2">
               <Label htmlFor="language">Language</Label>
               <Select
@@ -243,7 +249,7 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
                 value={formData.courseLanguage}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select course language" />
+                  <SelectValue placeholder="Select the course spoken language" />
                 </SelectTrigger>
                 <SelectContent>
                   {courseLanguageOptions.map((optionItem) => (
@@ -254,38 +260,205 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Welcome Message */}
             <div className="space-y-2">
               <Label htmlFor="welcomeMessage">Course Welcome Message</Label>
               <Textarea
                 id="welcomeMessage"
                 name="courseWelcomeMessage"
-                placeholder="Enter a course welcome message to be displayed when a customer buys the course for the first time"
+                placeholder="Enter a course welcome message to be sent to the user as a welcome note"
                 value={formData.courseWelcomeMessage}
                 onChange={handleInputChange}
               />
             </div>
+
+            {/* Objectives */}
             <div className="space-y-2">
-              <Label htmlFor="objectives">Course Objectives</Label>
-              <Textarea
-                id="objectives"
-                name="courseObjectives"
-                placeholder="Enter the objectives of this course and what the customer is going to learn"
-                value={formData.courseObjectives}
-                onChange={handleInputChange}
-              />
+              <Label>Course Objectives</Label>
+              {Array.isArray(formData.courseObjectives) &&
+                formData.courseObjectives.map((objective, idx) => (
+                  <div
+                    key={`objective-${idx}`}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <Input
+                      name={`courseObjectives-${idx}`}
+                      placeholder={`Objective ${idx + 1}`}
+                      value={objective}
+                      onChange={(e) => {
+                        const updated = [...formData.courseObjectives];
+                        updated[idx] = e.target.value;
+                        setFormData({ ...formData, courseObjectives: updated });
+                      }}
+                    />
+                    {idx !== 0 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updated = formData.courseObjectives.filter(
+                            (_, i) => i !== idx
+                          );
+                          setFormData({
+                            ...formData,
+                            courseObjectives: updated,
+                          });
+                        }}
+                        aria-label="Remove objective"
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    courseObjectives: [
+                      ...(Array.isArray(formData.courseObjectives)
+                        ? formData.courseObjectives
+                        : []),
+                      "",
+                    ],
+                  })
+                }
+              >
+                Add Objective
+              </Button>
             </div>
+
+            {/* Requirements */}
             <div className="space-y-2">
-              <Label htmlFor="requirements">Course Requirements</Label>
-              <Textarea
-                id="requirements"
-                name="courseRequirements"
-                placeholder="Enter the requirements required from the user to take this course"
-                value={formData.courseRequirements}
-                onChange={handleInputChange}
-              />
+              <Label>Course Requirements</Label>
+              {Array.isArray(formData.courseRequirements) &&
+                formData.courseRequirements.map((requirement, idx) => (
+                  <div
+                    key={`requirement-${idx}`}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <Input
+                      name={`courseRequirements-${idx}`}
+                      placeholder={`Requirement ${idx + 1}`}
+                      value={requirement}
+                      onChange={(e) => {
+                        const updated = [...formData.courseRequirements];
+                        updated[idx] = e.target.value;
+                        setFormData({
+                          ...formData,
+                          courseRequirements: updated,
+                        });
+                      }}
+                    />
+                    {idx !== 0 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updated = formData.courseRequirements.filter(
+                            (_, i) => i !== idx
+                          );
+                          setFormData({
+                            ...formData,
+                            courseRequirements: updated,
+                          });
+                        }}
+                        aria-label="Remove requirement"
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    courseRequirements: [
+                      ...(Array.isArray(formData.courseRequirements)
+                        ? formData.courseRequirements
+                        : []),
+                      "",
+                    ],
+                  })
+                }
+              >
+                Add Requirement
+              </Button>
             </div>
+
+            {/* Who is this course for */}
             <div className="space-y-2">
-              <Label htmlFor="price">Price (In $USD)</Label>
+              <Label>Who is this course for?</Label>
+              {Array.isArray(formData.courseWhoIsThisFor) &&
+                formData.courseWhoIsThisFor.map((condition, idx) => (
+                  <div
+                    key={`condition-${idx}`}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <Input
+                      name={`courseConditions-${idx}`}
+                      placeholder={`Condition ${idx + 1}`}
+                      value={condition}
+                      onChange={(e) => {
+                        const updated = [...formData.courseWhoIsThisFor];
+                        updated[idx] = e.target.value;
+                        setFormData({
+                          ...formData,
+                          courseWhoIsThisFor: updated,
+                        });
+                      }}
+                    />
+                    {idx !== 0 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updated = formData.courseWhoIsThisFor.filter(
+                            (_, i) => i !== idx
+                          );
+                          setFormData({
+                            ...formData,
+                            courseWhoIsThisFor: updated,
+                          });
+                        }}
+                        aria-label="Remove condition"
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    courseWhoIsThisFor: [
+                      ...(Array.isArray(formData.courseWhoIsThisFor)
+                        ? formData.courseWhoIsThisFor
+                        : []),
+                      "",
+                    ],
+                  })
+                }
+              >
+                Add Condition
+              </Button>
+            </div>
+
+            {/* Price */}
+            <div className="space-y-2">
+              <Label htmlFor="price">Course Price (In $USD)</Label>
               <Input
                 id="price"
                 name="price"
@@ -297,9 +470,35 @@ const CourseLanding: FC<CourseLandingProps> = ({ editingCourse }) => {
                 onChange={handleInputChange}
               />
             </div>
+
+            {/* Previous Price */}
+            <div className="space-y-2">
+              <Label htmlFor="previousPrice">
+                Optional: Previous Price (Before Discount, In $USD)
+              </Label>
+              <Input
+                id="previousPrice"
+                name="previousPrice"
+                placeholder="Optional: Add a previous price to be displayed as a discount"
+                type="number"
+                max={1000}
+                min={0}
+                value={formData.previousPrice}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
         </div>
       </CardContent>
+
+      <div className="flex justify-end px-6">
+        <Button
+          className="text-sm tracking-wider font-bold px-8 cursor-pointer"
+          onClick={() => setCourseLandingFormData(formData)}
+        >
+          Save Changes
+        </Button>
+      </div>
     </Card>
   );
 };
