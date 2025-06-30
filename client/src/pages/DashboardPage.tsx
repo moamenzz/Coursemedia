@@ -1,15 +1,23 @@
 import ErrorThrower from "@/components/ErrorThrower";
 import Loader from "@/components/Loader";
-import { getInstructor, InstructorResponse, logout } from "@/lib/apiRoutes";
+import {
+  AuthResponse,
+  CourseResponse,
+  getInstructor,
+  InstructorResponse,
+  logout,
+} from "@/lib/apiRoutes";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { BarChart, Book, LogOut } from "lucide-react";
+import { BarChart, Book, LogOut, Star } from "lucide-react";
 import useDashboardStore, { DashboardStore } from "@/stores/useDashboardStore";
 import { toast } from "react-toastify";
 import InstructorDashboard from "@/components/InstructorDashboard";
 import InstructorCourses from "@/components/InstructorCourses";
+import ReviewsPage from "./ReviewsPage";
+import useAuth from "@/hooks/useAuth";
 
 interface MenuItemsProps {
   icon: any;
@@ -43,10 +51,11 @@ const DashboardPage = () => {
   });
 
   const { activeTab, setActiveTab } = useDashboardStore();
+  const { user } = useAuth();
 
   const instructorFallback: InstructorResponse = {
     _id: "",
-    user: "",
+    user: user as AuthResponse,
     students: [],
     courses: [],
     revenue: 0,
@@ -72,6 +81,14 @@ const DashboardPage = () => {
         <InstructorCourses
           instructor={instructor ? instructor : instructorFallback}
         />
+      ),
+    },
+    {
+      icon: Star,
+      label: "Reviews",
+      value: "reviews",
+      component: (
+        <ReviewsPage courses={instructor?.courses as CourseResponse[]} />
       ),
     },
     {
@@ -108,7 +125,7 @@ const DashboardPage = () => {
                 variant={activeTab === menuItem.value ? "secondary" : "ghost"}
                 onClick={
                   menuItem.value === "logout"
-                    ? () => logoutMutation()
+                    ? () => navigate("/")
                     : () =>
                         setActiveTab(
                           menuItem.value as DashboardStore["activeTab"]

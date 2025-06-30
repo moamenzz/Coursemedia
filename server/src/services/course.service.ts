@@ -218,5 +218,10 @@ export const enrollUser = async (
     { new: true }
   );
 
+  const updatedInstructor = await InstructorModel.findOneAndUpdate(
+    { user: course.instructor },
+    { $inc: { students: 1 } }
+  );
+
   return { message: "User Enrolled Successfully" };
 };

@@ -68,16 +68,7 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
                         >
                           <Edit className="h-6 w-6" />
                         </Button>
-                        <Button
-                          onClick={() => {
-                            navigate(`/dashboard/reviews/${course?._id}`);
-                          }}
-                          className="cursor-pointer"
-                          variant="ghost"
-                          size="sm"
-                        >
-                          <Star className="h-6 w-6" />
-                        </Button>
+
                         <Button
                           variant="ghost"
                           size="sm"

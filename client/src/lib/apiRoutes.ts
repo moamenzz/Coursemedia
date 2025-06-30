@@ -37,12 +37,21 @@ export interface StudentResponse {
   updatedAt: Date;
 }
 
+interface InstructorReply {
+  reply: string;
+  hasReply: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ReviewResponse {
   _id: string;
-  user: string;
-  course: string;
+  user: AuthResponse;
+  course: CourseResponse;
   rating: number;
   comment: string;
+  instructorReply: InstructorReply;
+  featured?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -87,7 +96,7 @@ export interface LectureResponse {
 export interface InstructorResponse {
   _id: string;
   user: AuthResponse;
-  role: string;
+  role?: string;
   courses: CourseResponse[];
   students: StudentResponse[];
   revenue: number;
@@ -250,3 +259,33 @@ export const submitReview = async (
 export const getUserReview = async (
   courseId: string
 ): Promise<ReviewResponse> => axiosPublic.get(`/review/user/${courseId}`);
+
+export const getInstructorReviews = async (): Promise<ReviewResponse[]> =>
+  axiosPublic.get("/instructor/reviews");
+
+export const featureReview = async ({
+  reviewId,
+  courseId,
+}: {
+  reviewId: string;
+  courseId: string;
+}) => axiosPublic.put(`/review/feature-review/${courseId}/${reviewId}`);
+
+export const answerReview = async ({
+  reviewId,
+  courseId,
+  reply,
+}: {
+  reviewId: string;
+  courseId: string;
+  reply: string;
+}) =>
+  axiosPublic.put(`/review/answer-review/${courseId}/${reviewId}`, { reply });
+
+export const deleteReviewAnswer = async ({
+  reviewId,
+  courseId,
+}: {
+  reviewId: string;
+  courseId: string;
+}) => axiosPublic.delete(`/review/delete-answer/${courseId}/${reviewId}`);

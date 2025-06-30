@@ -4,3 +4,7 @@ export const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
   comment: z.string().min(1).max(500).optional(),
 });
+
+export const answerReviewSchema = z.object({
+  reply: z.string().min(1).max(200),
+});
