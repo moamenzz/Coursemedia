@@ -1,24 +1,17 @@
 import { MoreHorizontal, ThumbsUp } from "lucide-react";
-import { formatDate } from "@/utils/formatDate";
 import { FC, useState } from "react";
 import { StarRating } from "./ReviewsDesplay";
+import { ReviewResponse } from "@/lib/apiRoutes";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 interface ReviewCardProps {
-  review: {
-    userAvatar: string;
-    userName: string;
-    reviewText: string;
-    rating: number;
-    date: string;
-    isTopReview: boolean;
-    helpful: number;
-  };
+  review: ReviewResponse;
   compact?: boolean;
 }
 
 const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
   const [isHelpful, setIsHelpful] = useState(false);
-  const [helpfulCount, setHelpfulCount] = useState(review.helpful);
+  const [helpfulCount, setHelpfulCount] = useState(review.helpful || 15);
 
   const toggleHelpful = () => {
     setIsHelpful(!isHelpful);
@@ -34,20 +27,32 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
       <div className="flex items-start gap-3">
         {/* User Avatar */}
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-          {review.userAvatar}
+          {review.user.avatar ? (
+            <img
+              src={review.user.avatar}
+              alt="User Avatar"
+              className="w-10 h-10 rounded-full"
+            />
+          ) : (
+            <div className="px-4 mr-1">
+              <PlaceholderAvatar username={review.user.username} />
+            </div>
+          )}
         </div>
 
         {/* Review Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h4 className="font-medium text-gray-900">{review.userName}</h4>
+              <h4 className="font-medium text-gray-900">
+                {review.user.username}
+              </h4>
               <div className="flex items-center gap-2 mt-1">
                 <StarRating rating={review.rating} />
                 <span className="text-sm text-gray-500">
-                  {formatDate(review.date)}
+                  {/* {formatDate(review.date)} */}
                 </span>
-                {review.isTopReview && (
+                {review.featured && (
                   <span className="bg-orange-100 text-orange-800 text-xs px-2 py-0.5 rounded-full font-medium">
                     Top Review
                   </span>
@@ -64,7 +69,7 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
 
           {/* Review Text */}
           <p className="text-gray-700 text-sm leading-relaxed mb-3">
-            {review.reviewText}
+            {review.comment}
           </p>
 
           {/* Actions */}
@@ -80,7 +85,7 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
               <ThumbsUp
                 className={`w-4 h-4 ${isHelpful ? "fill-current" : ""}`}
               />
-              Hilfreich ({helpfulCount})
+              Helpful ({helpfulCount})
             </button>
           </div>
         </div>

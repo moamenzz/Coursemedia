@@ -19,6 +19,7 @@ export interface ResetPasswordData {
 
 export interface AuthResponse {
   _id: string;
+  avatar?: string;
   email: string;
   username: string;
   password: string;
@@ -52,6 +53,8 @@ export interface ReviewResponse {
   comment: string;
   instructorReply: InstructorReply;
   featured?: boolean;
+  helpful?: number;
+  unhelpful?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -289,3 +292,7 @@ export const deleteReviewAnswer = async ({
   reviewId: string;
   courseId: string;
 }) => axiosPublic.delete(`/review/delete-answer/${courseId}/${reviewId}`);
+
+export const getCourseReviews = async (
+  courseId: string
+): Promise<ReviewResponse[]> => axiosPublic.get(`/review/${courseId}`);

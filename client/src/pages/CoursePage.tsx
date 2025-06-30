@@ -2,7 +2,7 @@ import CourseHeader from "@/components/CourseHeader";
 import CoursePreview from "@/components/CoursePreview";
 import ErrorThrower from "@/components/ErrorThrower";
 import Loader from "@/components/Loader";
-import { getCourse } from "@/lib/apiRoutes";
+import { getCourse, getCourseReviews, ReviewResponse } from "@/lib/apiRoutes";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import truncateDescription from "@/utils/truncuateDescription";
 import { useState } from "react";
 import ReviewsDisplay from "@/components/ReviewsDesplay";
 import FeaturedReview from "@/components/FeaturedReview";
-import InstructorCard from "@/components/InstructorCard";
+import VideoPlayer from "@/components/VideoPlayer";
 
 const CoursePage = () => {
   const { courseId } = useParams();
@@ -19,13 +19,33 @@ const CoursePage = () => {
 
   const {
     data: course,
-    isLoading,
-    isError,
-    error,
+    isLoading: isCourseLoading,
+    isError: isCourseError,
+    error: courseError,
   } = useQuery({
-    queryKey: ["course"],
+    queryKey: ["course", courseId],
     queryFn: () => getCourse(courseId!),
   });
+  console.log(course?._id);
+
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    isError: isReviewsError,
+    error: reviewsError,
+  } = useQuery({
+    queryKey: ["user-reviews"],
+    queryFn: () => getCourseReviews(course?._id as string),
+    enabled: !!course,
+  });
+
+  const featuredReview = Array.isArray(reviews)
+    ? reviews.find((review) => review.featured === true)
+    : undefined;
+
+  const isLoading = isCourseLoading || isReviewsLoading;
+  const isError = isCourseError || isReviewsError;
+  const error = courseError || reviewsError;
 
   const handleFreePreview = () => {};
   return isLoading ? (
@@ -44,7 +64,7 @@ const CoursePage = () => {
             <div>
               <CourseHeader course={course} />
             </div>
-            <div className="flex items-center md:absolute md:top-[17%] md:right-[1.5%] lg:top-[12%] lg:right-[14%]">
+            <div className="flex items-center md:absolute md:top-[6%] md:right-[0%] lg:top-[6%] lg:right-[14%]">
               <CoursePreview course={course} />
             </div>
 
@@ -157,22 +177,24 @@ const CoursePage = () => {
               <div>
                 <h1 className="text-2xl font-bold pb-3">Featured Review</h1>
 
-                <FeaturedReview />
+                <FeaturedReview
+                  featuredReview={featuredReview as ReviewResponse}
+                />
               </div>
 
               {/* All Reviews */}
               <div>
                 <h1 className="text-2xl font-bold pb-3">All Reviews</h1>
 
-                <ReviewsDisplay />
+                <ReviewsDisplay reviews={reviews as ReviewResponse[]} />
               </div>
 
               {/* Instructor Details */}
-              <div>
+              {/* <div>
                 <h1 className="text-2xl font-bold pb-3">Instructor</h1>
 
                 <InstructorCard />
-              </div>
+              </div> */}
             </div>
           </div>
         )}

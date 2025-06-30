@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { StarRating } from "./ReviewsDesplay";
 import { Star, X } from "lucide-react";
 import ReviewCard from "./ReviewCard";
+import { ReviewResponse } from "@/lib/apiRoutes";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 
 interface AllReviewsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  reviews: {
-    userAvatar: string;
-    userName: string;
-    reviewText: string;
-    rating: number;
-    date: string;
-    isTopReview: boolean;
-    helpful: number;
-  }[];
+  reviews: ReviewResponse[];
 }
 
 const AllReviewsModal = ({
@@ -29,11 +29,15 @@ const AllReviewsModal = ({
   const filteredAndSortedReviews = reviews
     .filter((review) => filterRating === 0 || review.rating === filterRating)
     .sort((a, b) => {
-      if (sortBy === "helpful") return b.helpful - a.helpful;
+      if (sortBy === "helpful") return (b.helpful ?? 0) - (a.helpful ?? 0);
       if (sortBy === "newest")
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
       if (sortBy === "oldest")
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
       if (sortBy === "rating") return b.rating - a.rating;
       return 0;
     });
@@ -46,42 +50,45 @@ const AllReviewsModal = ({
       100,
   }));
 
-  const averageRating =
-    reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+  const averageRating = formatCourseRating(reviews);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="flex flex-col h-full max-h-[90vh]">
+      <DialogContent
+        className="w-full max-w-3xl md:max-w-4xl p-0 overflow-hidden max-h-[90vh] h-[90vh] flex flex-col"
+        style={{ maxHeight: "90vh" }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Alle Bewertungen
-            </h2>
-            <p className="text-gray-600">
-              {reviews.length} Bewertungen insgesamt
-            </p>
+            <DialogTitle className="text-xl md:text-2xl font-bold text-gray-900">
+              All Ratings
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              {reviews.length} Overall Ratings
+            </DialogDescription>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <DialogClose asChild>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 p-2"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </DialogClose>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Sidebar with Rating Overview */}
-          <div className="w-80 p-6 border-r border-gray-200 bg-gray-50">
+          <div className="w-full md:w-80 p-4 md:p-6 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50 flex-shrink-0">
             <div className="mb-6">
-              <div className="text-center mb-4">
-                <div className="text-4xl font-bold text-gray-900">
+              <div className="flex flex-col items-center space-y-1 text-center mb-4">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900">
                   {averageRating.toFixed(1)}
                 </div>
                 <StarRating rating={Math.round(averageRating)} size="w-6 h-6" />
-                <p className="text-gray-600 mt-2">
-                  {reviews.length} Bewertungen
-                </p>
+                <p className="text-gray-600 mt-2">{reviews.length} Ratings</p>
               </div>
 
               {/* Rating Distribution */}
@@ -106,50 +113,50 @@ const AllReviewsModal = ({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sortieren nach
+                  Sort by
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="helpful">Hilfreichste</option>
-                  <option value="newest">Neueste</option>
-                  <option value="oldest">Älteste</option>
-                  <option value="rating">Höchste Bewertung</option>
+                  <option value="helpful">Most Helpful</option>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="rating">Highest Ratings</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nach Sternen filtern
+                  Filter by Rating
                 </label>
                 <select
                   value={filterRating}
                   onChange={(e) => setFilterRating(Number(e.target.value))}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value={0}>Alle Bewertungen</option>
-                  <option value={5}>5 Sterne</option>
-                  <option value={4}>4 Sterne</option>
-                  <option value={3}>3 Sterne</option>
-                  <option value={2}>2 Sterne</option>
-                  <option value={1}>1 Stern</option>
+                  <option value={0}>All Ratings</option>
+                  <option value={5}>5 Stars</option>
+                  <option value={4}>4 Stars</option>
+                  <option value={3}>3 Stars</option>
+                  <option value={2}>2 Stars</option>
+                  <option value={1}>1 Star</option>
                 </select>
               </div>
             </div>
           </div>
 
           {/* Reviews List */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6">
             <div className="space-y-4">
               {filteredAndSortedReviews.map((review) => (
-                <ReviewCard key={review.date} review={review} />
+                <ReviewCard key={review._id} review={review} />
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 };

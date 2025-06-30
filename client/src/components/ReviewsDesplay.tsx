@@ -1,8 +1,9 @@
-import mockReviews from "@/types/MockReviewsData";
 import { ChevronDown, Star } from "lucide-react";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import AllReviewsModal from "./AllReviewsModal";
+import { ReviewResponse } from "@/lib/apiRoutes";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 
 interface StarRatingProps {
   rating: number;
@@ -26,28 +27,29 @@ export const StarRating: FC<StarRatingProps> = ({
     </div>
   );
 };
+interface ReviewsDisplayProps {
+  reviews: ReviewResponse[];
+}
 
-const ReviewsDisplay = () => {
-  const [showAllModal, setShowAllModal] = useState(false);
+const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ reviews }) => {
+  const [showAllModal, setShowAllModal] = useState(true);
 
-  const topReviews = mockReviews.filter((review) => review.isTopReview);
-  const averageRating =
-    mockReviews.reduce((sum, review) => sum + review.rating, 0) /
-    mockReviews.length;
+  const topReviews = reviews.filter((review) => review.rating >= 4).slice(0, 3);
+  const averageRating = formatCourseRating(reviews);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="mx-auto">
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Bewertungen & Reviews
+            Ratings & Reviews
           </h2>
           <button
             onClick={() => setShowAllModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2"
           >
-            Alle Reviews anzeigen
+            Show All Reviews
             <ChevronDown className="w-4 h-4" />
           </button>
         </div>
@@ -60,22 +62,22 @@ const ReviewsDisplay = () => {
                 {averageRating.toFixed(1)}
               </div>
               <StarRating rating={Math.round(averageRating)} size="w-6 h-6" />
-              <p className="text-gray-600 mt-2">Kurs-Bewertung</p>
+              <p className="text-gray-600 mt-2">Course Rating</p>
             </div>
 
             <div className="flex-1">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-blue-600">
-                    {mockReviews.length}
+                    {reviews.length}
                   </div>
-                  <p className="text-gray-600">Bewertungen</p>
+                  <p className="text-gray-600">Ratings</p>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600">
                     {Math.round(
-                      (mockReviews.filter((r) => r.rating >= 4).length /
-                        mockReviews.length) *
+                      (reviews.filter((r) => r.rating >= 4).length /
+                        reviews.length) *
                         100
                     )}
                     %
@@ -97,7 +99,7 @@ const ReviewsDisplay = () => {
 
         <div className="space-y-4">
           {topReviews.map((review) => (
-            <ReviewCard key={review.id} review={review} compact={true} />
+            <ReviewCard key={review._id} review={review} compact={true} />
           ))}
         </div>
 
@@ -106,7 +108,7 @@ const ReviewsDisplay = () => {
             onClick={() => setShowAllModal(true)}
             className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2 mx-auto"
           >
-            Weitere {mockReviews.length - topReviews.length} Reviews anzeigen
+            Show {reviews.length - topReviews.length} More Reviews
             <ChevronDown className="w-4 h-4" />
           </button>
         </div>
@@ -116,7 +118,7 @@ const ReviewsDisplay = () => {
       <AllReviewsModal
         isOpen={showAllModal}
         onClose={() => setShowAllModal(false)}
-        reviews={mockReviews}
+        reviews={reviews as ReviewResponse[]}
       />
     </div>
   );

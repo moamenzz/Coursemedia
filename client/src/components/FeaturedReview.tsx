@@ -1,6 +1,9 @@
+import { ReviewResponse } from "@/lib/apiRoutes";
 import { featuredReviewData } from "@/types/MockReviewsData";
+import { formatDate } from "@/utils/formatDate";
 import { Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { FC, useState } from "react";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 interface StarRatingProps {
   rating: number;
@@ -23,19 +26,10 @@ const StarRating: FC<StarRatingProps> = ({ rating, size = "w-4 h-4" }) => {
 };
 
 interface FeaturedReviewProps {
-  review: {
-    userAvatar: string;
-    userName: string;
-    reviewText: string;
-    rating: number;
-    date: string;
-    isTopReview: boolean;
-    helpful: number;
-    notHelpful: number;
-  };
+  featuredReview: ReviewResponse;
 }
 
-const FeaturedReview: FC<FeaturedReviewProps> = () => {
+const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
   const [review, setReview] = useState(featuredReviewData);
   const [helpfulCount, setHelpfulCount] = useState(review.helpful);
   const [notHelpfulCount, setNotHelpfulCount] = useState(review.notHelpful);
@@ -90,24 +84,30 @@ const FeaturedReview: FC<FeaturedReviewProps> = () => {
           {/* User Info */}
           <div className="flex items-start gap-4">
             {/* User Avatar */}
-            <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-              <img
-                src={review.userAvatar}
-                alt={review.userName}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback zu Initialen falls Bild nicht lädt
-                  (e.target as HTMLImageElement).style.display = "none";
-                  if (
-                    (e.target as HTMLImageElement).nextSibling instanceof
-                    HTMLElement
-                  ) {
-                    (
-                      (e.target as HTMLImageElement).nextSibling as HTMLElement
-                    ).style.display = "flex";
-                  }
-                }}
-              />
+            <div className=" rounded-full overflow-hidden flex-shrink-0">
+              {featuredReview?.user?.avatar ? (
+                <img
+                  src={featuredReview.user.avatar}
+                  alt={featuredReview.user.username}
+                  className="w-16 h-16 object-cover"
+                  onError={(e) => {
+                    // Fallback zu Initialen falls Bild nicht lädt
+                    (e.target as HTMLImageElement).style.display = "none";
+                    if (
+                      (e.target as HTMLImageElement).nextSibling instanceof
+                      HTMLElement
+                    ) {
+                      (
+                        (e.target as HTMLImageElement)
+                          .nextSibling as HTMLElement
+                      ).style.display = "flex";
+                    }
+                  }}
+                />
+              ) : (
+                <PlaceholderAvatar username={featuredReview.user.username} />
+              )}
+
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full hidden items-center justify-center text-white font-bold text-lg">
                 {review.userName
                   .split(" ")
@@ -119,7 +119,7 @@ const FeaturedReview: FC<FeaturedReviewProps> = () => {
             {/* User Details */}
             <div className="flex-1">
               <h3 className="font-semibold text-gray-900 text-lg mb-1">
-                {review.userName}
+                {featuredReview?.user?.username}
               </h3>
               <div className="text-sm text-gray-600 space-y-1">
                 <div>{review.coursesCount} courses</div>
@@ -131,13 +131,17 @@ const FeaturedReview: FC<FeaturedReviewProps> = () => {
 
         {/* Rating and Time */}
         <div className="flex items-center gap-3 mb-4">
-          <StarRating rating={review.rating} size="w-5 h-5" />
-          <span className="text-sm text-gray-600">{review.timeAgo}</span>
+          <StarRating rating={featuredReview.rating} size="w-5 h-5" />
+          <span className="text-sm text-gray-600">
+            {formatDate(featuredReview.createdAt)}
+          </span>
         </div>
 
         {/* Review Text */}
         <div className="mb-6">
-          <p className="text-gray-800 leading-relaxed">{review.reviewText}</p>
+          <p className="text-gray-800 leading-relaxed">
+            {featuredReview.comment}
+          </p>
         </div>
 
         {/* Actions */}
