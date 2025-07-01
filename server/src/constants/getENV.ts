@@ -6,6 +6,7 @@ const getENV = (key: string, defaultValue?: string): string => {
   return value;
 };
 
+export const APPLICATION_NAME = getENV("APPLICATION_NAME");
 export const PORT = getENV("PORT", "3000");
 export const MONGODB_URI = getENV("MONGODB_URI");
 export const CLIENT_URL = getENV("CLIENT_URL", "http://localhost:5173");

@@ -21,7 +21,6 @@ import MessagesPage from "./pages/MessagesPage";
 import ProfilePage from "./pages/ProfilePage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PlayerLayout from "./layouts/PlayerLayout";
-import ReviewsPage from "./pages/ReviewsPage";
 
 function App() {
   const navgiate = useNavigate();
@@ -40,10 +39,6 @@ function App() {
           <Route
             path="/dashboard/create-course/:courseId"
             element={<CreateCoursePage />}
-          />
-          <Route
-            path="/dashboard/reviews/:courseId"
-            element={<ReviewsPage />}
           />
           <Route path="/successful-payment" element={<PaymentSuccessPage />} />
 
