@@ -209,8 +209,7 @@ export const getCourses = async (url: string): Promise<CourseResponse[]> => {
     const params = new URLSearchParams(queryString);
     const finalUrl = queryString ? `${baseUrl}?${params.toString()}` : baseUrl;
 
-    const response = await axiosPublic.get(finalUrl);
-    return response || [];
+    return await axiosPublic.get(finalUrl);
   } catch (error) {
     console.error("Error fetching courses:", error);
     return [];
@@ -236,10 +235,10 @@ export const getCart = async (): Promise<CartResponse[]> =>
 export const removeFromCart = async (courseId: string) =>
   axiosPublic.put(`/cart/remove-from-cart/${courseId}`);
 
-export const createCheckoutSession = async (coursesIds: string[]) =>
-  axiosPublic.post<{ url: string }>("/payment/create-checkout-session", {
-    coursesIds,
-  });
+export const createCheckoutSession = async (
+  coursesIds: string[]
+): Promise<{ url: string }> =>
+  axiosPublic.post("/payment/create-checkout-session", { coursesIds });
 
 export const verifyCheckoutSession = async (sessionId: string) =>
   axiosPublic.get<{ message: string; success: boolean }>(

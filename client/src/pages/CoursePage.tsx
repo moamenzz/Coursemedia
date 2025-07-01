@@ -11,7 +11,6 @@ import truncateDescription from "@/utils/truncuateDescription";
 import { useState } from "react";
 import ReviewsDisplay from "@/components/ReviewsDesplay";
 import FeaturedReview from "@/components/FeaturedReview";
-import VideoPlayer from "@/components/VideoPlayer";
 
 const CoursePage = () => {
   const { courseId } = useParams();
@@ -89,7 +88,7 @@ const CoursePage = () => {
                   <CardTitle>Course Curriculum</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {course?.curriculum?.map((curriculumItem, index) => (
+                  {course?.curriculum?.map((curriculumItem) => (
                     <li
                       className={`${
                         curriculumItem?.freePreview
@@ -174,20 +173,25 @@ const CoursePage = () => {
               {/* TODO: Let instructors view reviews from their dashboard and be able to feature one of the reviews */}
 
               {/* Featured Review */}
-              <div>
-                <h1 className="text-2xl font-bold pb-3">Featured Review</h1>
+              {Array.isArray(reviews) &&
+                reviews.find((review) => review.featured) && (
+                  <div>
+                    <h1 className="text-2xl font-bold pb-3">Featured Review</h1>
 
-                <FeaturedReview
-                  featuredReview={featuredReview as ReviewResponse}
-                />
-              </div>
+                    <FeaturedReview
+                      featuredReview={featuredReview as ReviewResponse}
+                    />
+                  </div>
+                )}
 
               {/* All Reviews */}
-              <div>
-                <h1 className="text-2xl font-bold pb-3">All Reviews</h1>
+              {Array.isArray(reviews) && reviews.length > 0 && (
+                <div>
+                  <h1 className="text-2xl font-bold pb-3">All Reviews</h1>
 
-                <ReviewsDisplay reviews={reviews as ReviewResponse[]} />
-              </div>
+                  <ReviewsDisplay reviews={reviews as ReviewResponse[]} />
+                </div>
+              )}
 
               {/* Instructor Details */}
               {/* <div>

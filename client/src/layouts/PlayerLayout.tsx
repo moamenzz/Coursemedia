@@ -26,7 +26,7 @@ const PlayerLayout = () => {
     error,
   } = useQuery({
     queryKey: ["player-course", courseId],
-    queryFn: () => getPlayerCourse(courseId),
+    queryFn: () => getPlayerCourse(courseId as string),
     enabled: !!courseId, // Or Boolean (courseId)
   });
 

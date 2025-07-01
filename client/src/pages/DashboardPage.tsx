@@ -5,15 +5,13 @@ import {
   CourseResponse,
   getInstructor,
   InstructorResponse,
-  logout,
 } from "@/lib/apiRoutes";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { BarChart, Book, LogOut, Star } from "lucide-react";
 import useDashboardStore, { DashboardStore } from "@/stores/useDashboardStore";
-import { toast } from "react-toastify";
 import InstructorDashboard from "@/components/InstructorDashboard";
 import InstructorCourses from "@/components/InstructorCourses";
 import ReviewsPage from "./ReviewsPage";
@@ -38,17 +36,17 @@ const DashboardPage = () => {
     queryFn: getInstructor,
   });
 
-  const { mutate: logoutMutation, error: logoutError } = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      toast.success("Logged out successfully");
-      navigate("/");
-    },
-    onError: () => {
-      const errorMsg = logoutError?.message || "Failed to log out";
-      toast.error(`Logout Failed: ${errorMsg}`);
-    },
-  });
+  // const { mutate: logoutMutation, error: logoutError } = useMutation({
+  //   mutationFn: logout,
+  //   onSuccess: () => {
+  //     toast.success("Logged out successfully");
+  //     navigate("/");
+  //   },
+  //   onError: () => {
+  //     const errorMsg = logoutError?.message || "Failed to log out";
+  //     toast.error(`Logout Failed: ${errorMsg}`);
+  //   },
+  // });
 
   const { activeTab, setActiveTab } = useDashboardStore();
   const { user } = useAuth();

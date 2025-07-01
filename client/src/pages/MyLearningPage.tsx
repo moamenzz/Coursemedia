@@ -83,7 +83,7 @@ const MyLearningPage = () => {
     if (
       instructorFilter &&
       instructorFilter !== "all" &&
-      !item.course.instructor.user.username.includes(instructorFilter)
+      !item.course.instructor?.user?.username.includes(instructorFilter)
     ) {
       return false;
     }
@@ -181,9 +181,12 @@ const MyLearningPage = () => {
                         <SelectContent>
                           <SelectItem value="all">All Instructors</SelectItem>
                           {instructors.map((instructor) => (
-                            <SelectItem key={instructor} value={instructor}>
-                              {instructor?.length > 20
-                                ? `${instructor.substring(0, 20)}...`
+                            <SelectItem
+                              key={instructor}
+                              value={instructor as string}
+                            >
+                              {(instructor?.length as number) > 20
+                                ? `${instructor?.substring(0, 20)}...`
                                 : instructor}
                             </SelectItem>
                           ))}

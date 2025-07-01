@@ -30,7 +30,7 @@ interface FeaturedReviewProps {
 }
 
 const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
-  const [review, setReview] = useState(featuredReviewData);
+  const [review] = useState(featuredReviewData);
   const [helpfulCount, setHelpfulCount] = useState(review.helpful);
   const [notHelpfulCount, setNotHelpfulCount] = useState(review.notHelpful);
   const [isHelpfulClicked, setIsHelpfulClicked] = useState(false);
@@ -105,7 +105,11 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
                   }}
                 />
               ) : (
-                <PlaceholderAvatar username={featuredReview.user.username} />
+                <PlaceholderAvatar
+                  w={14}
+                  h={14}
+                  username={featuredReview?.user?.username}
+                />
               )}
 
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full hidden items-center justify-center text-white font-bold text-lg">
@@ -131,9 +135,9 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
 
         {/* Rating and Time */}
         <div className="flex items-center gap-3 mb-4">
-          <StarRating rating={featuredReview.rating} size="w-5 h-5" />
+          <StarRating rating={featuredReview?.rating} size="w-5 h-5" />
           <span className="text-sm text-gray-600">
-            {formatDate(featuredReview.createdAt)}
+            {formatDate(featuredReview?.createdAt)}
           </span>
         </div>
 

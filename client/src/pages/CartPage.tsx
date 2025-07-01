@@ -30,7 +30,7 @@ const CartPage = () => {
 
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
   const totalPreviousPrice = cartItems.reduce(
-    (total, item) => total + item.previousPrice,
+    (total, item) => total + (item?.previousPrice as number),
     0
   );
 

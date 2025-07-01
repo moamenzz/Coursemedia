@@ -4,7 +4,9 @@ export const formatDuration = (
   courseCurriculum: CourseResponse["curriculum"]
 ) => {
   const totalMinutes =
-    courseCurriculum.map((lec) => lec.duration).reduce((a, b) => a + b, 0) || 0;
+    courseCurriculum
+      .map((lec) => lec.duration)
+      .reduce((a, b) => (a as number) + (b as number), 0) || 0;
 
   if (totalMinutes < 60) {
     return `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"} Total`;

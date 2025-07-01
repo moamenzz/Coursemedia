@@ -1,12 +1,16 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 interface Props {
   username: string;
+  w?: number;
+  h?: number;
 }
 
-const PlaceholderAvatar: FC<Props> = ({ username }) => {
+const PlaceholderAvatar: FC<Props> = ({ username, w, h }) => {
   return (
-    <div className="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+    <div
+      className={`w-${w} h-${h} bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold`}
+    >
       {username?.charAt(0).toUpperCase()}
     </div>
   );

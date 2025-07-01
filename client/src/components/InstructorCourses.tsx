@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Delete, Edit, Star } from "lucide-react";
+import { Delete, Edit } from "lucide-react";
 import { FC, useState } from "react";
 import { InstructorDashboardProps } from "./InstructorDashboard";
 import { useNavigate } from "react-router-dom";

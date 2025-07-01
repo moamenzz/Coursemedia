@@ -1,4 +1,4 @@
-import { CourseResponse } from "@/lib/apiRoutes";
+import { CourseResponse, ReviewResponse } from "@/lib/apiRoutes";
 import { formatDate } from "@/utils/formatDate";
 import { Star } from "lucide-react";
 import { FC } from "react";
@@ -29,7 +29,7 @@ const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
 
               <div className="flex items-center">
                 <span className="text-yellow-400 mr-1">
-                  {formatCourseRating(course.reviews)}
+                  {formatCourseRating(course.reviews as ReviewResponse[])}
                 </span>
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((_, index) => (
@@ -37,7 +37,10 @@ const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
                       key={index}
                       size={12}
                       className={`${
-                        index < Math.floor(formatCourseRating(course.reviews))
+                        index <
+                        Math.floor(
+                          formatCourseRating(course.reviews as ReviewResponse[])
+                        )
                           ? "fill-amber-500 text-amber-500"
                           : "text-gray-300"
                       }`}
@@ -45,7 +48,7 @@ const CourseHeader: FC<CourseHeaderProps> = ({ course }) => {
                   ))}
                 </div>
                 <span className="text-xs text-gray-500 ml-1">
-                  ({course.reviews.length}) reviews
+                  ({course?.reviews?.length}) reviews
                 </span>
               </div>
               <span>{course.enrollees?.length} students</span>

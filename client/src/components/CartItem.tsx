@@ -1,5 +1,10 @@
 import queryClient from "@/config/queryClient";
-import { CourseResponse, removeFromCart } from "@/lib/apiRoutes";
+import {
+  CourseResponse,
+  removeFromCart,
+  ReviewResponse,
+} from "@/lib/apiRoutes";
+import { formatCourseRating } from "@/utils/formatCourseRating";
 import { formatLevel } from "@/utils/formatLevel";
 import { formatPrice } from "@/utils/formatPrice";
 import { useMutation } from "@tanstack/react-query";
@@ -26,6 +31,8 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
     },
   });
 
+  const courseReviews = item.reviews;
+
   return (
     <div>
       <div key={item._id} className="flex border-b border-gray-200 py-6">
@@ -40,7 +47,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
         <div className="ml-4 flex-1">
           <h3 className="text-lg font-medium text-gray-800">{item.title}</h3>
           <p className="text-sm text-gray-600">
-            By {item?.instructor?.user?.username}, {item.instructor.role}
+            By {item?.instructor?.user?.username}, {item.instructor?.role}
           </p>
 
           {item.isBestSeller && (
@@ -51,7 +58,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
 
           <div className="flex items-center mt-1">
             <span className="text-amber-500 font-bold text-sm mr-1">
-              {item?.rating.toFixed(1)}
+              {formatCourseRating(courseReviews as ReviewResponse[]).toFixed(1)}
             </span>
             <div className="flex">
               {[1, 2, 3, 4, 5].map((_, index) => (
@@ -59,7 +66,10 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
                   key={index}
                   size={12}
                   className={`${
-                    index < Math.floor(item?.rating)
+                    index <
+                    Math.floor(
+                      formatCourseRating(courseReviews as ReviewResponse[])
+                    )
                       ? "fill-amber-500 text-amber-500"
                       : "text-gray-300"
                   }`}
@@ -67,7 +77,11 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
               ))}
             </div>
             <span className="text-xs text-gray-500 ml-1">
-              ({new Intl.NumberFormat("en-US").format(item.rating)})
+              (
+              {new Intl.NumberFormat("en-US").format(
+                formatCourseRating(courseReviews as ReviewResponse[])
+              )}
+              )
             </span>
           </div>
 
@@ -82,7 +96,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
             {formatPrice(item.price)}
           </span>
           <span className="text-sm text-gray-500 line-through">
-            {formatPrice(item.previousPrice)}
+            {formatPrice(item?.previousPrice as number)}
           </span>
 
           <div className="mt-4 flex flex-col items-end">

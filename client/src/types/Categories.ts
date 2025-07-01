@@ -39,6 +39,10 @@ export const categories = [
     name: "Finance & Accounting",
     value: "financeAndAccounting",
   },
+  {
+    name: "Other",
+    value: "other",
+  },
 ];
 
 export const levels = [

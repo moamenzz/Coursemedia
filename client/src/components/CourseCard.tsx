@@ -18,16 +18,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   const formattedPreviousPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(course?.previousPrice);
-
-  console.log(course?.reviews?.length);
-
-  // Format the rating count with commas
-  const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.reviews?.length
-  );
-
-  console.log(course.reviews);
+  }).format(course?.previousPrice as number);
 
   return (
     <Link
@@ -72,7 +63,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             ))}
           </div>
           <span className="text-xs text-gray-500 ml-1">
-            ({formattedReviews})
+            ({course.reviews?.length || 0})
           </span>
         </div>
 

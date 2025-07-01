@@ -20,11 +20,7 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
   const formattedPreviousPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(course?.previousPrice);
-
-  const formattedReviews = new Intl.NumberFormat("en-US").format(
-    course?.reviews?.length
-  );
+  }).format(course?.previousPrice as number);
 
   return (
     <Card
@@ -77,7 +73,7 @@ const ListCourseCard: FC<ListCourseCardProps> = ({ course }) => {
               ))}
             </div>
             <span className="text-xs text-gray-500 ml-1">
-              ({formattedReviews})
+              ({course?.reviews?.length || 0})
             </span>
           </div>
 

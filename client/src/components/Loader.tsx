@@ -5,7 +5,9 @@ interface LoaderProps {
 }
 
 const Loader: FC = ({ className }: LoaderProps) => {
-  return <span className="loading loading-spinner loading-lg "></span>;
+  return (
+    <span className={`loading loading-spinner loading-lg ${className} `}></span>
+  );
 };
 
 export default Loader;

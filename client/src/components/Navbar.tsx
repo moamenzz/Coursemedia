@@ -9,6 +9,7 @@ import { Separator } from "./ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/lib/apiRoutes";
 import useAuth from "@/hooks/useAuth";
+import PlaceholderAvatar from "./PlaceholderAvatar";
 
 interface NavbarProps {
   username?: string;
@@ -16,7 +17,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [timeLeft, setTimeLeft] = useState("3h 51m 37s");
+  const [timeLeft] = useState("3h 51m 37s");
   const [searchParams, setSearchParams] = useState<string>("");
   const navigate = useNavigate();
   const { setActiveTab } = useMyLearningStore();
@@ -100,13 +101,13 @@ const Navbar: React.FC<NavbarProps> = () => {
 
             {/* Right section */}
             <div className="flex items-center space-x-4">
-              <div className="hidden md:block">
-                <Link
+              <div className="hidden md:block cursor-pointer">
+                <a
                   className="text-sm hover:text-blue-600"
                   onClick={() => toast.info("Coming soon!")}
                 >
                   Coursemedia Business
-                </Link>
+                </a>
               </div>
               <div className="hidden md:block">
                 <Link to="/dashboard" className="text-sm hover:text-blue-600">
@@ -158,12 +159,20 @@ const Navbar: React.FC<NavbarProps> = () => {
                       role="button"
                       className="btn btn-ghost btn-circle avatar"
                     >
-                      <div className="w-10 rounded-full">
-                        <img
-                          alt="Tailwind CSS Navbar component"
-                          src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                      {user.avatar ? (
+                        <div className="w-10 rounded-full">
+                          <img
+                            alt={`${user.username} avatar`}
+                            src={user.avatar}
+                          />
+                        </div>
+                      ) : (
+                        <PlaceholderAvatar
+                          w={8}
+                          h={8}
+                          username={user.username}
                         />
-                      </div>
+                      )}
                     </div>
                     <ul
                       tabIndex={0}
