@@ -7,9 +7,11 @@ import Button from "../components/Button";
 import ErrorThrower from "../components/ErrorThrower";
 import Input from "../components/Input";
 import { FaEnvelope, FaLock } from "react-icons/fa";
+import useAuthStore from "@/stores/useAuthStore";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { isDark, setIsDark } = useAuthStore();
   const [formData, setFormData] = useState<LoginData>({
     email: "",
     password: "",
@@ -32,6 +34,10 @@ const LoginPage = () => {
       navigate("/");
     },
   });
+
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-700 to-black text-white flex flex-col items-center">
