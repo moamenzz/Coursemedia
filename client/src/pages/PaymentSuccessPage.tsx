@@ -3,7 +3,6 @@ import Loader from "@/components/Loader";
 import { verifyCheckoutSession } from "@/lib/apiRoutes";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PaymentSuccessPage = () => {
