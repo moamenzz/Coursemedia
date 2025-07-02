@@ -147,7 +147,7 @@ const RegisterPage = () => {
                     : "text-gray-700 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400"
                 }`}
                 onClick={() =>
-                  (window.location.href = "http://localhost:3000/auth/google")
+                  (window.location.href = import.meta.env.VITE_GOOGLE_CALLBACK)
                 }
               >
                 <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ const RegisterPage = () => {
                     : "text-gray-700 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400"
                 }`}
                 onClick={() =>
-                  (window.location.href = "http://localhost:3000/auth/github")
+                  (window.location.href = import.meta.env.VITE_GITHUB_CALLBACK)
                 }
               >
                 <Github className="w-5 h-5 mr-3" />
