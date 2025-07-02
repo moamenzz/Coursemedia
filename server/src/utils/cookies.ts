@@ -2,10 +2,9 @@ import { CookieOptions, Response } from "express";
 import { NODE_ENV } from "../constants/getENV";
 
 const secure = NODE_ENV === "development" ? false : true;
-const sameSite = NODE_ENV === "development" ? "strict" : "none";
 
 const defaults: CookieOptions = {
-  sameSite: sameSite,
+  sameSite: "none",
   httpOnly: true,
   secure: secure,
 };
