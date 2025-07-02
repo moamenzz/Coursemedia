@@ -5,8 +5,12 @@ import Loader from "@/components/Loader";
 import { getExplorePageCourses } from "@/lib/apiRoutes";
 import formatCategory from "@/utils/formatCategory";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const ExplorePage = () => {
+  const [courseMediaBanner, setCourseMediaBanner] = useState(false);
+
   const {
     data: explorePageCourses,
     isLoading,
@@ -29,20 +33,28 @@ const ExplorePage = () => {
     <div className="container mx-auto px-4 py-16 md:py-10">
       <Hero />
       {/* Business banner */}
-      <div className="bg-black text-white w-full py-3 px-4 mt-12 flex justify-between items-center">
-        <p className="text-sm">
-          Training 5 or more people? Get your team access to Coursemedia's top
-          22,000+ courses
-        </p>
-        <div className="flex gap-2">
-          <button className="bg-white text-black px-3 py-1 text-sm">
-            Get Coursemedia Business
-          </button>
-          <button className="border border-white px-3 py-1 text-sm">
-            Dismiss
-          </button>
+      {courseMediaBanner && (
+        <div className="bg-black text-white w-full py-3 px-4 mt-12 flex justify-between items-center">
+          <p className="text-sm">
+            Training 5 or more people? Get your team access to Coursemedia's top
+            22,000+ courses
+          </p>
+          <div className="flex gap-2">
+            <button
+              className="bg-white text-black px-3 py-1 text-sm cursor-pointer"
+              onClick={() => toast.info("Coming Soon!")}
+            >
+              Get Coursemedia Business
+            </button>
+            <button
+              className="border border-white px-3 py-1 text-sm cursor-pointer"
+              onClick={() => setCourseMediaBanner(false)}
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <h1 className="text-3xl font-bold mt-8">What to learn next</h1>
 

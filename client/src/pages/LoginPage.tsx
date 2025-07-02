@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login, LoginData } from "../lib/apiRoutes";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -268,8 +268,8 @@ const LoginPage = () => {
               )}
 
               <div className="flex items-center justify-end">
-                <a
-                  href="/forgot-password"
+                <Link
+                  to="/forgot-password"
                   className={`text-sm font-medium transition-colors duration-300 hover:underline ${
                     isDark
                       ? "text-blue-400 hover:text-blue-300"
@@ -277,7 +277,7 @@ const LoginPage = () => {
                   }`}
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
 
               <Button
@@ -307,12 +307,12 @@ const LoginPage = () => {
               }`}
             >
               Don't have an account?{" "}
-              <a
-                href="/register"
+              <Link
+                to="/register"
                 className="text-blue-600 hover:underline font-medium transition-colors duration-300"
               >
                 Sign up
-              </a>
+              </Link>
             </div>
           </CardContent>
         </Card>

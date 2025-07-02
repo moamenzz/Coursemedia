@@ -25,7 +25,6 @@ const CoursePage = () => {
     queryKey: ["course", courseId],
     queryFn: () => getCourse(courseId!),
   });
-  console.log(course?._id);
 
   const {
     data: reviews,

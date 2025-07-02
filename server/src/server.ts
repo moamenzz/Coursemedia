@@ -57,7 +57,7 @@ app.use("/cart", authenticate, cartRouter);
 app.use("/payment", paymentRouter);
 app.use("/purchase", authenticate, purchaseRouter);
 app.use("/player", authenticate, playerRouter);
-app.use("/review", authenticate, reviewRouter);
+app.use("/review", reviewRouter);
 
 app.use(errorHandler);
 
