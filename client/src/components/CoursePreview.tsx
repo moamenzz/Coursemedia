@@ -85,6 +85,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
   } = useQuery({
     queryKey: ["wishlists"],
     queryFn: getWishlists,
+    enabled: user !== null,
   });
 
   const { mutate: wishlistCourseMutation, isPending: wishlistPending } =
@@ -268,7 +269,7 @@ const CourseEnrollment: FC<CoursePreviewProps> = ({ course }) => {
         <Alert className="bg-gray-100 border border-gray-200 mb-4">
           <AlertDescription className="text-sm text-center text-purple-600">
             {couponCode} is applied
-            <div className="text-xs text-gray-500">Udemy coupon</div>
+            <div className="text-xs text-gray-500">Coursemedia coupon</div>
           </AlertDescription>
         </Alert>
       )}

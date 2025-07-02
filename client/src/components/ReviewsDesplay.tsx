@@ -32,7 +32,7 @@ interface ReviewsDisplayProps {
 }
 
 const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ reviews }) => {
-  const [showAllModal, setShowAllModal] = useState(true);
+  const [showAllModal, setShowAllModal] = useState(false);
 
   const topReviews = reviews.filter((review) => review.rating >= 4).slice(0, 3);
   const averageRating = formatCourseRating(reviews);

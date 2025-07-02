@@ -9,7 +9,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const ExplorePage = () => {
-  const [courseMediaBanner, setCourseMediaBanner] = useState(false);
+  const [courseMediaBanner, setCourseMediaBanner] = useState(true);
 
   const {
     data: explorePageCourses,

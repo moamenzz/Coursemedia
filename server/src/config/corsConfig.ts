@@ -3,6 +3,7 @@ import { CorsOptions } from "cors";
 const whitelist: string[] = [
   "http://localhost:5173",
   "https://coursemedia-1.onrender.com",
+  "https://coursemedia.vercel.app",
 ];
 
 const corsConfig = {

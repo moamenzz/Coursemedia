@@ -106,8 +106,8 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
                 />
               ) : (
                 <PlaceholderAvatar
-                  w={14}
-                  h={14}
+                  w={16}
+                  h={16}
                   username={featuredReview?.user?.username}
                 />
               )}
