@@ -1,7 +1,8 @@
 import { CorsOptions } from "cors";
 
 const whitelist: string[] = [
-  "http://localhost:5173, https://coursemedia-1.onrender.com",
+  "http://localhost:5173",
+  "https://coursemedia-1.onrender.com",
 ];
 
 const corsConfig = {
