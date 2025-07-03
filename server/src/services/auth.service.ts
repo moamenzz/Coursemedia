@@ -1,4 +1,4 @@
-import { NODE_ENV } from "../constants/getENV";
+import { CLIENT_URL, NODE_ENV } from "../constants/getENV";
 import {
   BAD_REQUEST,
   CONFLICT,
@@ -41,8 +41,6 @@ interface LoginParams {
   userAgent?: string;
 }
 
-const CLIENT_API = "http://localhost:5173";
-
 export const createAccount = async (data: RegisterParams) => {
   // Prüfe ob E-mail schon existiert
   const email = await UserModel.findOne({ email: data.email });
@@ -66,7 +64,7 @@ export const createAccount = async (data: RegisterParams) => {
   // Create URL und Schick Bestätigung-Email
   const URL =
     NODE_ENV === "development"
-      ? `${CLIENT_API}/verify-email?code=${
+      ? `${CLIENT_URL}/verify-email?code=${
           verificationCode._id
         }&exp=${verificationCode.expiresAt.getTime()}`
       : "example.com";
@@ -224,7 +222,7 @@ export const forgotPassword = async (email: string) => {
     // Create URL & Send reset password email
     const URL =
       NODE_ENV === "development"
-        ? `${CLIENT_API}/reset-password?code=${
+        ? `${CLIENT_URL}/reset-password?code=${
             verificationCode._id
           }&exp=${verificationCode.expiresAt.getTime()}`
         : "example.com";

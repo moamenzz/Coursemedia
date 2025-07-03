@@ -105,14 +105,15 @@ export const getCourses = catchErrors(async (req, res) => {
   }
 
   const courses = await CourseModel.find(filters)
+    .select("cover title instructor reviews price previousPrice isBestSeller")
     .populate({
       path: "instructor",
+      select: "user",
       populate: {
         path: "user",
         select: "username",
       },
     })
-    .select("-curriculum") // Exclude curriculum to reduce response size
     .sort({ createdAt: -1 })
     .populate("reviews");
 
@@ -128,11 +129,15 @@ export const getExplorePageCourses = catchErrors(async (req, res) => {
         category: category,
         isBestSeller: true,
       })
+        .select(
+          "cover title instructor reviews price previousPrice isBestSeller"
+        )
         .populate({
           path: "instructor",
+          select: "user",
           populate: {
             path: "user",
-            select: "-password", // Exclude password field
+            select: "username", // Exclude password field
           },
         })
         .populate({

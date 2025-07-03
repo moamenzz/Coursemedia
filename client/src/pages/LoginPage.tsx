@@ -133,7 +133,7 @@ const LoginPage = () => {
                     : "text-gray-700 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400"
                 }`}
                 onClick={() =>
-                  (window.location.href = import.meta.env.VITE_GOOGLE_CALLBACK)
+                  (window.location.href = import.meta.env.VITE_GOOGLE_OAUTH_URL)
                 }
               >
                 <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@ const LoginPage = () => {
                     : "text-gray-700 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400"
                 }`}
                 onClick={() =>
-                  (window.location.href = import.meta.env.VITE_GITHUB_CALLBACK)
+                  (window.location.href = import.meta.env.VITE_GITHUB_OAUTH_URL)
                 }
               >
                 <Github className="w-5 h-5 mr-3" />
