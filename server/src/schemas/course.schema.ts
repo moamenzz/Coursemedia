@@ -6,8 +6,8 @@ import {
 } from "../constants/courseCategoryTypes";
 
 const courseSchema = z.object({
-  title: z.string({ required_error: "Title is required" }).min(1).max(45),
-  subtitle: z.string({ required_error: "Subtitle is required" }).min(1).max(45),
+  title: z.string({ required_error: "Title is required" }).min(1).max(60),
+  subtitle: z.string({ required_error: "Subtitle is required" }).min(1).max(60),
   description: z
     .string({ required_error: "Description is required" })
     .min(1)
@@ -15,8 +15,8 @@ const courseSchema = z.object({
   cover: z.string({ required_error: "Cover is required" }).min(1),
   curriculum: z.array(
     z.object({
-      title: z.string({ required_error: "Title is required" }).min(1).max(45),
-      url: z.string({ required_error: "Url is required" }).min(1).max(255),
+      title: z.string({ required_error: "Title is required" }).min(1).max(100),
+      url: z.string({ required_error: "Url is required" }).min(1),
       publicId: z.string({ required_error: "Public id is required" }).min(1),
       freePreview: z.boolean(),
     })

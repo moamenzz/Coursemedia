@@ -1,4 +1,6 @@
 import cloudinary from "../config/cloudinary";
+import { NOT_FOUND } from "../constants/HttpStatusCode";
+import appAssert from "../utils/AppAssert";
 import catchErrors from "../utils/catchError";
 import { cloudinaryVideoOptions } from "../utils/cloudinaryOptions";
 
@@ -34,7 +36,9 @@ export const handleUploadLectureToCloudinary = catchErrors(async (req, res) => {
 });
 
 export const handleDeleteFromCloudinary = catchErrors(async (req, res) => {
-  const { publicId } = req.params;
+  const { publicId } = req.body;
+
+  appAssert(publicId, NOT_FOUND, "Public ID not provided");
 
   await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
 

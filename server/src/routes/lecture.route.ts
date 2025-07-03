@@ -13,6 +13,6 @@ lectureRouter.post(
   fileUpload({ useTempFiles: true }),
   handleUploadLectureToCloudinary
 );
-lectureRouter.delete("/delete/:publicId", handleDeleteFromCloudinary);
+lectureRouter.delete("/delete", handleDeleteFromCloudinary);
 
 export default lectureRouter;

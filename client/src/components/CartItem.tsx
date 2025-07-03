@@ -58,7 +58,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
 
           <div className="flex items-center mt-1">
             <span className="text-amber-500 font-bold text-sm mr-1">
-              {formatCourseRating(courseReviews as ReviewResponse[]).toFixed(1)}
+              {formatCourseRating(courseReviews as ReviewResponse[])}
             </span>
             <div className="flex">
               {[1, 2, 3, 4, 5].map((_, index) => (
@@ -77,11 +77,7 @@ const CartItem: FC<CartItemProps> = ({ item }) => {
               ))}
             </div>
             <span className="text-xs text-gray-500 ml-1">
-              (
-              {new Intl.NumberFormat("en-US").format(
-                formatCourseRating(courseReviews as ReviewResponse[])
-              )}
-              )
+              ({courseReviews?.length})
             </span>
           </div>
 

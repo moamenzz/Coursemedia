@@ -12,7 +12,12 @@ export const getInstructor = catchErrors(async (req, res) => {
     user: instructorId,
   })
     .populate("user")
-    .populate("courses")
+    .populate({
+      path: "courses",
+      populate: {
+        path: "enrollees",
+      },
+    })
     .populate("students");
   appAssert(
     instructor,

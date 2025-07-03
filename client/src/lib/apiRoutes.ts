@@ -67,7 +67,7 @@ export interface CourseResponse {
   cover: string;
   curriculum: LectureResponse[];
   instructor?: InstructorResponse;
-  enrollees?: string[];
+  enrollees?: AuthResponse[];
   category: string;
   level: string;
   courseLanguage: string;
@@ -189,7 +189,7 @@ export const uploadToCloudinary = async (
   });
 };
 export const deleteFromCloudinary = async (publicId: string) =>
-  axiosPublic.delete(`/lecture/delete/${publicId}`);
+  axiosPublic.delete(`/lecture/delete`, { data: { publicId } });
 
 export const getSignature = async (): Promise<CloudinarySignature> =>
   axiosPublic.get("/lecture/signature");

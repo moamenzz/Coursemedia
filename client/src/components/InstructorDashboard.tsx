@@ -17,11 +17,24 @@ export interface InstructorDashboardProps {
 const InstructorDashboard: React.FC<InstructorDashboardProps> = ({
   instructor,
 }) => {
+  const instructorStudents = instructor.courses.map((course) => {
+    return (
+      course.enrollees &&
+      course.enrollees.map((student) => {
+        return {
+          course: course.title,
+          student: student.username,
+          email: student.email,
+        };
+      })
+    );
+  });
+
   const config = [
     {
       icon: Users,
       label: "Total Students",
-      value: instructor.students.length || 0,
+      value: instructorStudents.flat().length || 0,
     },
     {
       icon: DollarSign,
@@ -62,15 +75,23 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {instructor.students.map((student, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">
-                      {student.course}
-                    </TableCell>
-                    <TableCell>{student.student.username}</TableCell>
-                    <TableCell>{student.student.email}</TableCell>
-                  </TableRow>
-                ))}
+                {instructorStudents &&
+                  instructorStudents.map((student) => {
+                    return (
+                      student &&
+                      student.map((student, index) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">
+                              {student.course}
+                            </TableCell>
+                            <TableCell>{student.student}</TableCell>
+                            <TableCell>{student.email}</TableCell>
+                          </TableRow>
+                        );
+                      })
+                    );
+                  })}
               </TableBody>
             </Table>
           </div>
