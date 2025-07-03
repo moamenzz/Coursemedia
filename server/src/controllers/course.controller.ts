@@ -105,7 +105,9 @@ export const getCourses = catchErrors(async (req, res) => {
   }
 
   const courses = await CourseModel.find(filters)
-    .select("cover title instructor reviews price previousPrice isBestSeller")
+    .select(
+      "cover title instructor reviews price previousPrice isBestSeller category"
+    )
     .populate({
       path: "instructor",
       select: "user",
