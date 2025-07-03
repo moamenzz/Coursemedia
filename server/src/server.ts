@@ -25,6 +25,8 @@ const port: String | Number = PORT || 3000;
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use("/payment/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json({ limit: "10mb" }));
