@@ -2,10 +2,10 @@ import { CookieOptions, Response } from "express";
 import { NODE_ENV } from "../constants/getENV";
 
 const secure = NODE_ENV === "development" ? false : true;
-// const sameSite = NODE_ENV === "development" ? "lax" : "none";
+const sameSite = NODE_ENV === "development" ? "lax" : "none";
 
 const defaults: CookieOptions = {
-  sameSite: "none",
+  sameSite: sameSite,
   httpOnly: true,
   secure: secure,
 };
@@ -37,6 +37,16 @@ export const setCookies = ({
     .cookie("refreshToken", refreshToken, refreshTokenCookieOptions());
 
 export const clearCookies = (res: Response) =>
-  res.clearCookie("accessToken").clearCookie("refreshToken", {
-    path: "/auth/refresh",
-  });
+  res
+    .clearCookie("accessToken", {
+      httpOnly: true,
+      secure: NODE_ENV === "development" ? false : true,
+      sameSite: NODE_ENV === "development" ? "lax" : "none",
+      path: "/",
+    })
+    .clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: NODE_ENV === "development" ? false : true,
+      sameSite: NODE_ENV === "development" ? "lax" : "none",
+      path: "/auth/refresh",
+    });
