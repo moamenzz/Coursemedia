@@ -36,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = () => {
     mutationFn: logout,
     onSuccess: () => {
       toast.success("Logged out successfully");
-      window.location.href = "/";
+      // window.location.href = "/";
     },
     onError: () => {
       toast.error(error?.message || "Failed to log out");
