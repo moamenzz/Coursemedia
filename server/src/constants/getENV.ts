@@ -6,16 +6,17 @@ const getENV = (key: string, defaultValue?: string): string => {
   return value;
 };
 
+export const NODE_ENV = getENV("NODE_ENV");
 export const APPLICATION_NAME = getENV("APPLICATION_NAME");
+export const CLIENT_URL = getENV("CLIENT_URL");
 export const PORT = getENV("PORT", "3000");
 export const MONGODB_URI = getENV("MONGODB_URI");
-export const CLIENT_URL = getENV("CLIENT_URL");
-export const SESSION_SECRET = getENV("SESSION_SECRET");
 export const ACCESS_TOKEN_SECRET = getENV("ACCESS_TOKEN_SECRET");
 export const REFRESH_TOKEN_SECRET = getENV("REFRESH_TOKEN_SECRET");
+export const SESSION_SECRET = getENV("SESSION_SECRET");
 export const RESEND_SECRET = getENV("RESEND_SECRET");
 export const NODEMAILER_APP_PASSWORD = getENV("NODEMAILER_APP_PASSWORD");
-export const NODE_ENV = getENV("NODE_ENV");
+export const SENTRY_DSN = getENV("SENTRY_DSN");
 export const SENDER_DOMAIN = getENV("SENDER_DOMAIN");
 export const GOOGLE_CLIENT_ID = getENV("GOOGLE_CLIENT_ID");
 export const GOOGLE_CLIENT_SECRET = getENV("GOOGLE_CLIENT_SECRET");

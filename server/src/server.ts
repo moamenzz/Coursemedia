@@ -1,5 +1,6 @@
+import "./instrument";
+import * as Sentry from "@sentry/node";
 import express from "express";
-import "dotenv/config";
 import connectDB from "./config/connectDB";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -49,6 +50,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
 app.use("/auth", authRouter);
 app.use("/course", courseRouter);
 app.use("/user", authenticate, userRouter);
@@ -60,6 +65,8 @@ app.use("/payment", paymentRouter);
 app.use("/purchase", authenticate, purchaseRouter);
 app.use("/player", authenticate, playerRouter);
 app.use("/review", reviewRouter);
+
+Sentry.setupExpressErrorHandler(app);
 
 app.use(errorHandler);
 

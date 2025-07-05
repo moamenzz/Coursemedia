@@ -1,4 +1,4 @@
-import { APPLICATION_NAME, CLIENT_URL, NODE_ENV } from "../constants/getENV";
+import { APPLICATION_NAME, CLIENT_URL } from "../constants/getENV";
 import {
   BAD_REQUEST,
   CONFLICT,
