@@ -1,4 +1,4 @@
-import { CLIENT_URL, NODE_ENV } from "../constants/getENV";
+import { APPLICATION_NAME, CLIENT_URL, NODE_ENV } from "../constants/getENV";
 import {
   BAD_REQUEST,
   CONFLICT,
@@ -18,13 +18,10 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwtTokens";
-import sendEmail from "../utils/sendEmail";
-import {
-  PASSWORD_RESET_REQUEST_TEMPLATE,
-  VERIFICATION_EMAIL_TEMPLATE,
-} from "../utils/emailTemplates";
 import AppErrorCode from "../constants/AppErrorCode";
 import InstructorModel from "../models/instructor.model";
+import sendEmail from "../utils/sendEmail";
+import { EMAIL_TEMPLATE } from "../utils/emailTemplates";
 
 interface RegisterParams {
   email: string;
@@ -62,16 +59,21 @@ export const createAccount = async (data: RegisterParams) => {
     type: VerificationTypes.EmailVerification,
   });
   // Create URL und Schick Bestätigung-Email
-  const URL =
-    NODE_ENV === "development"
-      ? `${CLIENT_URL}/verify-email?code=${
-          verificationCode._id
-        }&exp=${verificationCode.expiresAt.getTime()}`
-      : "example.com";
+  const URL = `${CLIENT_URL}/verify-email?code=${
+    verificationCode._id
+  }&exp=${verificationCode.expiresAt.getTime()}`;
 
-  sendEmail({
-    to: user.email,
-    ...VERIFICATION_EMAIL_TEMPLATE(URL),
+  const verificationEmail = EMAIL_TEMPLATE({
+    subject: "Verify your Email",
+    header: `Welcome to ${APPLICATION_NAME}, we're happy to have you abroad! Verify your email to get started.`,
+    link: URL,
+    expiry_date: new Date(verificationCode.expiresAt).toLocaleString(),
+    email: data.email,
+  });
+
+  await sendEmail({
+    ...verificationEmail,
+    to: data.email,
   });
 
   const isInstructor = data.instructor;
@@ -220,16 +222,22 @@ export const forgotPassword = async (email: string) => {
       type: VerificationTypes.ResetPassword,
     });
     // Create URL & Send reset password email
-    const URL =
-      NODE_ENV === "development"
-        ? `${CLIENT_URL}/reset-password?code=${
-            verificationCode._id
-          }&exp=${verificationCode.expiresAt.getTime()}`
-        : "example.com";
+    const URL = `${CLIENT_URL}/reset-password?code=${
+      verificationCode._id
+    }&exp=${verificationCode.expiresAt.getTime()}`;
+
+    const resetPasswordEmail = EMAIL_TEMPLATE({
+      subject: "Password Reset",
+      header:
+        "We received a request to reset the password for your account. To proceed, please click the link below to create a new password:",
+      link: URL,
+      expiry_date: new Date(verificationCode.expiresAt).toLocaleString(),
+      email,
+    });
 
     sendEmail({
-      to: user.email,
-      ...PASSWORD_RESET_REQUEST_TEMPLATE(URL),
+      ...resetPasswordEmail,
+      to: email,
     });
   } catch (e) {
     console.error(e);

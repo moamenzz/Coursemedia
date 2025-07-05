@@ -130,10 +130,11 @@ const ForgotPasswordPage = () => {
               {isSuccess && (
                 <div
                   className={`${
-                    isDark ? "bg-blue-600 text-blue-400" : " text-black"
-                  }text-blue-500 text-sm font-medium bg-emerald-500/10 p-3 rounded text-center`}
+                    isDark ? "bg-blue-800 text-white" : "text-black"
+                  }text-sm font-medium p-3 rounded text-center mt-2`}
                 >
-                  Recover link has been sent to your email successfully
+                  Recovery link has been sent to your email successfully. Make
+                  sure to check your spam folder.
                 </div>
               )}
 

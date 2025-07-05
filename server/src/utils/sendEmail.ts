@@ -1,26 +1,31 @@
-import resend from "../config/resend";
-import { NODE_ENV, SENDER_DOMAIN } from "../constants/getENV";
+import nodemailer from "nodemailer";
+import {
+  APPLICATION_NAME,
+  NODEMAILER_APP_PASSWORD,
+  SENDER_DOMAIN,
+} from "../constants/getENV";
 
-interface ResendParams {
-  to: string;
-  text: string;
+interface SendEmailParams {
   subject: string;
   html: string;
+  to: string;
 }
 
-const getFrom = () =>
-  NODE_ENV === "development" ? "onboarding@resend.dev" : SENDER_DOMAIN;
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: SENDER_DOMAIN,
+    pass: NODEMAILER_APP_PASSWORD,
+  },
+});
 
-const getTo = (to: string) =>
-  NODE_ENV === "development" ? "a5tsasyalcomputer@gmail.com" : to;
-
-const sendEmail = async ({ to, text, subject, html }: ResendParams) =>
-  await resend.emails.send({
-    from: getFrom(),
-    to: getTo(to),
+const sendEmail = async ({ subject, html, to }: SendEmailParams) => {
+  await transporter.sendMail({
+    from: `${APPLICATION_NAME} <${SENDER_DOMAIN}>`,
+    to,
     subject,
     html,
-    text,
   });
+};
 
 export default sendEmail;

@@ -1,67 +1,40 @@
 import { APPLICATION_NAME } from "../constants/getENV";
 
-export const VERIFICATION_EMAIL_TEMPLATE = (url: string) => ({
-  subject: "Verify your e-mail",
-  text: `Your email verification link: ${url}`,
-  html: `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Email</title>
-  </head>
-  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
-      <h1 style="color: white; margin: 0;">Verify Your Email</h1>
-    </div>
-    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-      <p>Hello,</p>
-      <p>Thank you for signing up! Click to verify email:</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${url}" style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4CAF50;" >Click to verify</a>
-      </div>
-      <p>This link will expire in 1 hour for security reasons.</p>
-      <p>If you didn't create an account with us, please ignore this email.</p>
-      <p>Best regards,<br>${APPLICATION_NAME}</p>
-    </div>
-    <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
-      <p>This is an automated message, please do not reply to this email.</p>
-    </div>
-  </body>
-  </html>
-  `,
-});
+interface EmailTemplateParams {
+  subject: string;
+  header: string;
+  link: string;
+  expiry_date: string;
+  email: string;
+}
 
-export const PASSWORD_RESET_REQUEST_TEMPLATE = (url: string) => ({
-  subject: "Reset your password",
-  text: `Your password reset link: ${url}`,
+export const EMAIL_TEMPLATE = ({
+  subject,
+  header,
+  link,
+  expiry_date,
+  email,
+}: EmailTemplateParams) => ({
+  subject,
+  text: `${header}\n${link}\nThis link will expire in ${expiry_date}.`,
   html: `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Your Password</title>
-  </head>
-  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
-      <h1 style="color: white; margin: 0;">Password Reset</h1>
+<div style="font-family: system-ui, sans-serif, Arial; font-size: 14px; color: #333; padding: 20px 14px; background-color: #f5f5f5;">
+  <div style="max-width: 600px; margin: auto; background-color: #fff;">
+    <div style="text-align: center; background-color: #333; padding: 14px;">
+      <a style="text-decoration: none; outline: none;" href="${link}" target="_blank" rel="noopener">&nbsp;</a>
     </div>
-    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-      <p>Hello,</p>
-      <p>We received a request to reset your password. If you didn't make this request, please ignore this email.</p>
-      <p>To reset your password, click the button below:</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${url}" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
-      </div>
-      <p>This link will expire in 1 hour for security reasons.</p>
-      <p>Best regards,<br>${APPLICATION_NAME}</p>
+    <div style="padding: 14px;">
+      <h1 style="font-size: 22px; margin-bottom: 26px;">${subject}</h1>
+      <p>${header}</p>
+      <p><a href="${link}">Click here</a></p>
+      <p>This link will expire in ${expiry_date}.</p>
+      <p>If you didn't make this request, please ignore this email or let us know immediately. Your account remains secure.</p>
+      <p>Best regards,<br>The ${APPLICATION_NAME} Team</p>
     </div>
-    <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
-      <p>This is an automated message, please do not reply to this email.</p>
-    </div>
-  </body>
-  </html>
-  `,
+  </div>
+  <div style="max-width: 600px; margin: auto;">
+    <p style="color: #999;">The email was sent to ${email}<br>You received this email because you are registered with ${APPLICATION_NAME}</p>
+  </div>
+</div>
+`,
 });
