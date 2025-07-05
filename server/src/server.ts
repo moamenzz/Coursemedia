@@ -50,10 +50,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
-
 app.use("/auth", authRouter);
 app.use("/course", courseRouter);
 app.use("/user", authenticate, userRouter);

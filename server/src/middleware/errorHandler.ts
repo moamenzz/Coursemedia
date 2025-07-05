@@ -5,13 +5,11 @@ import { clearCookies } from "../utils/cookies";
 
 const handleZodError = (res: Response, error: ZodError) => {
   const errors = error.issues[0];
-  res
-    .status(400)
-    .json({
-      type: "ValidationError",
-      message: errors.message,
-      field: errors.path[0],
-    });
+  res.status(400).json({
+    type: "ValidationError",
+    message: errors.message,
+    field: errors.path[0],
+  });
 };
 
 const handleAppError = (res: Response, error: AppError) => {

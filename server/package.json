@@ -5,13 +5,15 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node src/server.ts ",
-    "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "build": "tsc && npm run sentry:sourcemaps",
+    "type-check": "tsc --noEmit",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org moamen-6b --project coursemedia ./dist && sentry-cli sourcemaps upload --org moamen-6b --project coursemedia ./dist"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@sentry/cli": "^2.46.0",
     "@sentry/node": "^9.35.0",
     "@sentry/profiling-node": "^9.35.0",
     "axios": "^1.8.4",
