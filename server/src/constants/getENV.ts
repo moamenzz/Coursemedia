@@ -18,7 +18,7 @@ export const RESEND_SECRET = getENV("RESEND_SECRET");
 export const NODEMAILER_APP_PASSWORD = getENV("NODEMAILER_APP_PASSWORD");
 export const SENTRY_DSN = getENV(
   "SENTRY_DSN",
-  "https://849e5308b3cb6023fd25c3d8c59bba06@o4508207841869824.ingest.de.sentry.io/4509617430069328"
+  "https://1f3fc246ed872a255d840ba1d5fb33eb@o4508207841869824.ingest.de.sentry.io/4509617461461072"
 );
 export const SENTRY_AUTH_TOKEN = getENV("SENTRY_AUTH_TOKEN");
 export const SENDER_DOMAIN = getENV("SENDER_DOMAIN");
