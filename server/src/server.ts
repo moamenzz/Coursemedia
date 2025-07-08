@@ -62,10 +62,6 @@ app.use("/purchase", authenticate, purchaseRouter);
 app.use("/player", authenticate, playerRouter);
 app.use("/review", reviewRouter);
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My Third Sentry Error!");
-});
-
 Sentry.setupExpressErrorHandler(app);
 
 app.use(errorHandler);
