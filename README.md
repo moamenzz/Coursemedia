@@ -25,7 +25,7 @@
 <br />
 <br />
 
-[![Status](https://img.shields.io/badge/Status-Completed-brightgreen)]()
+[![Status](https://img.shields.io/badge/Status-InProgress-yellow)]()
 [![License](https://img.shields.io/badge/License-MIT-lightgrey)]()
 [![Live Demo](https://img.shields.io/badge/Live-Demo-orange)](https://coursemedia.vercel.app)
 
