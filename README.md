@@ -1,7 +1,7 @@
 # Coursemedia
 
 <div align="center">
-<img src="/src/assets/readme-cover.PNG" alt="Demo Screenshot">
+<img src="/client/assets/readme-cover.png" alt="Demo Screenshot">
   
   <!-- Tech Stack -->
   
@@ -25,30 +25,41 @@
 <br />
 <br />
 
-[![Status](https://img.shields.io/badge/Status-Completed-brightgreen)]()
+[![Status](https://img.shields.io/badge/Status-InProgress-yellow)]()
 [![License](https://img.shields.io/badge/License-MIT-lightgrey)]()
-[![Live Demo](https://img.shields.io/badge/Live-Demo-orange)](https://your-app-url.com)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-orange)](https://coursemedia.vercel.app)
 
 ---
 
 ## 📖 Description
 
-Animated 3D-Personal Portfolio inspired by the design of Adrian Hajdin (JSM) that showcases GSAP animations, 3D Models, My projects, testomonials (showcase), career pathway (showcase) in addition to being modern and aesthetic while remaining fully responsive. 
+Coursemedia is a full-featured Learning Management System (LMS) built with a modern full-stack architecture. It empowers instructors to sign up, create, publish, and manage their own courses, while providing students with access to a diverse library of educational content. Students can browse, purchase, and track their progress through a personalized "My Learning" dashboard, as well as rate and review completed courses to help others in the community.
 
-This Portfolio is a highly valuable asset as a freelancer for its ability to stun, amaze and make potential employeers invest. 
+The platform integrates Stripe for secure and reliable payment processing, with webhooks in place to monitor and respond to every transaction in real time. Error tracking and performance monitoring are handled by Sentry, ensuring any issues encountered in production are promptly reported for quick resolution.
+
+Coursemedia features a custom-built, high-quality video player with full support for adjustable playback speed, video quality selection, and volume controls—offering a seamless and professional viewing experience.
+
+Instructors are provided with their own dashboard to upload, update, or delete courses, manage content, respond to student reviews, and even feature standout courses for more visibility. This application combines robust functionality with a clean, user-focused design to create an all-in-one platform for online learning and teaching.
 
 ---
 
 ## 🚀 Features
 
-- 🎨 3D Models & Designs (Three.js, Spline)
-- 🎄 Neat Hero Section with Aceternity UI Effects & Lights 
-- 📦 Neat Work Showcase Section with Swiper & ShadCN 
-- 🦋 Beautiful GSAP Animations & Effects 
+- 🔒 Authentication & OAuth 
+- 📦 Full-Stack Application with Instructor Management Dashboard & User Interface
+- 💸 Secure Payment with Stripe 
+- 📼 Curriculum Uploading to Cloudinary 
 - 🌐 Fully responsive UI
-- ⚙️ Deployment via Vercel 
-- 📧 Contact me functioanlity via EmailJS
-- 🔧 Problem reporting & Maintenance via Sentry 
+- ⚙️ Deployment via Render + Vercel  
+- 🛒 Full Cart Functionality 
+- 🌠 Wishlist & My Learning
+
+Features In Progress: 
+
+- 💬 Socket.IO Messaging between Instructor & Student
+- 🧔 Personal Profile & User management
+- 🔔 Notifications Functionality
+- 🌐 Captions & Subtitles 
   
 ---
 
@@ -56,24 +67,23 @@ This Portfolio is a highly valuable asset as a freelancer for its ability to stu
 
 This project challenged and taught me:
 
-- ✅ Three.js and 3D Models with React 
-- ✅ Aceternity UI Component Library 
-- ✅ GSAP & Animations 
-- ✅ Swiper.js
+- ✅ Payment with Stripe & Stripe Webhooks
+- ✅ Uploading directly to Cloudinary  
+- ✅ Handling Forms & Storing curriculum lectures without causing Performance Issues
   
 ---
 
 ## 🔧 Technologies Used
 
-| Frontend | Other |
-|----------|-------|
-| React    | JWT, Axios, Vite, Socket.io, Cloudinary, Stripe, etc.|
+| Frontend | Backend | Database | Other |
+|----------|---------|----------|-------|
+| React    | Node.js (Express.js) | MongoDB (Mongoose)  | JWT, Axios, Vite, Socket.io, Cloudinary, Stripe, etc.|
 
 ---
 
 ## 🖥️ Live Demo
 
-🌐 [Click here to view the app](https://moamen-muhammed.vercel.app)
+🌐 [Click here to view the app](https://coursemedia.vercel.app)
 
 ---
 
@@ -81,28 +91,64 @@ This project challenged and taught me:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/3D-Portfolio.git
+git clone https://github.com/moamenzz/Coursemedia.git
 
 # Navigate to project folder
-cd 3D-Portfolio
+cd coursemedia
 
 # Install dependencies for both frontend and backend
-npm install
+cd client && npm install
+cd ../server && npm install
 
-# Add .env files in for EmailJS
+# Add .env files in both folders as per .env.example 
 
 # Run the project
 npm run dev
 ```
 
+## 🤫 .env.example
+
+client .env:
+
+```
+CLOUDINARY_API_KEY=
+VITE_STRIPE_PUBLISHABLE_KEY=
+VITE_BACKEND_API=
+VITE_GITHUB_OAUTH_URL=
+VITE_GOOGLE_OAUTH_URL=
+VITE_SENTRY_DSN=
+```
+
+server .env:
+
+```
+NODE_ENV=
+APPLICATION_NAME=
+CLIENT_URL=
+PORT=
+MONGODB_URI=
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+RESEND_SECRET=
+NODEMAILER_APP_PASSWORD=
+SENTRY_DSN=
+SENTRY_AUTH_TOKEN=
+SENDER_DOMAIN=
+SESSION_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+STRIPE_SECRET_KEY=
+STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
+```
+
 # ©️ Credits 
 
-The Design of this Project was inspired by Adrian Hajdin from JSM (Javascript Web Mastery) on YouTube. I also used the 3D Component of the Hero section that Adrian has used in addition to copying his Career Path & Testimonials as Showcase to keep the website looking good. I've changed the architecture of this project to suit my needs while using 3D components, models and application design from Adrian 
+The Dashboard Design of this project was inspired by Sangam Mukherjee on YouTube. 
 
-The addition I've made include but are not restricted to:  
-
-- Hero Sections effects using Aceternity UI 
-- Work Section that features all of my Projects 
-- Sentry Implementations and Integration for Bug Reporting and Error notifications 
-- Contact Me Section 3D model and UI changes 
--Typescript instead of Javascript 
+Front-End design was found on Figma. 
