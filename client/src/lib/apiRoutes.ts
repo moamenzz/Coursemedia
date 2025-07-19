@@ -122,6 +122,17 @@ export interface WishlistOrPurchaseResponse {
   updatedAt: Date;
 }
 
+export interface ProfileResponse {
+  _id: string;
+  user: AuthResponse;
+  username: string;
+  avatar: string;
+  headline: string;
+  bio: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CloudinaryResponse {
   public_id: string;
   secure_url: string;
@@ -295,3 +306,6 @@ export const deleteReviewAnswer = async ({
 export const getCourseReviews = async (
   courseId: string
 ): Promise<ReviewResponse[]> => axiosPublic.get(`/review/${courseId}`);
+
+export const getProfile = async (): Promise<ProfileResponse> =>
+  axiosPublic.get("/profile");

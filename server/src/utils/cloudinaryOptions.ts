@@ -15,6 +15,23 @@ export const cloudinaryCoverOptions = {
   ],
 };
 
+export const cloudinaryAvatarOptions = {
+  folder: "coursemedia/avatar",
+  allowed_formats: ["jpg", "png", "webp", "jpeg"],
+  resource_type: "image" as "image",
+  transformation: [
+    { quality: "auto:best" },
+    { fetch_format: "auto" },
+    { format: "webp" },
+    {
+      width: 300,
+      height: 300,
+      crop: "fill",
+      gravity: "auto",
+    },
+  ],
+};
+
 export const cloudinaryVideoOptions = {
   folder: "coursemedia/lectures",
   resource_type: "video" as "video",

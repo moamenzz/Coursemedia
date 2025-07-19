@@ -21,6 +21,7 @@ import wishlistRouter from "./routes/wishlist.route";
 import paymentRouter from "./routes/payment.route";
 import playerRouter from "./routes/player.route";
 import reviewRouter from "./routes/review.route";
+import profileRouter from "./routes/profile.route";
 
 const port: String | Number = PORT || 3000;
 
@@ -61,6 +62,7 @@ app.use("/payment", paymentRouter);
 app.use("/purchase", authenticate, purchaseRouter);
 app.use("/player", authenticate, playerRouter);
 app.use("/review", reviewRouter);
+app.use("/profile", authenticate, profileRouter);
 
 Sentry.setupExpressErrorHandler(app);
 
