@@ -5,6 +5,12 @@ const profileSchema = z.object({
   avatar: z.string(),
   headline: z.string().max(45),
   bio: z.string().max(2000),
+  socialLinks: z.object({
+    website: z.string().url().optional(),
+    linkedin: z.string().url().optional(),
+    github: z.string().url().optional(),
+    youtube: z.string().url().optional(),
+  }),
 });
 
 export default profileSchema;

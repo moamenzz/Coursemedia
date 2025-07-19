@@ -11,6 +11,12 @@ interface ProfileProps {
   avatar: string;
   headline: string;
   bio: string;
+  socialLinks: {
+    website?: string;
+    linkedin?: string;
+    github?: string;
+    youtube?: string;
+  };
 }
 
 export const updateProfile = async (

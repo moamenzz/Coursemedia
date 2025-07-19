@@ -123,14 +123,25 @@ export interface WishlistOrPurchaseResponse {
 }
 
 export interface ProfileResponse {
-  _id: string;
-  user: AuthResponse;
+  _id?: string;
+  user?: AuthResponse;
   username: string;
   avatar: string;
   headline: string;
   bio: string;
-  createdAt: Date;
-  updatedAt: Date;
+  socialLinks: {
+    website?: string;
+    linkedin?: string;
+    github?: string;
+    youtube?: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProfilePageResponse {
+  hasProfile: ProfileResponse;
+  instructor: InstructorResponse;
 }
 
 export interface CloudinaryResponse {
@@ -307,5 +318,8 @@ export const getCourseReviews = async (
   courseId: string
 ): Promise<ReviewResponse[]> => axiosPublic.get(`/review/${courseId}`);
 
-export const getProfile = async (): Promise<ProfileResponse> =>
+export const getProfile = async (): Promise<ProfilePageResponse> =>
   axiosPublic.get("/profile");
+
+export const updateProfile = async (data: ProfileResponse) =>
+  axiosPublic.put("/profile/update-profile", data);

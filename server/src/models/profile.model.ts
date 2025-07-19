@@ -6,6 +6,7 @@ interface ProfileDocument extends mongoose.Document {
   avatar: string;
   headline: string;
   bio: string;
+  socialLinks: {};
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,7 @@ const ProfileSchema = new mongoose.Schema<ProfileDocument>(
     avatar: { type: String },
     headline: { type: String },
     bio: { type: String },
+    socialLinks: { type: Object },
   },
   { timestamps: true }
 );
