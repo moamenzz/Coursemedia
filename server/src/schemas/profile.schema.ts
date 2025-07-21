@@ -6,10 +6,25 @@ const profileSchema = z.object({
   headline: z.string().max(45),
   bio: z.string().max(2000),
   socialLinks: z.object({
-    website: z.string().url().optional(),
-    linkedin: z.string().url().optional(),
-    github: z.string().url().optional(),
-    youtube: z.string().url().optional(),
+    website: z.string().url().or(z.literal("")).optional(),
+    linkedin: z
+      .string()
+      .url()
+      .regex(/^https:\/\/(www\.)?linkedin\.com\/.*$/, "Must be a LinkedIn URL")
+      .or(z.literal(""))
+      .optional(),
+    github: z
+      .string()
+      .url()
+      .regex(/^https:\/\/(www\.)?github\.com\/.*$/, "Must be a GitHub URL")
+      .or(z.literal(""))
+      .optional(),
+    youtube: z
+      .string()
+      .url()
+      .regex(/^https:\/\/(www\.)?youtube\.com\/.*$/, "Must be a YouTube URL")
+      .or(z.literal(""))
+      .optional(),
   }),
 });
 

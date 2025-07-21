@@ -9,6 +9,10 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import queryClient from "@/config/queryClient";
+import ErrorThrower from "./ErrorThrower";
 
 interface UpdateProfileProps {
   isOpen: boolean;
@@ -34,13 +38,21 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
     },
   });
 
-  const { mutate: updateProfileMutation, isPending } = useMutation({
+  const {
+    mutate: updateProfileMutation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
     mutationFn: updateProfile,
     onError: () => {
-      toast.error("Failed to update profile, please try again.");
+      toast.error(
+        "Failed to update profile, please try again and make sure URLs are valid."
+      );
     },
     onSuccess: () => {
       setIsOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
   });
 
@@ -50,6 +62,22 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
     const { name, value } = e.target;
     setEditFormData({ ...editFormData, [name]: value });
   };
+
+  const handleCoverImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Compress Image
+        setEditFormData({
+          ...editFormData,
+          avatar: reader.result as string,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-0">
@@ -58,6 +86,53 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
         </DialogHeader>
         <div className="p-6">
           <div className="space-y-4">
+            {/* Cover */}
+            <div className="space-y-2">
+              <Label htmlFor="cover">Cover</Label>
+              <Input
+                className="hidden"
+                type="file"
+                accept="image/*"
+                id="coverImage"
+                onChange={handleCoverImage}
+              />
+              <label
+                className="relative flex h-32 cursor-pointer items-center justify-center rounded-md border border-dashed border-primary/10 bg-black/5"
+                htmlFor="coverImage"
+              >
+                {editFormData.avatar ? (
+                  <img
+                    src={editFormData.avatar}
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                      />
+                    </svg>
+                    <div className="text-sm">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      SVG, PNG, JPG or GIF
+                    </div>
+                  </div>
+                )}
+              </label>
+            </div>
+            {/* Username */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Username
@@ -191,11 +266,18 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
             </div>
           </div>
 
+          {isError && (
+            <ErrorThrower
+              isError={isError}
+              error={error as { message: string }}
+            />
+          )}
+
           <div className="flex gap-3 mt-6 pt-6 border-t">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -205,7 +287,7 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
               disabled={isPending}
               className={`px-4 py-2 bg-blue-600 text-white ${
                 isPending ? "opacity-50 cursor-not-allowed" : ""
-              } rounded-lg hover:bg-blue-700 transition-colors`}
+              } rounded-lg hover:bg-blue-700 transition-colors cursor-pointer`}
             >
               {isPending ? (
                 <div className="flex justify-center items-center">

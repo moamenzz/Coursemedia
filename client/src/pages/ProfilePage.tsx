@@ -279,7 +279,7 @@ const ProfilePage: React.FC = () => {
                             size={12}
                             className="fill-yellow-400 text-yellow-400"
                           />
-                          {/* <span className="text-sm">{item.rating}</span> */}
+                          <span className="text-sm">{item.course.reviews}</span>
                         </div>
                         <span className="font-bold">${item.course.price}</span>
                       </div>
