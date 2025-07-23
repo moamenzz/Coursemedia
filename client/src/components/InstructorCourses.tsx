@@ -96,6 +96,7 @@ const InstructorCourses: FC<InstructorDashboardProps> = ({ instructor }) => {
             if (!open) setSelectedCourse(undefined);
           }}
           course={selectedCourse}
+          type="Deletion"
         />
       )}
     </Card>

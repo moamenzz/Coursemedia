@@ -17,13 +17,17 @@ import Loader from "./Loader";
 interface ConfirmationModalProps {
   isOpen: boolean;
   setIsOpen: (setIsOpen: boolean) => void;
-  course: CourseResponse;
+  course?: CourseResponse;
+  type: "Deletion" | "Navigation";
+  navigationUrl?: string;
 }
 
 const ConfirmationModal: FC<ConfirmationModalProps> = ({
   isOpen,
   setIsOpen,
   course,
+  type,
+  navigationUrl,
 }) => {
   const { mutate: handleDelete, isPending } = useMutation({
     mutationFn: deleteCourse,
@@ -35,6 +39,8 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
       toast.error("Failed to delete course, please try again.");
     },
   });
+
+  const deleteCourseCommand = () => handleDelete(course?._id as string);
   return (
     <div className="p-8 space-y-4">
       <div className="max-w-md mx-auto">
@@ -43,13 +49,29 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
             <AlertDialogContent className="sm:max-w-[425px]">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-red-600">
-                  Delete Course
+                  {type === "Deletion"
+                    ? "Delete Course"
+                    : "You are getting redirected"}
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-gray-600">
-                  Are you sure you want to delete "{course?.title}"? This action
+                  {type === "Deletion" ? (
+                    `Are you sure you want to delete "{${course?.title}}"? This action
                   cannot be undone. All course content, student enrollments, and
                   progress data will be permanently removed. Revenue will not be
-                  affected.
+                  affected.`
+                  ) : (
+                    <>
+                      You are getting redirected to an external link.
+                      <br />
+                      Please make sure that the URL is safe and appropriate
+                      before proceeding.
+                      <br />
+                      <br />
+                      You are getting redirected to:
+                      <br />
+                      <span className="break-all">{navigationUrl}</span>
+                    </>
+                  )}
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -62,15 +84,23 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
                 </AlertDialogCancel>
 
                 <AlertDialogAction
-                  onClick={() => handleDelete(course?._id as string)}
+                  onClick={() => {
+                    if (type === "Deletion") {
+                      deleteCourseCommand();
+                    } else if (navigationUrl) {
+                      window.open(navigationUrl as string);
+                    }
+                  }}
                   className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
                 >
                   {isPending ? (
                     <div className="flex justify-center items-center">
                       <Loader />
                     </div>
-                  ) : (
+                  ) : type === "Deletion" ? (
                     "Delete Course"
+                  ) : (
+                    "Proceed"
                   )}
                 </AlertDialogAction>
               </AlertDialogFooter>

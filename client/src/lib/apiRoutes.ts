@@ -142,6 +142,7 @@ export interface ProfileResponse {
 export interface ProfilePageResponse {
   hasProfile: ProfileResponse;
   instructor: InstructorResponse;
+  profileWishlist: WishlistOrPurchaseResponse[];
 }
 
 export interface CloudinaryResponse {
@@ -318,8 +319,8 @@ export const getCourseReviews = async (
   courseId: string
 ): Promise<ReviewResponse[]> => axiosPublic.get(`/review/${courseId}`);
 
-export const getProfile = async (): Promise<ProfilePageResponse> =>
-  axiosPublic.get("/profile");
+export const getProfile = async (user: string): Promise<ProfilePageResponse> =>
+  axiosPublic.get(`/profile/${user}`);
 
 export const updateProfile = async (data: ProfileResponse) =>
   axiosPublic.put("/profile/update-profile", data);

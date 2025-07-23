@@ -1,30 +1,27 @@
 import React, { useState } from "react";
 import {
   Edit3,
-  BookOpen,
   Star,
   Heart,
   Linkedin,
   Youtube,
   Globe,
   Github,
+  MessageCircle,
 } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getProfile,
-  getWishlists,
-  ProfileResponse,
-  ReviewResponse,
-} from "@/lib/apiRoutes";
+import { getProfile, ProfileResponse, ReviewResponse } from "@/lib/apiRoutes";
 import Loader from "@/components/Loader";
 import ErrorThrower from "@/components/ErrorThrower";
 import UpdateProfileModal from "@/components/UpdateProfileModal";
 import { formatCourseRating } from "@/utils/formatCourseRating";
 import PlaceholderAvatar from "@/components/PlaceholderAvatar";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user } = useParams();
 
   const {
     data: profileData,
@@ -32,22 +29,19 @@ const ProfilePage: React.FC = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["profile", user?._id],
-    queryFn: () => getProfile(),
-    enabled: !!user,
-  });
-
-  const { data: wishlistData } = useQuery({
-    queryKey: ["profile-wishlist", user?._id],
-    queryFn: () => getWishlists(),
+    queryKey: ["profile", user],
+    queryFn: () => getProfile(user as string),
     enabled: !!user,
   });
 
   const profile = profileData?.hasProfile;
   const instructor = profileData?.instructor;
-  const wishlist = wishlistData || [];
+  const wishlist = profileData?.profileWishlist || [];
+
+  // TODO: Make a "You are getting redirected" confirmation when user clicks on a link
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmatModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   return isLoading ? (
     <div className="flex justify-center items-center min-h-full">
@@ -102,13 +96,21 @@ const ProfilePage: React.FC = () => {
                     {profile?.headline}
                   </p>
                 </div>
-                {user?._id === profile?.user && (
+                {user === profile?.user ? (
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors cursor-pointer"
                   >
                     <Edit3 size={16} />
                     Edit Profile
+                  </button>
+                ) : (
+                  <button
+                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors cursor-pointer"
+                    onClick={() => navigate(`/messages/${profile?._id}`)}
+                  >
+                    <MessageCircle size={16} />
+                    Send Message
                   </button>
                 )}
               </div>
@@ -136,8 +138,8 @@ const ProfilePage: React.FC = () => {
                 <div className="flex gap-3">
                   {profile.socialLinks.website && (
                     <a
-                      href={profile.socialLinks.website}
-                      className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      onClick={() => setIsConfirmationModalOpen(true)}
+                      className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
                     >
                       <Globe size={20} className="text-gray-600" />
                     </a>
@@ -145,7 +147,7 @@ const ProfilePage: React.FC = () => {
                   {profile.socialLinks.linkedin && (
                     <a
                       href={profile.socialLinks.linkedin}
-                      className="p-2 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors"
+                      className="p-2 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors cursor-pointer"
                     >
                       <Linkedin size={20} className="text-blue-600" />
                     </a>
@@ -153,7 +155,7 @@ const ProfilePage: React.FC = () => {
                   {profile.socialLinks.github && (
                     <a
                       href={profile.socialLinks.github}
-                      className="p-2 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors"
+                      className="p-2 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors cursor-pointer"
                     >
                       <Github size={20} className="text-blue-600" />
                     </a>
@@ -161,7 +163,7 @@ const ProfilePage: React.FC = () => {
                   {profile.socialLinks.youtube && (
                     <a
                       href={profile.socialLinks.youtube}
-                      className="p-2 bg-red-100 rounded-lg hover:bg-red-200 transition-colors"
+                      className="p-2 bg-red-100 rounded-lg hover:bg-red-200 transition-colors cursor-pointer"
                     >
                       <Youtube size={20} className="text-red-600" />
                     </a>
@@ -237,29 +239,19 @@ const ProfilePage: React.FC = () => {
         ) : (
           // Learner Content
           <div className="space-y-8">
-            {/* My Learning */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <BookOpen size={20} />
-                My Learning
-              </h2>
-
-              <p className="text-gray-600">
-                Continue where you left off or explore new courses.
-              </p>
-            </div>
-
             {/* Wishlist */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                 <Heart size={20} />
-                My Wishlist ({wishlist.length})
+                {profileData?.hasProfile.username}'s Wishlist ({wishlist.length}
+                )
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {wishlist.map((item) => (
-                  <div
+                  <Link
                     key={item._id}
-                    className="flex gap-4 border rounded-lg p-4"
+                    className="flex gap-4 border rounded-lg p-4 hover:opacity-80 hover:bg-gray-100 transition-colors"
+                    to={`/courses/${item.course._id}`}
                   >
                     <img
                       src={item.course.cover}
@@ -279,12 +271,16 @@ const ProfilePage: React.FC = () => {
                             size={12}
                             className="fill-yellow-400 text-yellow-400"
                           />
-                          <span className="text-sm">{item.course.reviews}</span>
+                          <span className="text-sm">
+                            {formatCourseRating(
+                              item.course.reviews as ReviewResponse[]
+                            )}
+                          </span>
                         </div>
                         <span className="font-bold">${item.course.price}</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -297,6 +293,13 @@ const ProfilePage: React.FC = () => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         profile={profile as ProfileResponse}
+      />
+
+      <ConfirmationModal
+        isOpen={isConfirmatModalOpen}
+        setIsOpen={setIsConfirmationModalOpen}
+        type="Navigation"
+        navigationUrl={profile?.socialLinks.website}
       />
     </div>
   );

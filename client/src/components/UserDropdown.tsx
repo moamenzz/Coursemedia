@@ -47,10 +47,6 @@ const UserDropdown: FC<DropdownProps> = ({ textColor }) => {
         </li>
         <Separator />
         <li>
-          <Link to="/profile">Profile</Link>
-        </li>
-        <Separator />
-        <li>
           <a className="text-red-500">Logout</a>
         </li>
         <Separator />

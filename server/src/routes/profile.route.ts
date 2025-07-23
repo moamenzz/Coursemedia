@@ -6,7 +6,7 @@ import {
 
 const profileRouter = express.Router();
 
-profileRouter.get("/", getProfile);
 profileRouter.put("/update-profile", handleUpdateProfile);
+profileRouter.get("/:profileId", getProfile);
 
 export default profileRouter;

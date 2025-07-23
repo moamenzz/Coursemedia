@@ -211,7 +211,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                       </li>
                       <Separator />
                       <li>
-                        <Link to="/profile">Profile</Link>
+                        <Link to={`/profile/${user._id}`}>Profile</Link>
                       </li>
                       <Separator />
                       <li>
