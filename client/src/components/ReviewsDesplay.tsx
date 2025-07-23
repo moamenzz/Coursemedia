@@ -37,6 +37,8 @@ const ReviewsDisplay: React.FC<ReviewsDisplayProps> = ({ reviews }) => {
   const topReviews = reviews.filter((review) => review.rating >= 4).slice(0, 3);
   const averageRating = formatCourseRating(reviews);
 
+  // TODO: Introduce Infinite scrolling or pagination
+
   return (
     <div className="mx-auto">
       {/* Header Section */}

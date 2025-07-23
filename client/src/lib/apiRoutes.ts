@@ -124,9 +124,9 @@ export interface WishlistOrPurchaseResponse {
 
 export interface ProfileResponse {
   _id?: string;
+  avatar: string; // to make my life in UpdateProfileModal.tsx easier
   user?: AuthResponse;
   username: string;
-  avatar: string;
   headline: string;
   bio: string;
   socialLinks: {
@@ -321,6 +321,9 @@ export const getCourseReviews = async (
 
 export const getProfile = async (user: string): Promise<ProfilePageResponse> =>
   axiosPublic.get(`/profile/${user}`);
+
+// export const getUserProfile = async (): Promise<ProfileResponse> =>
+//   axiosPublic.get("/profile");
 
 export const updateProfile = async (data: ProfileResponse) =>
   axiosPublic.put("/profile/update-profile", data);

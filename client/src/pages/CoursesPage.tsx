@@ -27,6 +27,8 @@ const CoursesPage = () => {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
 
+  // TODO: Introduce Infinite scrolling or pagination
+
   const handleFilterChange = (
     value: string,
     type: "category" | "language" | "level",

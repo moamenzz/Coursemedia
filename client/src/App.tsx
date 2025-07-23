@@ -46,7 +46,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/my-learning" element={<MyLearningPage />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/profile/:user" element={<ProfilePage />} />
+            <Route path="/profile/:profileId" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/messages" element={<MessagesPage />} />
           </Route>

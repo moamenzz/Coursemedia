@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/lib/apiRoutes";
 import useAuth from "@/hooks/useAuth";
 import PlaceholderAvatar from "./PlaceholderAvatar";
+// import useProfile from "@/hooks/useProfile";
 
 interface NavbarProps {
   username?: string;
@@ -23,6 +24,7 @@ const Navbar: React.FC<NavbarProps> = () => {
   const { setActiveTab } = useMyLearningStore();
 
   const { user } = useAuth();
+  // const { profile } = useProfile();
 
   const handleSearch = () => {
     if (!searchParams) {

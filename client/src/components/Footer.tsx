@@ -7,7 +7,7 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({
-  currentYear = 2023,
+  currentYear = new Date().getFullYear(),
   companyName = "Coursemedia, Inc.",
 }) => {
   // Footer links organized in columns

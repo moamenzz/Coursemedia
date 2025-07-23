@@ -27,7 +27,7 @@ const UpdateProfileModal: FC<UpdateProfileProps> = ({
 }) => {
   const [editFormData, setEditFormData] = useState<ProfileResponse>({
     username: profile?.username || "",
-    avatar: profile?.avatar || "",
+    avatar: profile?.user?.avatar || "",
     headline: profile?.headline || "",
     bio: profile?.bio || "",
     socialLinks: {

@@ -2,6 +2,9 @@ import { MoreHorizontal, ThumbsUp } from "lucide-react";
 import { FC, useState } from "react";
 import { StarRating } from "./ReviewsDesplay";
 import { ReviewResponse } from "@/lib/apiRoutes";
+import { useNavigate } from "react-router-dom";
+import PlaceholderAvatar from "./PlaceholderAvatar";
+import { formatDate } from "@/utils/formatDate";
 
 interface ReviewCardProps {
   review: ReviewResponse;
@@ -11,6 +14,7 @@ interface ReviewCardProps {
 const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
   const [isHelpful, setIsHelpful] = useState(false);
   const [helpfulCount, setHelpfulCount] = useState(review.helpful || 15);
+  const navigate = useNavigate();
 
   const toggleHelpful = () => {
     setIsHelpful(!isHelpful);
@@ -25,12 +29,12 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
     >
       <div className="flex items-start gap-3">
         {/* User Avatar */}
-        <div>
+        <div onClick={() => navigate(`/profile/${review.user._id}`)}>
           {review.user.avatar ? (
             <img
               src={review.user.avatar}
               alt="User Avatar"
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full cursor-pointer"
             />
           ) : (
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
@@ -43,7 +47,10 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h4 className="font-medium text-gray-900">
+              <h4
+                className="font-medium text-gray-900 cursor-pointer"
+                onClick={() => navigate(`/profile/${review.user._id}`)}
+              >
                 {review.user.username}
               </h4>
               <div className="flex items-center gap-2 mt-1">
@@ -86,6 +93,42 @@ const ReviewCard: FC<ReviewCardProps> = ({ review, compact = false }) => {
               />
               Helpful ({helpfulCount})
             </button>
+          </div>
+          {/* Instructor Reply here */}
+          <div>
+            {review?.instructorReply?.hasReply &&
+              review.instructorReply.reply && (
+                <div className="bg-gray-50 p-4 mt-3 rounded-lg border-l-4 border-blue-500">
+                  <div className="flex items-center mb-2">
+                    <div>
+                      {review.course.instructor?.user?.avatar ? (
+                        <img
+                          src={review.course.instructor?.user?.avatar}
+                          alt="User Avatar"
+                          className="w-10 h-10 rounded-full cursor-pointer mr-3"
+                        />
+                      ) : (
+                        <PlaceholderAvatar
+                          h={10}
+                          w={10}
+                          username={
+                            review.course.instructor?.user?.username as string
+                          }
+                        />
+                      )}
+                    </div>
+                    <span className="font-medium text-gray-900">
+                      {review.course.instructor?.user?.username}
+                    </span>
+                    <span className="text-sm text-gray-500 ml-2">
+                      • {formatDate(review.instructorReply.createdAt)}
+                    </span>
+                  </div>
+                  <p className="text-gray-700 ml-11">
+                    {review.instructorReply.reply}
+                  </p>
+                </div>
+              )}
           </div>
         </div>
       </div>

@@ -18,10 +18,12 @@ import { formatCourseRating } from "@/utils/formatCourseRating";
 import PlaceholderAvatar from "@/components/PlaceholderAvatar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import useAuth from "@/hooks/useAuth";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useParams();
+  const { profileId } = useParams();
+  const { user } = useAuth();
 
   const {
     data: profileData,
@@ -29,16 +31,19 @@ const ProfilePage: React.FC = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["profile", user],
-    queryFn: () => getProfile(user as string),
-    enabled: !!user,
+    queryKey: ["profile", profileId],
+    queryFn: () => getProfile(profileId as string),
+    enabled: !!profileId,
   });
 
   const profile = profileData?.hasProfile;
   const instructor = profileData?.instructor;
   const wishlist = profileData?.profileWishlist || [];
 
-  // TODO: Make a "You are getting redirected" confirmation when user clicks on a link
+  // const instructorTotalLearners =
+  //   instructor?.courses.map((course) => course.enrollees).flat().length || 0;
+  const instructorTotalReviews =
+    instructor?.courses.map((course) => course.reviews).flat().length || 0;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmatModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -56,10 +61,10 @@ const ProfilePage: React.FC = () => {
         <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row items-start gap-6">
             {/* Avatar */}
-            {profile?.avatar ? (
+            {profile?.user?.avatar ? (
               <div className="relative">
                 <img
-                  src={profile?.avatar}
+                  src={profile?.user.avatar}
                   alt={profile?.username + " avatar"}
                   className="w-32 h-32 rounded-full object-cover"
                 />
@@ -96,7 +101,7 @@ const ProfilePage: React.FC = () => {
                     {profile?.headline}
                   </p>
                 </div>
-                {user === profile?.user ? (
+                {user?._id === profile?.user?._id ? (
                   <button
                     onClick={() => setIsModalOpen(true)}
                     className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors cursor-pointer"
@@ -125,10 +130,10 @@ const ProfilePage: React.FC = () => {
                     <div className="text-gray-600 text-sm">Total learners</div>
                   </div>
                   <div>
-                    {/* <div className="text-2xl font-bold text-gray-900">
-                      {instructor.}
-                    </div> */}
-                    0<div className="text-gray-600 text-sm">Reviews</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {instructorTotalReviews}
+                    </div>
+                    <div className="text-gray-600 text-sm">Reviews</div>
                   </div>
                 </div>
               )}
@@ -196,13 +201,15 @@ const ProfilePage: React.FC = () => {
           // Instructor Courses
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6">
-              My courses ({instructor.courses.length})
+              {profile?.username}'s courses ({instructor.courses.length})
             </h2>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {instructor.courses.map((course) => (
-                <div
+                <Link
                   key={course._id}
-                  className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                  to={`/courses/${course._id}`}
+                  className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                 >
                   <img
                     src={course.cover}
@@ -232,7 +239,7 @@ const ProfilePage: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -299,7 +306,7 @@ const ProfilePage: React.FC = () => {
         isOpen={isConfirmatModalOpen}
         setIsOpen={setIsConfirmationModalOpen}
         type="Navigation"
-        navigationUrl={profile?.socialLinks.website}
+        navigationUrl={profile?.socialLinks?.website}
       />
     </div>
   );

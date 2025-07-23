@@ -26,6 +26,9 @@ import ErrorThrower from "@/components/ErrorThrower";
 import { formatDate } from "@/utils/formatDate";
 import { toast } from "react-toastify";
 import queryClient from "@/config/queryClient";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import PlaceholderAvatar from "@/components/PlaceholderAvatar";
 
 interface ReviewPageProps {
   courses: CourseResponse[];
@@ -36,6 +39,9 @@ const ReviewsPage: React.FC<ReviewPageProps> = ({ courses }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const {
     data: reviews,
@@ -279,11 +285,28 @@ const ReviewsPage: React.FC<ReviewPageProps> = ({ courses }) => {
                 {/* Review Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                      {review.user.username.charAt(0).toUpperCase()}
+                    <div
+                      onClick={() => navigate(`/profile/${review.user._id}`)}
+                    >
+                      {review.user.avatar ? (
+                        <img
+                          src={review.user.avatar}
+                          alt="User Avatar"
+                          className="w-10 h-10 rounded-full cursor-pointer"
+                        />
+                      ) : (
+                        <PlaceholderAvatar
+                          h={10}
+                          w={10}
+                          username={review.user.username}
+                        />
+                      )}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3
+                        className="font-semibold text-gray-900 cursor-pointer"
+                        onClick={() => navigate(`/profile/${review.user._id}`)}
+                      >
                         {review.user.username}
                       </h3>
                       <div className="flex items-center space-x-2 mt-1">
@@ -371,10 +394,20 @@ const ReviewsPage: React.FC<ReviewPageProps> = ({ courses }) => {
                 {review?.instructorReply?.hasReply &&
                   review.instructorReply.reply && (
                     <div className="bg-gray-50 p-4 rounded-lg mb-4 border-l-4 border-blue-500">
-                      <div className="flex items-center mb-2">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
-                          Y
-                        </div>
+                      <div className="flex items-center  mb-2">
+                        {user?.avatar ? (
+                          <img
+                            src={user?.avatar}
+                            alt="User Avatar"
+                            className="w-10 h-10 rounded-full cursor-pointer mr-3"
+                          />
+                        ) : (
+                          <PlaceholderAvatar
+                            h={10}
+                            w={10}
+                            username={user?.username as string}
+                          />
+                        )}
                         <span className="font-medium text-gray-900">
                           Your reply
                         </span>

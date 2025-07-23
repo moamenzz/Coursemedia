@@ -89,6 +89,7 @@ const CoursePage = () => {
                 <CardContent>
                   {course?.curriculum?.map((curriculumItem) => (
                     <li
+                      key={curriculumItem?._id}
                       className={`${
                         curriculumItem?.freePreview
                           ? "cursor-pointer"
@@ -149,7 +150,7 @@ const CoursePage = () => {
                   </p>
 
                   {course?.description && course?.description?.length > 300 && (
-                    <button
+                    <div
                       onClick={() =>
                         setIsDescriptionExpanded(!isDescriptionExpanded)
                       }
@@ -164,7 +165,7 @@ const CoursePage = () => {
                           Show more <ChevronDown className="w-4 h-4" />
                         </button>
                       )}
-                    </button>
+                    </div>
                   )}
                 </div>
               </div>

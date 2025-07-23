@@ -24,8 +24,8 @@ export const cloudinaryAvatarOptions = {
     { fetch_format: "auto" },
     { format: "webp" },
     {
-      width: 300,
-      height: 300,
+      width: 600,
+      height: 600,
       crop: "fill",
       gravity: "auto",
     },

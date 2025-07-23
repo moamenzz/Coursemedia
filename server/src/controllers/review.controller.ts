@@ -1,7 +1,5 @@
-import AppErrorCode from "../constants/AppErrorCode";
-import { FORBIDDEN, NOT_FOUND } from "../constants/HttpStatusCode";
+import { NOT_FOUND } from "../constants/HttpStatusCode";
 import CourseModel from "../models/course.model";
-import InstructorModel from "../models/instructor.model";
 import ReviewModel from "../models/review.model";
 import { answerReviewSchema, reviewSchema } from "../schemas/review.schema";
 import {
@@ -20,7 +18,19 @@ export const getCourseReviews = catchErrors(async (req, res) => {
   const course = await CourseModel.findById(courseId);
   appAssert(course, NOT_FOUND, "Course not found");
 
-  const reviews = await ReviewModel.find({ course: courseId }).populate("user");
+  const reviews = await ReviewModel.find({ course: courseId })
+    .populate("user")
+    .populate("instructorReply")
+    .populate({
+      path: "course",
+      populate: {
+        path: "instructor",
+        populate: {
+          path: "user",
+          select: "username avatar", // Exclude password field
+        },
+      },
+    });
 
   if (reviews.length <= 0) return res.status(200).json("No reviews found");
   res.status(200).json(reviews);

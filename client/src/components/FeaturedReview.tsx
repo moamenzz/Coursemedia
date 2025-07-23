@@ -4,6 +4,7 @@ import { formatDate } from "@/utils/formatDate";
 import { Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { FC, useState } from "react";
 import PlaceholderAvatar from "./PlaceholderAvatar";
+import { useNavigate } from "react-router-dom";
 
 interface StarRatingProps {
   rating: number;
@@ -35,6 +36,7 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
   const [notHelpfulCount, setNotHelpfulCount] = useState(review.notHelpful);
   const [isHelpfulClicked, setIsHelpfulClicked] = useState(false);
   const [isNotHelpfulClicked, setIsNotHelpfulClicked] = useState(false);
+  const navigate = useNavigate();
 
   const handleHelpfulClick = () => {
     if (isNotHelpfulClicked) {
@@ -84,7 +86,10 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
           {/* User Info */}
           <div className="flex items-start gap-4">
             {/* User Avatar */}
-            <div className=" rounded-full overflow-hidden flex-shrink-0">
+            <div
+              className=" rounded-full overflow-hidden flex-shrink-0 cursor-pointer"
+              onClick={() => navigate(`/profile/${featuredReview?.user?._id}`)}
+            >
               {featuredReview?.user?.avatar ? (
                 <img
                   src={featuredReview.user.avatar}
@@ -122,7 +127,12 @@ const FeaturedReview: FC<FeaturedReviewProps> = ({ featuredReview }) => {
 
             {/* User Details */}
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 text-lg mb-1">
+              <h3
+                className="font-semibold text-gray-900 text-lg mb-1 cursor-pointer"
+                onClick={() =>
+                  navigate(`/profile/${featuredReview?.user?._id}`)
+                }
+              >
                 {featuredReview?.user?.username}
               </h3>
               <div className="text-sm text-gray-600 space-y-1">
