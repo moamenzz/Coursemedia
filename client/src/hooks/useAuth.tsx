@@ -19,4 +19,5 @@ const useAuth = () => {
     isPending,
   };
 };
+
 export default useAuth;

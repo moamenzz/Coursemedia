@@ -14,6 +14,8 @@ interface CourseCardProps {
   course: CourseResponse;
 }
 
+// Make this card dynamic for Courses already bought and for wishlisted courses
+
 const MyLearningCard: FC<CourseCardProps> = ({ course }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const navigate = useNavigate();

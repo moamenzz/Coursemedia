@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Heart, ShoppingCart, Bell, Menu, X } from "lucide-react";
+import { Search, Heart, ShoppingCart, Menu, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/lib/apiRoutes";
 import useAuth from "@/hooks/useAuth";
 import PlaceholderAvatar from "./PlaceholderAvatar";
-// import useProfile from "@/hooks/useProfile";
+import NotificationsDropdown from "./NotificationsDropdown";
 
 interface NavbarProps {
   username?: string;
@@ -133,27 +133,24 @@ const Navbar: React.FC<NavbarProps> = () => {
               {/* TODO: use UserDropdown component and make the onClick functions work for it */}
 
               {user ? (
-                <div className="flex items-center space-x-3 ml-2">
+                <div className="flex items-center space-x-2 ml-2">
                   <Link
                     to="/my-learning"
                     onClick={() => {
                       setActiveTab("wishlist");
                     }}
-                    className="hidden md:block text-gray-700 cursor-pointer hover:text-red-500 transition-colors duration-200"
+                    className="hidden md:block text-gray-700 p-1 hover:bg-gray-100 rounded-full cursor-pointer hover:text-red-600 transition-colors duration-200"
                   >
                     <Heart size={24} />
                   </Link>
                   <Link
                     to="/cart"
-                    className="hidden md:block text-gray-700 cursor-pointer hover:text-purple-500 transition-colors duration-200"
+                    className="hidden md:block text-gray-700 p-1 hover:bg-gray-100 rounded-full cursor-pointer hover:text-purple-500 transition-colors duration-200"
                   >
                     <ShoppingCart size={24} />
                   </Link>
-                  <Link
-                    to="/notifications"
-                    className="hidden md:block text-gray-700 cursor-pointer hover:text-yellow-500 transition-colors duration-200"
-                  >
-                    <Bell size={24} />
+                  <Link className="hidden md:block" to="/notifications">
+                    <NotificationsDropdown />
                   </Link>
                   <div className="dropdown dropdown-end">
                     <div

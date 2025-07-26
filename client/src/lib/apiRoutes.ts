@@ -139,6 +139,15 @@ export interface ProfileResponse {
   updatedAt?: Date;
 }
 
+export interface NotificationResponse {
+  _id: string;
+  user: AuthResponse;
+  message: string;
+  read: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ProfilePageResponse {
   hasProfile: ProfileResponse;
   instructor: InstructorResponse;
