@@ -8,82 +8,15 @@ import {
   Image,
   Code,
 } from "lucide-react";
-
-interface Message {
-  id: string;
-  content: string;
-  timestamp: Date;
-  isFromUser: boolean;
-}
-
-interface Conversation {
-  id: string;
-  sender: {
-    name: string;
-    avatar: string;
-    institution?: string;
-  };
-  lastMessage: string;
-  timestamp: string;
-  isUnread: boolean;
-  isStarred: boolean;
-  messages: Message[];
-}
+import { conversations } from "@/types/MockMessageData";
 
 const MessagesPage: React.FC = () => {
   const [selectedConversation, setSelectedConversation] = useState<string>("1");
-  const [filterType, setFilterType] = useState<"unread" | "all" | "starred">(
+  const [filterType, setFilterType] = useState<"all" | "unread" | "starred">(
     "unread"
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [newMessage, setNewMessage] = useState("");
-
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "1",
-      sender: {
-        name: "PROPER DOT INSTITUTE",
-        avatar: "/api/placeholder/40/40",
-        institution: "Educational Institute",
-      },
-      lastMessage:
-        "Dear Students, I welcome you all to this excellent course. Ho...",
-      timestamp: "1 year ago",
-      isUnread: true,
-      isStarred: false,
-      messages: [
-        {
-          id: "1",
-          content:
-            "Dear Students, I welcome you all to this excellent course. Hope learning would be memorable and you will learn to code great things in the CSS, Bootstrap, JavaScript, and PHP Full Stack Crash Course wish you happy learning and please do provide review and feedback for the course Thank you.",
-          timestamp: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
-          isFromUser: false,
-        },
-      ],
-    },
-    {
-      id: "2",
-      sender: {
-        name: "MTF Institute of Management, Technology and Finance",
-        avatar: "/api/placeholder/40/40",
-        institution: "MTF Institute",
-      },
-      lastMessage:
-        "Hello! Thank you for joining of our course! We really appreciat...",
-      timestamp: "1 year ago",
-      isUnread: false,
-      isStarred: true,
-      messages: [
-        {
-          id: "1",
-          content:
-            "Hello! Thank you for joining of our course! We really appreciate your participation and hope you find the content valuable.",
-          timestamp: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
-          isFromUser: false,
-        },
-      ],
-    },
-  ]);
 
   const filteredConversations = conversations.filter((conv) => {
     const matchesSearch =
@@ -106,47 +39,11 @@ const MessagesPage: React.FC = () => {
   );
   const unreadCount = conversations.filter((conv) => conv.isUnread).length;
 
-  const toggleStar = (convId: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId ? { ...conv, isStarred: !conv.isStarred } : conv
-      )
-    );
-  };
+  // const toggleStar = (convId: string) => {};
 
-  const markAsRead = (convId: string) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === convId ? { ...conv, isUnread: false } : conv
-      )
-    );
-  };
+  // const markAsRead = (convId: string) => {};
 
-  const sendMessage = () => {
-    if (!newMessage.trim() || !selectedConv) return;
-
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      content: newMessage,
-      timestamp: new Date(),
-      isFromUser: true,
-    };
-
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversation
-          ? {
-              ...conv,
-              messages: [...conv.messages, newMsg],
-              lastMessage: newMessage,
-              timestamp: "now",
-            }
-          : conv
-      )
-    );
-
-    setNewMessage("");
-  };
+  const sendMessage = () => {};
 
   return (
     <div className="h-screen bg-gray-50 flex">
@@ -160,19 +57,16 @@ const MessagesPage: React.FC = () => {
           </p>
 
           {/* Controls */}
-          <div className="flex gap-2 mb-4">
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm font-medium">
-              Compose
-            </button>
+          <div className="flex mb-4">
             <select
               value={filterType}
               onChange={(e) =>
                 setFilterType(e.target.value as "unread" | "all" | "starred")
               }
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             >
+              <option value="all">All Messages</option>
               <option value="unread">Unread</option>
-              <option value="all">All</option>
               <option value="starred">Starred</option>
             </select>
           </div>
@@ -187,9 +81,6 @@ const MessagesPage: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700">
-              <Search className="w-4 h-4" />
-            </button>
           </div>
         </div>
 
@@ -210,7 +101,7 @@ const MessagesPage: React.FC = () => {
                 } ${conversation.isUnread ? "bg-blue-25" : ""}`}
                 onClick={() => {
                   setSelectedConversation(conversation.id);
-                  markAsRead(conversation.id);
+                  // markAsRead(conversation.id);
                 }}
               >
                 <div className="flex items-start space-x-3">
@@ -250,7 +141,7 @@ const MessagesPage: React.FC = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleStar(conversation.id);
+                            // toggleStar(conversation.id);
                           }}
                           className={`p-1 hover:bg-gray-200 rounded ${
                             conversation.isStarred
@@ -298,7 +189,7 @@ const MessagesPage: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => toggleStar(selectedConv.id)}
+                  // onClick={() => toggleStar(selectedConv.id)}
                   className={`p-2 hover:bg-gray-100 rounded ${
                     selectedConv.isStarred ? "text-yellow-500" : "text-gray-400"
                   }`}
@@ -362,7 +253,7 @@ const MessagesPage: React.FC = () => {
               </div>
 
               {/* Message Input */}
-              <div className="flex items-end space-x-3">
+              <div className="flex items-center space-x-3">
                 <div className="flex-1">
                   <textarea
                     value={newMessage}
@@ -371,16 +262,6 @@ const MessagesPage: React.FC = () => {
                     className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     rows={3}
                   />
-                  <div className="flex items-center justify-between mt-2 text-sm text-gray-500">
-                    <div className="flex space-x-4">
-                      <button className="hover:text-purple-600">
-                        View course Q&A
-                      </button>
-                      <button className="hover:text-purple-600">
-                        Visit the Udemy help center
-                      </button>
-                    </div>
-                  </div>
                 </div>
                 <button
                   onClick={sendMessage}
@@ -400,7 +281,7 @@ const MessagesPage: React.FC = () => {
               </div>
               <p className="text-lg font-medium">Select a conversation</p>
               <p className="text-sm">
-                Choose a message from the sidebar to start reading
+                Choose a chat head from the sidebar to start a conversation!
               </p>
             </div>
           </div>
