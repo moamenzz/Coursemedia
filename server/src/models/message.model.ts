@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 interface MessageDocument extends mongoose.Document {
+  conversation: mongoose.Types.ObjectId;
   sender: mongoose.Types.ObjectId;
   receiver: mongoose.Types.ObjectId;
   message: string;
@@ -10,6 +11,11 @@ interface MessageDocument extends mongoose.Document {
 
 const MessageSchema = new mongoose.Schema<MessageDocument>(
   {
+    conversation: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Conversation",
+    },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

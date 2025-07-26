@@ -24,6 +24,7 @@ import reviewRouter from "./routes/review.route";
 import profileRouter from "./routes/profile.route";
 import notificationRouter from "./routes/notification.route";
 import messageRouter from "./routes/message.route";
+import conversationRouter from "./routes/conversation.route";
 
 const port: String | Number = PORT || 3000;
 
@@ -67,6 +68,7 @@ app.use("/review", reviewRouter);
 app.use("/profile", authenticate, profileRouter);
 app.use("/notification", authenticate, notificationRouter);
 app.use("/message", authenticate, messageRouter);
+app.use("/conversation", authenticate, conversationRouter);
 
 Sentry.setupExpressErrorHandler(app);
 

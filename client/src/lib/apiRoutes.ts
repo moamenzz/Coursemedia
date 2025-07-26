@@ -154,6 +154,30 @@ export interface ProfilePageResponse {
   profileWishlist: WishlistOrPurchaseResponse[];
 }
 
+export interface ConversationResponse {
+  _id: string;
+  participants: AuthResponse[];
+  latestMessage: string;
+  unreadBy: AuthResponse[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MessageResponse {
+  _id: string;
+  conversation: ConversationResponse;
+  sender: AuthResponse;
+  receiver: AuthResponse;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SendMessage {
+  message?: string;
+  attachement?: string;
+}
+
 export interface CloudinaryResponse {
   public_id: string;
   secure_url: string;
@@ -336,3 +360,19 @@ export const getProfile = async (user: string): Promise<ProfilePageResponse> =>
 
 export const updateProfile = async (data: ProfileResponse) =>
   axiosPublic.put("/profile/update-profile", data);
+
+export const getConversations = async (): Promise<ConversationResponse[]> =>
+  axiosPublic.get("/conversation");
+
+export const getMessages = async (
+  conversationId: string
+): Promise<MessageResponse[]> => axiosPublic.get(`/message/${conversationId}`);
+
+export const sendMessage = async (receiverId: string, data: SendMessage) =>
+  axiosPublic.post(`/message/${receiverId}`, { data });
+
+export const editMessage = async (messageId: string, data: SendMessage) =>
+  axiosPublic.put(`/message/${messageId}`, { data });
+
+export const deleteMessage = async (messageId: string) =>
+  axiosPublic.delete(`/message/${messageId}`);

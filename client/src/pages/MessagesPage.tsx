@@ -8,17 +8,43 @@ import {
   Image,
   Code,
 } from "lucide-react";
-import { conversations } from "@/types/MockMessageData";
+import useMessageStore from "@/stores/useMessageStore";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getConversations, getMessages, sendMessage } from "@/lib/apiRoutes";
 
 const MessagesPage: React.FC = () => {
-  const [selectedConversation, setSelectedConversation] = useState<string>("1");
+  const { selectedConversation, setSelectedConversation } = useMessageStore();
   const [filterType, setFilterType] = useState<"all" | "unread" | "starred">(
     "unread"
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [newMessage, setNewMessage] = useState("");
 
-  const filteredConversations = conversations.filter((conv) => {
+  const {
+    data: conversations,
+    isLoading: isLoadingConversations,
+    isError: isErrorConversations,
+    error: errorConversations,
+  } = useQuery({
+    queryKey: ["conversations"],
+    queryFn: getConversations,
+  });
+
+  const {
+    data: messages,
+    isLoading: isLoadingMessages,
+    isError: isErrorMessages,
+    error: errorMessages,
+  } = useQuery({
+    queryKey: ["messages", selectedConversation],
+    queryFn: () => getMessages(selectedConversation),
+  });
+
+  // const {} = useMutation({
+  //   mutationFn: () => sendMessage(selectedConversation, newMessage),
+  // })
+
+  const filteredConversations = conversations?.filter((conv) => {
     const matchesSearch =
       conv.sender.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conv.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
@@ -43,7 +69,9 @@ const MessagesPage: React.FC = () => {
 
   // const markAsRead = (convId: string) => {};
 
-  const sendMessage = () => {};
+  const isLoading = isLoadingConversations || isLoadingMessages;
+  const isError = isErrorConversations || isErrorMessages;
+  const error = errorConversations || errorMessages;
 
   return (
     <div className="h-screen bg-gray-50 flex">

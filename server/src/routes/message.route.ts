@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  getChatHeads,
   getChatMessages,
   handleDeleteMessage,
   handleEditMessage,
@@ -9,8 +8,7 @@ import {
 
 const messageRouter = express.Router();
 
-messageRouter.get("/", getChatHeads);
-messageRouter.get("/:receiverId", getChatMessages);
+messageRouter.get("/:conversationId", getChatMessages);
 messageRouter.post("/:receiverId", handleSendMessage);
 messageRouter.put("/:messageId", handleEditMessage);
 messageRouter.delete("/:messageId", handleDeleteMessage);

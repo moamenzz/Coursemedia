@@ -3,24 +3,15 @@ import {
   deleteMessage,
   editMessage,
   getMessages,
-  getUserChatHeads,
   sendMessage,
 } from "../services/message.service";
 import catchErrors from "../utils/catchError";
 
-export const getChatHeads = catchErrors(async (req, res) => {
-  const userId = req.userId;
-
-  const { chatHeads } = await getUserChatHeads(userId);
-
-  res.status(200).json(chatHeads);
-});
-
 export const getChatMessages = catchErrors(async (req, res) => {
   const userId = req.userId; // This is the one accessing the chat - we'll call him the sender.
-  const receiverId = req.params.receiverId; // This is the one receiving the messages - we'll call him the receiver.
+  const conversationId = req.params.conversationId; // This is the one receiving the messages - we'll call him the receiver.
 
-  const { messages } = await getMessages(userId, receiverId);
+  const { messages } = await getMessages(userId, conversationId);
 
   res.status(200).json(messages);
 });
