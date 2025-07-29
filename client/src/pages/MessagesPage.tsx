@@ -1,13 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Search,
-  Star,
-  MoreHorizontal,
-  Bold,
-  Italic,
-  Image,
-  Code,
-} from "lucide-react";
+import React, { useRef, useState } from "react";
+import { Search, Star, MoreHorizontal, Image } from "lucide-react";
 import useMessageStore from "@/stores/useMessageStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
