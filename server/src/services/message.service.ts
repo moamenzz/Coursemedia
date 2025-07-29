@@ -19,12 +19,10 @@ export const getMessages = async (
 
   const messages = await MessageModel.find({
     conversation: conversationId,
-  })
-    .sort({ createdAt: -1 })
-    .populate({
-      path: "sender",
-      select: "username avatar",
-    });
+  }).populate({
+    path: "sender",
+    select: "username avatar",
+  });
 
   return { messages };
 };
@@ -94,7 +92,7 @@ export const editMessage = async (
 
   const editedMessage = await MessageModel.findOneAndUpdate(
     { _id: messageId, sender: userId },
-    { message: data.message }
+    { message: data.message, edited: true }
   );
 
   // Null means that the message was not found. This is because the sender in the message id that we used, does not match the actual user that I'm logged in with.
@@ -109,10 +107,10 @@ export const deleteMessage = async (
   const user = await UserModel.findById(userId);
   appAssert(user, NOT_FOUND, "User not found");
 
-  const message = await MessageModel.findOneAndDelete({
-    _id: messageId,
-    sender: userId,
-  });
+  const message = await MessageModel.findOneAndUpdate(
+    { _id: messageId, sender: userId },
+    { unsent: true }
+  );
 
   if (message) {
     if (message) {

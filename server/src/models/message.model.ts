@@ -5,6 +5,8 @@ interface MessageDocument extends mongoose.Document {
   sender: mongoose.Types.ObjectId;
   receiver: mongoose.Types.ObjectId;
   message: string;
+  edited: boolean;
+  unsent: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +29,8 @@ const MessageSchema = new mongoose.Schema<MessageDocument>(
       ref: "User",
     },
     message: { type: String, required: true },
+    edited: { type: Boolean, default: false },
+    unsent: { type: Boolean, default: false },
   },
   {
     timestamps: true,

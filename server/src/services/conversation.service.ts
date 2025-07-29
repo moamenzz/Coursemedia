@@ -9,7 +9,12 @@ export const getConversations = async (userId: mongoose.Types.ObjectId) => {
   const user = await UserModel.findById(userId);
   appAssert(user, NOT_FOUND, "User not found");
 
-  const conversations = await ConversationModel.find({ participants: userId });
+  const conversations = await ConversationModel.find({
+    participants: userId,
+  }).populate({
+    path: "participants",
+    select: "username avatar",
+  });
 
   const conversationsWithLatest = Promise.all(
     conversations.map(async (conversation) => {
@@ -24,9 +29,42 @@ export const getConversations = async (userId: mongoose.Types.ObjectId) => {
           latestMessage._id as typeof conversation.latestMessage;
       }
 
-      return conversation;
+      return conversation.populate({
+        path: "latestMessage",
+        select: "message sender receiver",
+      });
     })
   );
 
   return { conversations: await conversationsWithLatest };
+};
+
+export const starConversation = async (
+  userId: mongoose.Types.ObjectId,
+  conversationId: string
+) => {
+  const user = await UserModel.findById(userId);
+  appAssert(user, NOT_FOUND, "User not found");
+
+  const conversation = await ConversationModel.findById(conversationId);
+  appAssert(conversation, NOT_FOUND, "Conversation not found");
+
+  const isStarred = conversation.starredBy.includes(userId);
+  if (isStarred) {
+    const unstarConversation = await ConversationModel.findOneAndUpdate(
+      { _id: conversationId },
+      { $pull: { starredBy: userId } },
+      { new: true }
+    );
+
+    return { conversation: unstarConversation };
+  } else {
+    const updatedConversation = await ConversationModel.findOneAndUpdate(
+      { _id: conversationId },
+      { $addToSet: { starredBy: userId } },
+      { new: true }
+    );
+
+    return { conversation: updatedConversation };
+  }
 };

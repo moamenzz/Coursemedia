@@ -157,8 +157,9 @@ export interface ProfilePageResponse {
 export interface ConversationResponse {
   _id: string;
   participants: AuthResponse[];
-  latestMessage: string;
+  latestMessage: MessageResponse;
   unreadBy: AuthResponse[];
+  starredBy: AuthResponse[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -169,6 +170,8 @@ export interface MessageResponse {
   sender: AuthResponse;
   receiver: AuthResponse;
   message: string;
+  edited: boolean;
+  unsent: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -364,15 +367,30 @@ export const updateProfile = async (data: ProfileResponse) =>
 export const getConversations = async (): Promise<ConversationResponse[]> =>
   axiosPublic.get("/conversation");
 
+export const starConversation = async (
+  conversationId: string
+): Promise<ConversationResponse> =>
+  axiosPublic.put(`/conversation/${conversationId}`);
+
 export const getMessages = async (
   conversationId: string
 ): Promise<MessageResponse[]> => axiosPublic.get(`/message/${conversationId}`);
 
-export const sendMessage = async (receiverId: string, data: SendMessage) =>
-  axiosPublic.post(`/message/${receiverId}`, { data });
+export const sendMessage = async ({
+  receiverId,
+  data,
+}: {
+  receiverId: string;
+  data: SendMessage;
+}) => axiosPublic.post(`/message/${receiverId}`, data);
 
-export const editMessage = async (messageId: string, data: SendMessage) =>
-  axiosPublic.put(`/message/${messageId}`, { data });
+export const editMessage = async ({
+  messageId,
+  data,
+}: {
+  messageId: string;
+  data: SendMessage;
+}) => axiosPublic.put(`/message/${messageId}`, data);
 
 export const deleteMessage = async (messageId: string) =>
   axiosPublic.delete(`/message/${messageId}`);
