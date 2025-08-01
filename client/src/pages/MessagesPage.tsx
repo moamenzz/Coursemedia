@@ -44,6 +44,8 @@ const MessagesPage: React.FC = () => {
     queryFn: getConversations,
   });
 
+  // TODO: Fix Send Message functionality from ProfilePage.tsx
+
   const {
     data: messages,
     isLoading: isLoadingMessages,

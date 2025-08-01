@@ -139,15 +139,6 @@ export interface ProfileResponse {
   updatedAt?: Date;
 }
 
-export interface NotificationResponse {
-  _id: string;
-  user: AuthResponse;
-  message: string;
-  read: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface ProfilePageResponse {
   hasProfile: ProfileResponse;
   instructor: InstructorResponse;
@@ -172,6 +163,24 @@ export interface MessageResponse {
   message: string;
   edited: boolean;
   unsent: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type NotificationTypes =
+  | "NEW_MESSAGE"
+  | "NEW_PURCHASE"
+  | "NEW_REVIEW"
+  | "COURSE_PURCHASED"
+  | "ENROLLED_IN_COURSE";
+
+export interface NotificationResponse {
+  _id: string;
+  user: AuthResponse;
+  title: string;
+  message: string;
+  isRead: boolean;
+  notificationType: NotificationTypes;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -394,3 +403,19 @@ export const editMessage = async ({
 
 export const deleteMessage = async (messageId: string) =>
   axiosPublic.delete(`/message/${messageId}`);
+
+export const getNotifications = async (): Promise<NotificationResponse[]> =>
+  axiosPublic.get("/notification");
+
+export const markAsRead = async (
+  notificationId: string
+): Promise<{ message: string }> =>
+  axiosPublic.put(`/notification/${notificationId}`);
+
+export const markAllAsRead = async (): Promise<{ message: string }> =>
+  axiosPublic.put("/notification/read-all");
+
+export const deleteNotification = async (
+  notificationId: string
+): Promise<{ message: string }> =>
+  axiosPublic.delete(`notification/${notificationId}`);

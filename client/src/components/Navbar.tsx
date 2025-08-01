@@ -45,6 +45,8 @@ const Navbar: React.FC<NavbarProps> = () => {
     },
   });
 
+  // TODO: Make timeLeft countdown functional
+
   return (
     <div className="w-full">
       {/* Sale banner */}

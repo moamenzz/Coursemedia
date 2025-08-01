@@ -19,10 +19,12 @@ import PlaceholderAvatar from "@/components/PlaceholderAvatar";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import useAuth from "@/hooks/useAuth";
+import useMessageStore from "@/stores/useMessageStore";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { profileId } = useParams();
+  const { setSelectedConversation } = useMessageStore();
   const { user } = useAuth();
 
   const {
@@ -112,7 +114,10 @@ const ProfilePage: React.FC = () => {
                 ) : (
                   <button
                     className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors cursor-pointer"
-                    onClick={() => navigate(`/messages/${profile?._id}`)}
+                    onClick={() => {
+                      setSelectedConversation(profile?.user?._id as string);
+                      navigate(`/messages`);
+                    }}
                   >
                     <MessageCircle size={16} />
                     Send Message

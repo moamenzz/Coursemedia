@@ -1,91 +1,57 @@
 import React, { useState } from "react";
 import { Bell, Settings, MoreHorizontal } from "lucide-react";
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  type: "course" | "system" | "achievement" | "reminder";
-  avatar?: string;
-}
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getNotifications, markAllAsRead, markAsRead } from "@/lib/apiRoutes";
+import { toast } from "react-toastify";
+import queryClient from "@/config/queryClient";
+import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
+import ErrorThrower from "./ErrorThrower";
+import formatLatestMessageDate from "@/utils/formatLatestMessageData";
+import { getNotificationIcon } from "@/utils/getNotificationIcon";
 
 const NotificationsDropdown: React.FC = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      title: "MTF Institute of Management, Technology and Finance and 1...",
-      message: "New course available in your learning path",
-      timestamp: "5 days ago",
-      isRead: false,
-      type: "course",
-      avatar: "/api/placeholder/40/40",
+
+  const {
+    data: notifications = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: getNotifications,
+  });
+
+  const { mutate: markAsReadMutation } = useMutation({
+    mutationFn: markAsRead,
+    onError: () => {
+      toast.error("Failed to mark notification as read");
     },
-    {
-      id: "2",
-      title: "Assignment Due Soon",
-      message: "Your React Advanced Patterns assignment is due in 2 days",
-      timestamp: "1 day ago",
-      isRead: false,
-      type: "reminder",
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
-    {
-      id: "3",
-      title: "Course Completed!",
-      message: 'Congratulations! You have completed "JavaScript Fundamentals"',
-      timestamp: "3 days ago",
-      isRead: true,
-      type: "achievement",
+  });
+
+  const { mutate: markAllAsReadMutation } = useMutation({
+    mutationFn: markAllAsRead,
+    onError: () => {
+      toast.error("Failed to mark notifications as read");
     },
-    {
-      id: "4",
-      title: "System Maintenance",
-      message: "Scheduled maintenance will occur this weekend",
-      timestamp: "1 week ago",
-      isRead: true,
-      type: "system",
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
-  ]);
+  });
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
-
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification
-      )
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, isRead: true }))
-    );
-  };
-
-  const getNotificationIcon = (type: string) => {
-    const iconClass =
-      "w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium";
-
-    switch (type) {
-      case "course":
-        return <div className={`${iconClass} bg-blue-500`}>📚</div>;
-      case "achievement":
-        return <div className={`${iconClass} bg-green-500`}>🏆</div>;
-      case "reminder":
-        return <div className={`${iconClass} bg-orange-500`}>⏰</div>;
-      case "system":
-        return <div className={`${iconClass} bg-gray-500`}>⚙️</div>;
-      default:
-        return <div className={`${iconClass} bg-blue-500`}>📋</div>;
-    }
-  };
-
-  return (
+  return isLoading ? (
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <Loader />
+    </div>
+  ) : isError ? (
+    <ErrorThrower isError={isError} error={error} />
+  ) : (
     <div
       className="relative"
       onMouseEnter={() => setIsOpen(true)}
@@ -136,24 +102,16 @@ const NotificationsDropdown: React.FC = () => {
             ) : (
               notifications.map((notification) => (
                 <div
-                  key={notification.id}
+                  key={notification._id}
                   className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors duration-150 ${
                     !notification.isRead ? "bg-blue-50" : ""
                   }`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => markAsReadMutation(notification._id)}
                 >
                   <div className="flex items-start space-x-3">
                     {/* Icon/Avatar */}
                     <div className="flex-shrink-0">
-                      {notification.avatar ? (
-                        <img
-                          src={notification.avatar}
-                          alt=""
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      ) : (
-                        getNotificationIcon(notification.type)
-                      )}
+                      {getNotificationIcon(notification.notificationType)}
                     </div>
 
                     {/* Content */}
@@ -171,7 +129,7 @@ const NotificationsDropdown: React.FC = () => {
                             {notification.message}
                           </p>
                           <p className="text-xs text-gray-400 mt-2">
-                            {notification.timestamp}
+                            {formatLatestMessageDate(notification.createdAt)}
                           </p>
                         </div>
 
@@ -196,19 +154,18 @@ const NotificationsDropdown: React.FC = () => {
           <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-lg">
             <div className="flex items-center justify-between">
               <button
-                onClick={markAllAsRead}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-150"
+                onClick={() => markAllAsReadMutation()}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium cursor-pointer transition-colors duration-150"
                 disabled={unreadCount === 0}
               >
                 Mark all as read
               </button>
               <button
                 onClick={() => {
-                  // Navigate to notifications page
-                  console.log("Navigate to notifications page");
                   setIsOpen(false);
+                  navigate("/notifications");
                 }}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-150"
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium cursor-pointer transition-colors duration-150"
               >
                 See all
               </button>

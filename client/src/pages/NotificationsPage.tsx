@@ -1,18 +1,63 @@
-import mockNotifications from "@/types/MockNotifications";
+import ErrorThrower from "@/components/ErrorThrower";
+import Loader from "@/components/Loader";
+import queryClient from "@/config/queryClient";
+import {
+  deleteNotification,
+  getNotifications,
+  markAllAsRead,
+  markAsRead,
+} from "@/lib/apiRoutes";
+import formatLatestMessageDate from "@/utils/formatLatestMessageData";
+import { getNotificationIcon } from "@/utils/getNotificationIcon";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Bell, Check, Search, Settings, X } from "lucide-react";
 import { useState } from "react";
-
-interface NotificationsPage {
-  onMarkAsRead: (notificationId: string) => void;
-  onMarkAllAsRead: () => void;
-  onDeleteNotification: (notificationId: string) => void;
-}
-
-const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
+import { toast } from "react-toastify";
+const NotificationsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all"); // all, unread, read
 
-  const filteredNotifications = mockNotifications.filter((notification) => {
+  const {
+    data: notifications = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: getNotifications,
+  });
+
+  const { mutate: markAsReadMutation } = useMutation({
+    mutationFn: markAsRead,
+    onError: () => {
+      toast.error("Failed to mark notification as read");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
+  const { mutate: markAllAsReadMutation } = useMutation({
+    mutationFn: markAllAsRead,
+    onError: () => {
+      toast.error("Failed to mark notifications as read");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
+  const { mutate: deleteNotificationMutation } = useMutation({
+    mutationFn: deleteNotification,
+    onError: () => {
+      toast.error("Failed to delete notification");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
+  const filteredNotifications = notifications.filter((notification) => {
     const matchesSearch =
       notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       notification.message.toLowerCase().includes(searchTerm.toLowerCase());
@@ -22,9 +67,15 @@ const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
     return matchesSearch;
   });
 
-  const unreadCount = mockNotifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  return (
+  return isLoading ? (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <Loader />
+    </div>
+  ) : isError ? (
+    <ErrorThrower isError={isError} error={error as { message: string }} />
+  ) : (
     <div className="max-w-4xl mx-auto p-6 bg-white min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
@@ -82,7 +133,7 @@ const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
             {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
           </span>
           <button
-            onClick={onMarkAllAsRead}
+            onClick={() => markAllAsReadMutation()}
             className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
           >
             <Check size={16} />
@@ -107,10 +158,9 @@ const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
           </div>
         ) : (
           filteredNotifications.map((notification) => {
-            const IconComponent = notification.icon;
             return (
               <div
-                key={notification.id}
+                key={notification._id}
                 className={`p-6 border rounded-lg hover:shadow-md transition-shadow ${
                   !notification.isRead
                     ? "border-blue-200 bg-blue-50"
@@ -119,20 +169,9 @@ const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
-                    <div
-                      className={`p-3 rounded-full ${
-                        notification.type === "course"
-                          ? "bg-blue-100 text-blue-600"
-                          : notification.type === "assignment"
-                          ? "bg-orange-100 text-orange-600"
-                          : notification.type === "message"
-                          ? "bg-green-100 text-green-600"
-                          : notification.type === "enrollment"
-                          ? "bg-purple-100 text-purple-600"
-                          : "bg-yellow-100 text-yellow-600"
-                      }`}
-                    >
-                      <IconComponent size={20} />
+                    {/* Icon/Avatar */}
+                    <div className="flex-shrink-0">
+                      {getNotificationIcon(notification.notificationType)}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
@@ -147,23 +186,25 @@ const NotificationsPage = ({ onMarkAllAsRead }: NotificationsPage) => {
                         {notification.message}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {notification.timestamp}
+                        {formatLatestMessageDate(notification.createdAt)}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 ml-4">
                     {!notification.isRead && (
                       <button
-                        // onClick={() => onMarkAsRead(notification.id)}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                        onClick={() => markAsReadMutation(notification._id)}
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg cursor-pointer transition-colors"
                         title="Mark as read"
                       >
                         <Check size={16} />
                       </button>
                     )}
                     <button
-                      // onClick={() => onDeleteNotification(notification.id)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                      onClick={() =>
+                        deleteNotificationMutation(notification._id)
+                      }
+                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg cursor-pointer transition-colors"
                       title="Delete notification"
                     >
                       <X size={16} />
