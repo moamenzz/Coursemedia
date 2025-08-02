@@ -168,11 +168,13 @@ const Navbar: React.FC<NavbarProps> = () => {
                           />
                         </div>
                       ) : (
-                        <PlaceholderAvatar
-                          w={8}
-                          h={8}
-                          username={user.username}
-                        />
+                        <div className="flex">
+                          <PlaceholderAvatar
+                            w={8}
+                            h={8}
+                            username={user.username}
+                          />
+                        </div>
                       )}
                     </div>
                     <ul

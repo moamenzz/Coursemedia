@@ -16,6 +16,7 @@ import Loader from "@/components/Loader";
 import ErrorThrower from "@/components/ErrorThrower";
 import { toast } from "react-toastify";
 import queryClient from "@/config/queryClient";
+import PlaceholderAvatar from "@/components/PlaceholderAvatar";
 
 const MessagesPage: React.FC = () => {
   const {
@@ -216,19 +217,33 @@ const MessagesPage: React.FC = () => {
                 <div className="flex items-start space-x-3">
                   {/* Avatar */}
                   <div className="flex-shrink-0">
-                    <img
-                      src={
-                        conversation.participants.find(
-                          (p) => p._id !== user?._id
-                        )?.avatar
-                      }
-                      alt={
-                        conversation.participants.find(
-                          (p) => p._id !== user?._id
-                        )?.username
-                      }
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
+                    {conversation.participants.find((p) => p._id !== user?._id)
+                      ?.avatar ? (
+                      <img
+                        src={
+                          conversation.participants.find(
+                            (p) => p._id !== user?._id
+                          )?.avatar
+                        }
+                        alt={
+                          conversation.participants.find(
+                            (p) => p._id !== user?._id
+                          )?.username
+                        }
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <PlaceholderAvatar
+                        username={
+                          conversation.participants.find(
+                            (p) => p._id !== user?._id
+                          )?.username as string
+                        }
+                        w={10}
+                        h={10}
+                      />
+                    )}
+
                     {conversation.unreadBy.find((p) => p._id === user?._id) && (
                       <div className="w-3 h-3 bg-purple-600 rounded-full -mt-2 ml-8 border-2 border-white"></div>
                     )}

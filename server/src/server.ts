@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import corsConfig from "./config/corsConfig";
 import authRouter from "./routes/auth.route";
 import errorHandler from "./middleware/errorHandler";
-import { NODE_ENV, PORT, SESSION_SECRET } from "./constants/getENV";
+import { CLIENT_URL, NODE_ENV, PORT, SESSION_SECRET } from "./constants/getENV";
 import userRouter from "./routes/user.route";
 import authenticate from "./middleware/authenticate";
 import session from "express-session";
@@ -25,10 +25,20 @@ import profileRouter from "./routes/profile.route";
 import notificationRouter from "./routes/notification.route";
 import messageRouter from "./routes/message.route";
 import conversationRouter from "./routes/conversation.route";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { setupSocketHandler } from "./socket/socketHandler";
 
 const port: String | Number = PORT || 3000;
 
 const app = express();
+
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: CLIENT_URL || "http://localhost:5173",
+  },
+});
 
 app.set("trust proxy", 1);
 
@@ -71,6 +81,8 @@ app.use("/message", authenticate, messageRouter);
 app.use("/conversation", authenticate, conversationRouter);
 
 Sentry.setupExpressErrorHandler(app);
+
+setupSocketHandler(io);
 
 app.use(errorHandler);
 
